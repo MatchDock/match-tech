@@ -132,3 +132,4 @@ O Firestore utiliza regras de segurança com validação de schema (`isValidMemb
 Projeto open-source criado para a comunidade do Hackathon Tech Floripa 2026.
 
 Feito com ☕ por **Tony Max & Squad**.
+ 
