@@ -29,16 +29,6 @@ body:
       label: ✅ Comportamento Esperado
     validations:
       required: true
-  - type: textarea
-    id: ambiente
-    attributes:
-      label: 💻 Ambiente
-      placeholder: ""
-      Navegador: null
-      Sistema Operacional: null
-      Dispositivo: null
-    validations:
-      required: false
   - type: checkboxes
     id: dod
     attributes:
