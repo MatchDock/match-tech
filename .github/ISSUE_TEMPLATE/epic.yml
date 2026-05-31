@@ -1,0 +1,58 @@
+name: "📦 Épico"
+description: "Iniciativa ampla que agrupa múltiplas funcionalidades relacionadas."
+title: "[EPIC] "
+labels: ["epic"]
+assignees: []
+body:
+  - type: textarea
+    id: objetivo
+    attributes:
+    label: "🎯 Objetivo Estratégico"
+    description: "Qual resultado este épico deve gerar para o produto?"
+    placeholder: "Ex.: Permitir que usuários encontrem equipes compatíveis para hackathons."
+    validations:
+    required: true
+
+  - type: textarea
+    id: contexto
+    attributes:
+    label: "📌 Contexto"
+    description: "Por que este épico é importante para o Match Tech?"
+    validations:
+    required: true
+
+  - type: textarea
+    id: escopo
+    attributes:
+    label: "📦 Escopo"
+    description: "O que está incluído neste épico?"
+    placeholder: |
+      - Perfis públicos
+      - Sistema de filtros
+      - Compatibilidade
+    validations:
+    required: true
+
+  - type: textarea
+    id: fora_escopo
+    attributes:
+    label: "🚫 Fora de Escopo"
+    description: "O que NÃO faz parte deste épico?"
+    validations:
+    required: false
+
+  - type: textarea
+    id: metricas
+    attributes:
+    label: "📊 Critérios de Sucesso"
+    description: "Como saberemos que este épico foi concluído com sucesso?"
+    validations:
+    required: true
+
+  - type: textarea
+    id: dependencias
+    attributes:
+    label: "🔗 Dependências"
+    description: "Existem outros épicos ou funcionalidades que precisam ser concluídos antes?"
+    validations:
+    required: false
