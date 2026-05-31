@@ -8,63 +8,66 @@ body:
   - type: textarea
     id: descricao
     attributes:
-    label: "📝 Descrição"
-    description: "O que deve ser implementado?"
+      label: "📝 Descrição"
+      description: "O que deve ser implementado?"
     validations:
-    required: true
+      required: true
 
   - type: textarea
     id: problema
     attributes:
-    label: "🎯 Problema que Resolve"
-    description: "Qual problema do usuário ou do produto será resolvido?"
+      label: "🎯 Problema que Resolve"
+      description: "Qual problema do usuário ou do produto será resolvido?"
     validations:
-    required: true
+      required: true
 
   - type: textarea
     id: user_story
     attributes:
-    label: "👤 User Story"
-    placeholder: |
-      Como usuário,
-      Quero ...
-      Para que ...
+      label: "👤 User Story"
+      placeholder: |
+        Como usuário,
+        Quero ...
+        Para que ...
     validations:
-    required: true
+      required: true
 
   - type: textarea
     id: requisitos
     attributes:
-    label: "📋 Requisitos"
-    description: "Liste os requisitos funcionais."
+      label: "📋 Requisitos"
+      description: "Liste os requisitos funcionais."
     validations:
-    required: true
+      required: true
 
   - type: textarea
     id: aceite
     attributes:
-    label: "🕵️ Critérios de Aceite"
-    placeholder: |
-      - Usuário consegue ...
-      - Sistema valida ...
-      - Dados persistem corretamente
+      label: "🕵️ Critérios de Aceite"
+      placeholder: |
+        - Usuário consegue ...
+        - Sistema valida ...
+        - Dados persistem corretamente
     validations:
-    required: true
+      required: true
 
   - type: textarea
     id: dependencias
     attributes:
-    label: "🔗 Dependências"
+      label: "🔗 Dependências"
+      description: "Existem outros épicos ou funcionalidades que precisam ser concluídos antes?"
     validations:
-    required: false
+      required: false
 
   - type: checkboxes
     id: dod
     attributes:
-    label: "📌 Definition of Done (DoD)"
-    options:
-      - label: Funcionalidade implementada
-      - label: Regras de negócio respeitadas
-      - label: Testes passando
-      - label: Documentação atualizada (se necessário)
-      - label: PR revisado e aprovado
+      label: "📌 Definition of Done (DoD)"
+      options:
+        - label: Funcionalidade implementada
+        - label: Regras de negócio respeitadas
+        - label: Testes passando
+        - label: Documentação atualizada (se necessário)
+        - label: PR revisado e aprovado
+    validations:
+      required: false

@@ -1,0 +1,6 @@
+blank_issues_enabled: false
+
+contact_links:
+  - name: 📖 Documentação
+    url: https://github.com/MatchDock/match-tech
+    about: Consulte a documentação antes de abrir uma issue.

@@ -8,31 +8,33 @@ body:
   - type: textarea
     id: descricao
     attributes:
-    label: "📝 Descrição"
+      label: "📝 Descrição"
     validations:
-    required: true
+      required: true
 
   - type: textarea
     id: arquivo
     attributes:
-    label: "📎 Documento Impactado"
-    placeholder: "Ex.: docs/VISION_MATCH_TECH.md"
+      label: "📎 Documento Impactado"
+      placeholder: "Ex.: docs/VISION_MATCH_TECH.md"
     validations:
-    required: true
+      required: true
 
   - type: textarea
     id: objetivo
     attributes:
-    label: "🎯 Objetivo da Atualização"
+      label: "🎯 Objetivo da Atualização"
     validations:
-    required: true
+      required: true
 
   - type: checkboxes
     id: dod
     attributes:
-    label: "📌 Definition of Done (DoD)"
-    options:
-      - label: Documento atualizado
-      - label: Revisado
-      - label: Alinhado com a arquitetura atual
-      - label: PR aprovado
+      label: "📌 Definition of Done (DoD)"
+      options:
+        - label: Documento atualizado
+        - label: Revisado
+        - label: Alinhado com a arquitetura atual
+        - label: PR aprovado
+    validations:
+      required: false

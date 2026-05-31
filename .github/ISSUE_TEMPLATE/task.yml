@@ -8,43 +8,45 @@ body:
   - type: textarea
     id: objetivo
     attributes:
-    label: "🎯 Objetivo"
-    description: "O que precisa ser feito?"
+      label: "🎯 Objetivo"
+      description: "O que precisa ser feito?"
     validations:
-    required: true
+      required: true
 
   - type: textarea
     id: implementacao
     attributes:
-    label: "⚙️ Passos de Implementação"
-    placeholder: |
-      - Criar componente
-      - Adicionar validação
-      - Atualizar testes
+      label: "⚙️ Passos de Implementação"
+      placeholder: |
+        - Criar componente
+        - Adicionar validação
+        - Atualizar testes
     validations:
-    required: true
+      required: true
 
   - type: textarea
     id: contexto
     attributes:
-    label: "📌 Contexto Técnico"
+      label: "📌 Contexto Técnico"
     validations:
-    required: false
+      required: false
 
   - type: textarea
     id: validacao
     attributes:
-    label: "🧪 Como Validar"
+      label: "🧪 Como Validar"
     validations:
-    required: true
+      required: true
 
   - type: checkboxes
     id: dod
     attributes:
-    label: "📌 Definition of Done (DoD)"
-    options:
-      - label: Implementação concluída
-      - label: Código revisado
-      - label: Testes passando
-      - label: Sem erros de lint/TypeScript
-      - label: PR aprovado
+      label: "📌 Definition of Done (DoD)"
+      options:
+        - label: Implementação concluída
+        - label: Código revisado
+        - label: Testes passando
+        - label: Sem erros de lint/TypeScript
+        - label: PR aprovado
+    validations:
+      required: false
