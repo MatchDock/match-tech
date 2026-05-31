@@ -1,0 +1,50 @@
+name: "🛠️ Task"
+description: "Atividade técnica específica."
+title: "[TASK] "
+labels: ["task"]
+assignees: []
+
+body:
+  - type: textarea
+    id: objetivo
+    attributes:
+    label: "🎯 Objetivo"
+    description: "O que precisa ser feito?"
+    validations:
+    required: true
+
+  - type: textarea
+    id: implementacao
+    attributes:
+    label: "⚙️ Passos de Implementação"
+    placeholder: |
+      - Criar componente
+      - Adicionar validação
+      - Atualizar testes
+    validations:
+    required: true
+
+  - type: textarea
+    id: contexto
+    attributes:
+    label: "📌 Contexto Técnico"
+    validations:
+    required: false
+
+  - type: textarea
+    id: validacao
+    attributes:
+    label: "🧪 Como Validar"
+    validations:
+    required: true
+
+  - type: checkboxes
+    id: dod
+    attributes:
+    label: "📌 Definition of Done (DoD)"
+    options:
+      - label: Implementação concluída
+      - label: Código revisado
+      - label: Testes passando
+      - label: Sem erros de lint/TypeScript
+      - label: PR aprovado
