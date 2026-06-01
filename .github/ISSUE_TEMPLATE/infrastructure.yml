@@ -1,0 +1,53 @@
+name: "🏗️ Infraestrutura"
+description: "Melhorias de processo, governança, automação e configuração do projeto."
+title: "[INFRA] "
+labels: ["infrastructure"]
+
+body:
+  - type: textarea
+    id: descricao
+    attributes:
+      label: "📝 Descrição"
+      description: "O que deve ser configurado, organizado ou melhorado?"
+    validations:
+      required: true
+
+  - type: textarea
+    id: objetivo
+    attributes:
+      label: "🎯 Objetivo"
+      description: "Qual benefício essa melhoria traz para o projeto?"
+    validations:
+      required: true
+
+  - type: textarea
+    id: escopo
+    attributes:
+      label: "📦 Escopo"
+      description: "Quais áreas serão impactadas?"
+    validations:
+      required: true
+
+  - type: textarea
+    id: aceite
+    attributes:
+      label: "🕵️ Critérios de Aceite"
+    validations:
+      required: true
+
+  - type: textarea
+    id: dependencias
+    attributes:
+      label: "🔗 Dependências"
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: dod
+    attributes:
+      label: "📌 Definition of Done (DoD)"
+      options:
+        - label: Configuração implementada
+        - label: Processo documentado
+        - label: Validação realizada
+        - label: PR revisado e aprovado
