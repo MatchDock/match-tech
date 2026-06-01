@@ -29,7 +29,7 @@ body:
       required: true
 
   - type: textarea
-    id: escopo
+    id: documentos
     attributes:
       label: "📎 Documento Relacionado"
       description: "Quais documentos serão impactados?"
