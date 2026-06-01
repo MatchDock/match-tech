@@ -29,6 +29,14 @@ body:
       required: true
 
   - type: textarea
+    id: escopo
+    attributes:
+      label: "📎 Documento Relacionado"
+      description: "Quais documentos serão impactados?"
+    validations:
+      required: true
+
+  - type: textarea
     id: aceite
     attributes:
       label: "🕵️ Critérios de Aceite"
