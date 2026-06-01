@@ -118,7 +118,7 @@ Crie uma branch específica para sua issue.
 Exemplos:
 
 ```bash
-git checkout -b feature/profile-filters
+git checkout -b feat/profile-filters
 ```
 
 ```bash
@@ -127,6 +127,10 @@ git checkout -b task/extract-avatar-component
 
 ```bash
 git checkout -b bug/login-redirect-fix
+```
+
+```bash
+git checkout -b docs/update-contributing
 ```
 
 ---
@@ -205,22 +209,95 @@ Closes #42
 
 # Revisão
 
-Todo Pull Request passará por revisão.
+Todo Pull Request pode receber comentários e solicitações de alteração.
 
-Os mantenedores poderão solicitar:
+O processo de revisão tem como objetivo:
 
-- Ajustes de código
-- Melhorias de organização
-- Correções de bugs
-- Alterações de documentação
+- Compartilhar conhecimento
+- Melhorar a qualidade do código
+- Identificar problemas antes do merge
+- Manter padrões consistentes no projeto
 
-Isso faz parte do processo normal de desenvolvimento.
+Solicitações de ajuste fazem parte do processo normal de desenvolvimento e não devem ser interpretadas como críticas pessoais.
 
 ---
 
-# Boas práticas
+## Compromisso com a Issue
 
-## Faça
+Ao solicitar uma issue, você demonstra interesse em contribuir com aquela atividade.
+
+Caso não consiga continuar o trabalho por qualquer motivo, informe na própria issue para que ela possa ser disponibilizada novamente para outros colaboradores.
+
+Nosso objetivo é manter o fluxo do projeto saudável e transparente para toda a comunidade.
+
+---
+
+## Proteção de Branches
+
+Para garantir a estabilidade do projeto, as branches principais possuem regras de proteção.
+
+Branch `main`
+
+A branch `main` representa a versão estável do projeto e é utilizada para publicação da aplicação.
+
+Não é permitido realizar alterações diretamente nesta branch.
+
+Toda alteração deve chegar à `main` através de Pull Requests aprovados.
+
+Branch `develop`
+
+A branch `develop` é a principal branch de integração do projeto.
+
+Todas as novas funcionalidades, correções e melhorias devem ser abertas inicialmente contra a develop.
+
+### Fluxo de Desenvolvimento
+
+```
+feature/* → develop → main
+
+bug/* → develop → main
+
+docs/* → develop → main
+```
+
+O objetivo é garantir que novas contribuições sejam validadas antes de fazerem parte de uma versão estável do projeto.
+
+---
+
+## Fluxo de Branches
+
+O projeto utiliza a seguinte estrutura:
+
+```
+main
+ └── develop
+      ├── feature/*
+      ├── task/*
+      ├── bug/*
+      └── docs/*
+```
+
+- main: versão estável do projeto.
+- develop: branch de integração das contribuições.
+- Branches temporárias: utilizadas para desenvolvimento de cada issue.
+
+---
+
+## Comunicação
+
+Sempre que possível:
+
+- Utilize as Issues para discussões relacionadas ao desenvolvimento.
+- Utilize Discussions para dúvidas gerais, ideias e sugestões.
+- Utilize os canais oficiais da comunidade para comunicação rápida.
+
+Decisões técnicas importantes devem ficar registradas no GitHub para consulta futura.
+
+---
+
+## Boas práticas
+
+### Faça
 
 ✅ Trabalhe apenas em issues atribuídas a você
 
@@ -234,9 +311,7 @@ Isso faz parte do processo normal de desenvolvimento.
 
 ✅ Seja respeitoso com todos os membros
 
----
-
-## Evite
+### Evite
 
 ❌ Trabalhar diretamente na branch develop
 
@@ -247,25 +322,6 @@ Isso faz parte do processo normal de desenvolvimento.
 ❌ Alterar código sem relação com a issue
 
 ❌ Forçar pushes em branches compartilhadas
-
----
-
-# Fluxo de Branches
-
-O projeto utiliza a seguinte estrutura:
-
-```text
-main
- └── develop
-      ├── feature/*
-      ├── task/*
-      ├── bug/*
-      └── docs/*
-```
-
-- `main`: versão estável do projeto.
-- `develop`: branch de integração das contribuições.
-- Branches temporárias: utilizadas para desenvolvimento de cada issue.
 
 ---
 
