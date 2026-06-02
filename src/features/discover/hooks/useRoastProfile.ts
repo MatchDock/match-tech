@@ -1,3 +1,4 @@
+import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 
 import { getInitialPersona } from "../model/discover.selectors";
@@ -14,37 +15,15 @@ interface UseRoastProfileParams {
 export function useRoastProfile({ showToast }: UseRoastProfileParams) {
   const [selectedProfile, setSelectedProfile] = useState<Profile | null>(null);
   const [activePersonaView, setActivePersonaView] = useState<RoastPersona | null>(null);
-  const [isGenerating, setIsGenerating] = useState(false);
 
-  function openProfile(profile: Profile) {
-    setSelectedProfile(profile);
-    setActivePersonaView(getInitialPersona(profile));
-  }
-
-  function closeProfile() {
-    setSelectedProfile(null);
-  }
-
-  async function executeRoast(profile: Profile, persona: RoastPersona) {
-    setActivePersonaView(persona);
-
-    const existingField = persona === "brutal" ? profile.roastBrutal : profile.roastMild;
-
-    if (existingField) {
-      setSelectedProfile(profile);
-      return;
-    }
-
-    setIsGenerating(true);
-
-    try {
-      const data = await requestRoast({ memberId: profile.id, memberData: profile, persona });
-
+  const roastMutation = useMutation({
+    mutationFn: ({ profile, persona }: { profile: Profile; persona: RoastPersona }) =>
+      requestRoast({ memberId: profile.id, memberData: profile, persona }),
+    onSuccess: async (data, { profile, persona }) => {
       if (!data.roast) {
-        showToast(`Erro ao gerar a Sina: ${data.error || "Resposta inesperada do servidor."}`);
+        showToast(`Erro ao gerar a Sina: ${data.error ?? "Resposta inesperada do servidor."}`);
         return;
       }
-
       const updateData =
         persona === "brutal"
           ? { roastBrutal: data.roast, updatedAt: new Date() }
@@ -56,24 +35,35 @@ export function useRoastProfile({ showToast }: UseRoastProfileParams) {
         firestoreLog.error("Erro ao salvar sina no banco:", dbError);
       }
 
-      setSelectedProfile({
-        ...profile,
-        ...updateData,
-      });
-    } catch (error) {
+      setSelectedProfile({ ...profile, ...updateData });
+    },
+    onError: (error) => {
       apiLog.error("Erro ao chamar o roast:", error);
       showToast("Sem conexão com o servidor de IA. Verifique sua rede e tente novamente.");
-    } finally {
-      setIsGenerating(false);
+    },
+  });
+
+  function openProfile(profile: Profile) {
+    setSelectedProfile(profile);
+    setActivePersonaView(getInitialPersona(profile));
+  }
+
+  function executeRoast(profile: Profile, persona: RoastPersona) {
+    setActivePersonaView(persona);
+    const existingField = persona === "brutal" ? profile.roastBrutal : profile.roastMild;
+    if (existingField) {
+      setSelectedProfile(profile);
+      return;
     }
+    roastMutation.mutate({ profile, persona });
   }
 
   return {
     selectedProfile,
     activePersonaView,
-    isGenerating,
+    isGenerating: roastMutation.isPending,
     openProfile,
-    closeProfile,
+    closeProfile: () => setSelectedProfile(null),
     executeRoast,
     setActivePersonaView,
   };

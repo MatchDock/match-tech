@@ -10,7 +10,7 @@ interface RoastModalProps {
   isGenerating: boolean;
   onClose: () => void;
   onSelectPersona: (persona: RoastPersona) => void;
-  onGenerateRoast: (profile: Profile, persona: RoastPersona) => Promise<void>;
+  onGenerateRoast: (profile: Profile, persona: RoastPersona) => void;
 }
 
 export function RoastModal({

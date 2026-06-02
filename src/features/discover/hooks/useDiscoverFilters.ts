@@ -1,13 +1,21 @@
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 
 import { filterProfiles, getPopularTags } from "../model/discover.selectors";
 import type { Profile } from "../model/discover.types";
+import { useDiscoverFiltersStore } from "../store/discoverFilters";
 
 export function useDiscoverFilters(profiles: Profile[]) {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [selectedRole, setSelectedRole] = useState("ALL");
-  const [selectedStatus, setSelectedStatus] = useState("ALL");
-  const [selectedTag, setSelectedTag] = useState("");
+  const {
+    searchQuery,
+    selectedRole,
+    selectedStatus,
+    selectedTag,
+    setSearchQuery,
+    setSelectedRole,
+    setSelectedStatus,
+    setSelectedTag,
+    clearSelectedTag,
+  } = useDiscoverFiltersStore();
 
   const popularTags = useMemo(() => getPopularTags(profiles), [profiles]);
 
@@ -33,6 +41,6 @@ export function useDiscoverFilters(profiles: Profile[]) {
     setSelectedRole,
     setSelectedStatus,
     setSelectedTag,
-    clearSelectedTag: () => setSelectedTag(""),
+    clearSelectedTag,
   };
 }

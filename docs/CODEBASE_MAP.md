@@ -42,15 +42,19 @@ match-tech/
 │   │   │   ├── hooks/                 # useProfilesRealtime, useDiscoverFilters, useRoastProfile
 │   │   │   ├── model/                 # discover.types.ts (Profile, RoastPersona re-export), discover.selectors.ts
 │   │   │   ├── services/              # discover.repository.ts (updateProfile)
+│   │   │   ├── store/
+│   │   │   │   └── discoverFilters.ts # Zustand store — filtros persistentes (searchQuery, role, status, tag)
 │   │   │   ├── constants/
 │   │   │   └── pages/
 │   │   │       └── DiscoverPage.tsx   # Rota: /discover (auth obrigatória)
 │   │   │
 │   │   ├── guilda/
 │   │   │   ├── components/            # GuildMembersGrid, GuildRoastModal (adaptador), GuildMemberCard...
-│   │   │   ├── hooks/                 # useGuildMembersRealtime, useGuildRoast
+│   │   │   ├── hooks/                 # useGuildMembersRealtime, useGuildRoast (usa useMutation + store)
 │   │   │   ├── model/                 # guilda.types.ts (GuildMember, RoastPersona re-export)
 │   │   │   ├── services/              # guilda.repository.ts (saveRoast)
+│   │   │   ├── store/
+│   │   │   │   └── guildRoast.ts      # Zustand store — estado do roast (selectedMember, roastStep, logs...)
 │   │   │   ├── constants/
 │   │   │   ├── utils/
 │   │   │   └── pages/
@@ -231,8 +235,9 @@ Usada pelo `ISquadRepository`. Campos: `id`, `name`, `description`, `ownerId`, `
 | --- | --- | --- |
 | `react` | ^19 | UI Framework |
 | `react-router-dom` | ^7.14 | Roteamento (framework mode) |
-| `@tanstack/react-query` | ^5.100 | Cache de server state |
+| `@tanstack/react-query` | ^5.100 | Server state — `useMutation` para chamadas à API Gemini |
 | `@tanstack/react-virtual` | ^3.14 | Virtualização de listas |
+| `zustand` | ^5.0 | Estado de UI por feature (filtros, roast state) |
 | `firebase` | ^12 | Auth + Firestore client |
 | `firebase-admin` | ^13 | Admin SDK (server) |
 | `@google/genai` | ^1.29 | Gemini AI SDK (server only) |

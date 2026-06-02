@@ -17,9 +17,11 @@ Este documento descreve a arquitetura técnica do projeto, os padrões de design
 9. [API Server](#9-api-server)
 10. [Fluxo de Dados](#10-fluxo-de-dados)
 11. [Injeção de Dependência](#11-injeção-de-dependência)
-12. [Padrões e Convenções](#12-padrões-e-convenções)
-13. [Testes](#13-testes)
-14. [Deploy e CI/CD](#14-deploy-e-cicd)
+12. [Gerenciamento de Estado — Zustand](#12-gerenciamento-de-estado--zustand)
+13. [Server State — TanStack Query](#13-server-state--tanstack-query)
+14. [Padrões e Convenções](#14-padrões-e-convenções)
+15. [Testes](#15-testes)
+16. [Deploy e CI/CD](#16-deploy-e-cicd)
 
 ---
 
@@ -523,7 +525,114 @@ render(
 
 ---
 
-## 12. Padrões e Convenções
+## 12. Gerenciamento de Estado — Zustand
+
+O projeto usa **Zustand** para estado de UI que precisa:
+
+- Sobreviver entre re-renders sem re-montar
+- Ser acessado por múltiplos componentes dentro da mesma feature sem prop drilling
+- Ser persistido durante navegação (ex: filtros da Discover)
+
+### Quando usar Zustand
+
+| Use Zustand quando... | Use `useState` quando... |
+| --- | --- |
+| O estado é compartilhado entre 2+ componentes | O estado é local a um único componente |
+| Você quer que persista durante a navegação | O estado pode ser resetado ao desmontar |
+| O estado tem múltiplos campos relacionados | O estado é um único valor simples |
+
+### Stores existentes
+
+**`features/discover/store/discoverFilters.ts`**
+
+Substitui 4 `useState` em `useDiscoverFilters`. Os filtros persistem quando o usuário navega para outra página e volta.
+
+```typescript
+const useDiscoverFiltersStore = create<DiscoverFiltersState>((set) => ({
+  searchQuery: "",
+  selectedRole: "ALL",
+  selectedStatus: "ALL",
+  selectedTag: "",
+  setSearchQuery: (searchQuery) => set({ searchQuery }),
+  // ...
+}));
+```
+
+**`features/guilda/store/guildRoast.ts`**
+
+Centraliza o estado complexo do roast da guilda: `selectedMember`, `roastActiveMember`, `roastStep`, `roastLogs`, `activePersonaView`. Os hooks que precisam desses valores (ex: `GuildMemberCard` e `GuildRoastModal`) leem do store sem prop drilling.
+
+### Convenção de criação de stores
+
+Stores ficam em `features/<nome>/store/<nome>.ts`. Cada store exporta um único hook (`useXxxStore`) criado com `create<T>()`. Actions (setters) ficam dentro do próprio store — não use `set` em componentes:
+
+```typescript
+// ✅ correto — action encapsulada no store
+setSearchQuery: (searchQuery) => set({ searchQuery }),
+
+// ❌ evitar — chamar set diretamente no componente
+useDiscoverFiltersStore.setState({ searchQuery: "..." })
+```
+
+---
+
+## 13. Server State — TanStack Query
+
+**TanStack Query** (`@tanstack/react-query`) é usado para gerenciar chamadas à API — específicamente as requisições à IA (roast e match). Já está instalado e `QueryClientProvider` está configurado em `App.tsx`.
+
+### Quando usar TanStack Query
+
+| Use `useMutation` quando... | Use fetch manual quando... |
+| --- | --- |
+| Chama a API e precisa de loading/error/success | Nunca — prefira sempre `useMutation` |
+| Quer retry automático | — |
+| Quer callbacks `onSuccess`, `onError`, `onSettled` | — |
+
+Dados em **tempo real do Firestore** usam `useFirestoreSubscription<T>` (push-based, `onSnapshot`), **não** `useQuery`. TanStack Query é para chamadas HTTP pontuais.
+
+### Onde está sendo usado
+
+**`features/discover/hooks/useRoastProfile.ts`** — substitui `isGenerating` state + try/catch manual:
+
+```typescript
+const roastMutation = useMutation({
+  mutationFn: ({ profile, persona }) =>
+    requestRoast({ memberId: profile.id, memberData: profile, persona }),
+  onSuccess: async (data, { profile, persona }) => { /* salva e atualiza */ },
+  onError: (error) => { showToast("Sem conexão com o servidor de IA...") },
+});
+
+// isGenerating era um useState manual — agora é derivado:
+isGenerating: roastMutation.isPending,
+```
+
+**`features/guilda/hooks/useGuildRoast.ts`** — mesma abordagem com callbacks `onMutate` (start animation), `onSuccess` (save), `onSettled` (cleanup):
+
+```typescript
+const roastMutation = useMutation({
+  mutationFn: ({ member, persona }) => requestRoast({ ... }),
+  onMutate: ({ persona }) => { startLogs(persona) },
+  onSuccess: async (data, { member, persona }) => { await saveRoast(...) },
+  onSettled: () => { clearLogsInterval(); store.setRoastStep(null) },
+});
+```
+
+### Configuração global
+
+```typescript
+// App.tsx
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: { staleTime: 1000 * 60 * 5, retry: 2 },
+  },
+});
+```
+
+`ReactQueryDevtools` é renderizado apenas em `import.meta.env.DEV`.
+
+---
+
+## 14. Padrões e Convenções
 
 ### Importações
 
@@ -585,7 +694,7 @@ O projeto usa **Tailwind CSS v4** com tema neo-brutalista. As classes de tema pr
 
 ---
 
-## 13. Testes
+## 15. Testes
 
 ### Configuração
 
@@ -629,7 +738,7 @@ describe("minhaFuncao", () => {
 
 ---
 
-## 14. Deploy e CI/CD
+## 16. Deploy e CI/CD
 
 ### Pipeline de CI (GitHub Actions)
 
