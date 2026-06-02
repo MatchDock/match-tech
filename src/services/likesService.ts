@@ -6,8 +6,8 @@ import {
   serverTimestamp,
   getDoc
 } from "firebase/firestore";
-import { db } from "../lib/firebase";
-import { firestoreLog } from "../lib/logger";
+import { db } from "../shared/lib/firebase/firebase.client";
+import { firestoreLog } from "../shared/lib/logger/logger";
 
 export async function toggleLike(postId: string, userId: string, isLiked: boolean) {
   const postRef = doc(db, "posts", postId);

@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { auth } from '../lib/firebase';
+import { auth } from '../shared/lib/firebase/firebase.client';
 import {
   User,
   signInWithPopup,
@@ -9,7 +9,7 @@ import {
   isSignInWithEmailLink,
   signInWithEmailLink
 } from 'firebase/auth';
-import { authLog } from '../lib/logger';
+import { authLog } from '../shared/lib/logger/logger';
 
 interface AuthContextType {
   user: User | null;
@@ -71,7 +71,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     // Listener padrão de autenticação
     const unsubscribe = auth.onAuthStateChanged((u) => {
-      authLog.info('Estado de autenticação mudou:', u?.email ?? 'não autenticado');
+      authLog.info(
+        'Estado de autenticação mudou:',
+        u?.email ? { email: u?.email } : { "error": "nao autenticado" }
+      );
       setUser(u);
       setLoading(false);
     });
