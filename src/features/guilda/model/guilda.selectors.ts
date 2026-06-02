@@ -1,6 +1,8 @@
 import { GUILD_CARD_PALETTES } from "../constants/guilda.constants";
+
 import type { GuildMember, MemberSkills, RadarDatum } from "./guilda.types";
-import { sortByCurrentUserAndName } from "../../../shared/lib/utils/entity";
+
+import { sortByCurrentUserAndName } from "@/shared/lib/utils/entity";
 
 export function sortMembers(members: GuildMember[], currentUserId: string) {
   return sortByCurrentUserAndName(members, currentUserId);

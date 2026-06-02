@@ -1,4 +1,3 @@
-import React from "react";
 import { cn } from "../../lib/utils/cn";
 
 interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -8,7 +7,13 @@ interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
   className?: string;
 }
 
-export function Card({ className, variant = "default", padding = "md", children, ...props }: CardProps) {
+export function Card({
+  className,
+  variant = "default",
+  padding = "md",
+  children,
+  ...props
+}: CardProps) {
   const variants = {
     default: "bg-neo-bg-alt",
     white: "bg-white",
@@ -31,7 +36,7 @@ export function Card({ className, variant = "default", padding = "md", children,
         "neo-border neo-shadow overflow-hidden",
         variants[variant],
         paddings[padding],
-        className
+        className,
       )}
       {...props}
     >

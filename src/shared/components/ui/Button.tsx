@@ -1,8 +1,15 @@
 import React from "react";
+
 import { cn } from "../../lib/utils/cn";
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: "primary" | "secondary" | "accent-lime" | "accent-pink" | "accent-cyan" | "accent-yellow";
+  variant?:
+    | "primary"
+    | "secondary"
+    | "accent-lime"
+    | "accent-pink"
+    | "accent-cyan"
+    | "accent-yellow";
   size?: "sm" | "md" | "lg" | "xl";
 }
 
@@ -31,11 +38,11 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
           "neo-border font-heading font-bold uppercase transition-all duration-200 outline-none focus:ring-4 focus:ring-neo-black focus:ring-opacity-50",
           variants[variant],
           sizes[size],
-          className
+          className,
         )}
         {...props}
       />
     );
-  }
+  },
 );
 Button.displayName = "Button";

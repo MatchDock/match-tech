@@ -1,5 +1,6 @@
 import { Zap } from "lucide-react";
-import { AccessDeniedState as SharedAccessDeniedState } from "../../../shared/components/states/AccessDeniedState";
+
+import { AccessDeniedState as SharedAccessDeniedState } from "@/shared/components/states/AccessDeniedState";
 
 export function GuildAccessDeniedState() {
   return (

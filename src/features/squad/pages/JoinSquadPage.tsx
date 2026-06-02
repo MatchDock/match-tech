@@ -1,9 +1,9 @@
-import { Users, UserRound } from "lucide-react";
+﻿import { Users, UserRound } from "lucide-react";
 import { motion } from "motion/react";
 import { useState } from "react";
 import { useLoaderData, useNavigate } from "react-router-dom";
 
-import { useAuth } from "@/contexts/AuthContext";
+import { useAuth } from "@/contexts/useAuth";
 import type { Squad } from "@/domain/entities/Squad";
 import { useRepositories } from "@/shared/context/RepositoryContext";
 

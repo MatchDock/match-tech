@@ -1,4 +1,5 @@
 import { Filter, Search } from "lucide-react";
+
 import { ROLE_OPTIONS, STATUS_OPTIONS } from "../constants/discover.constants";
 
 interface DiscoverFiltersProps {

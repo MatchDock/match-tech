@@ -1,9 +1,11 @@
-import { motion } from "motion/react";
 import { ArrowRight } from "lucide-react";
-import { Button } from "../../../shared/components/ui/Button";
+import { motion } from "motion/react";
+
+import { Button } from "@/shared/components/ui/Button";
 
 interface Props {
-  user: any;
+  // eslint-disable-next-line
+  user: any; // TODO
   onNavigateOnboarding: () => void;
   onNavigateGuilda: () => void;
 }

@@ -1,8 +1,10 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+
 import { ROAST_LOGS_SEQUENCE } from "../constants/guilda.constants";
 import type { GuildMember, RoastPersona, RoastStep } from "../model/guilda.types";
 import { saveRoast } from "../services/guilda.repository";
-import { requestRoast } from "../../../shared/services/roast.service";
+
+import { requestRoast } from "@/shared/services/roast.service";
 
 function getRoastByPersona(member: GuildMember, persona: RoastPersona) {
   return persona === "brutal" ? member.roastBrutal : member.roastMild;
@@ -26,10 +28,7 @@ export function useGuildRoast() {
   useEffect(() => clearLogsInterval, []);
 
   const startLogs = (persona: RoastPersona) => {
-    const sequence = [
-      `Selecionando persona: ${persona.toUpperCase()}...`,
-      ...ROAST_LOGS_SEQUENCE,
-    ];
+    const sequence = [`Selecionando persona: ${persona.toUpperCase()}...`, ...ROAST_LOGS_SEQUENCE];
 
     let currentLog = 0;
     setRoastLogs([sequence[0]]);

@@ -1,4 +1,3 @@
-import React from "react";
 import { cn } from "../../lib/utils/cn";
 
 interface TagBadgeProps {
@@ -20,7 +19,7 @@ export default function TagBadge({ tag, sentiment, className }: TagBadgeProps) {
       className={cn(
         "inline-block px-2.5 py-1 text-[10px] font-heading font-black uppercase border-2 tracking-wide select-none rotate-[0.5deg]",
         sentimentClasses[sentiment],
-        className
+        className,
       )}
     >
       {sentiment === "love" && "❤️ "}

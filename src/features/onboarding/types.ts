@@ -9,7 +9,7 @@ export interface OnboardingForm {
   primaryRole: string;
   secondaryRoles: string[];
   status: "looking" | "open" | "complete";
-  createdAt: any;
+  createdAt: string;
 }
 
 export interface OnboardingSkills {

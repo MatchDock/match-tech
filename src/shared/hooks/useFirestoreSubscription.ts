@@ -40,7 +40,6 @@ export function useFirestoreSubscription<T>({
   const [error, setError] = useState<AppError | null>(null);
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     setLoading(true);
 
     setError(null);

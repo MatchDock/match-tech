@@ -45,7 +45,7 @@ export default function Avatar({ user, size = "md", className }: AvatarProps) {
   }
 
   useEffect(() => {
-    setImageIndex(0); // eslint-disable-line react-hooks/set-state-in-effect
+    setImageIndex(0);
   }, [photoURL, github]);
 
   const sizeClasses = {

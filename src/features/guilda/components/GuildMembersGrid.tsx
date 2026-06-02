@@ -1,6 +1,8 @@
 import type { User } from "firebase/auth";
-import { GuildMemberCard } from "./GuildMemberCard";
+
 import type { GuildMember, RoastStep } from "../model/guilda.types";
+
+import { GuildMemberCard } from "./GuildMemberCard";
 
 interface GuildMembersGridProps {
   members: GuildMember[];

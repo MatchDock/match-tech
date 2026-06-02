@@ -1,6 +1,7 @@
-import { motion } from "motion/react";
 import { ArrowRight } from "lucide-react";
-import { Button } from "../../../shared/components/ui/Button";
+import { motion } from "motion/react";
+
+import { Button } from "@/shared/components/ui/Button";
 
 interface Props {
   onNavigateOnboarding: () => void;

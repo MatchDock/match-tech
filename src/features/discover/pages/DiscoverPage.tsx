@@ -1,5 +1,5 @@
-import { AnimatePresence, motion } from "motion/react";
-import { useAuth } from "../../../contexts/AuthContext";
+﻿import { AnimatePresence, motion } from "motion/react";
+
 import { AccessDeniedState } from "../components/AccessDeniedState";
 import { DiscoverFilters } from "../components/DiscoverFilters";
 import { DiscoverHeader } from "../components/DiscoverHeader";
@@ -10,6 +10,8 @@ import { useDiscoverFilters } from "../hooks/useDiscoverFilters";
 import { useProfilesRealtime } from "../hooks/useProfilesRealtime";
 import { useRoastProfile } from "../hooks/useRoastProfile";
 import { useToast } from "../hooks/useToast";
+
+import { useAuth } from "@/contexts/useAuth";
 
 export default function DiscoverPage() {
   const { user } = useAuth();
@@ -38,10 +40,7 @@ export default function DiscoverPage() {
       ) : (
         <div className="space-y-8">
           <DiscoverFilters {...filters} />
-          <ProfilesGrid
-            profiles={filters.filteredProfiles}
-            onProfileClick={roast.openProfile}
-          />
+          <ProfilesGrid profiles={filters.filteredProfiles} onProfileClick={roast.openProfile} />
         </div>
       )}
 

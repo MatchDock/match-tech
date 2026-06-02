@@ -1,11 +1,14 @@
+import { doc, setDoc, getDoc, serverTimestamp } from "firebase/firestore";
 import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { doc, setDoc, getDoc, serverTimestamp } from "firebase/firestore";
+
 import { db } from "../../../shared/lib/firebase/firebase.client";
 import { firestoreLog } from "../../../shared/lib/logger/logger";
 import type { OnboardingForm, OnboardingSkills, TagSentiment } from "../types";
 
+// eslint-disable-next-line
 export function useOnboardingForm(user: any) {
+  // TODO
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState(false);
@@ -32,7 +35,7 @@ export function useOnboardingForm(user: any) {
     primaryRole: "",
     secondaryRoles: [],
     status: "looking",
-    createdAt: null,
+    createdAt: "",
   });
 
   // Firestore fetch on mount
@@ -73,11 +76,11 @@ export function useOnboardingForm(user: any) {
           primaryRole: data.primaryRole || "",
           secondaryRoles: data.secondaryRoles || [],
           status: data.status || "looking",
-          createdAt: fromMembersFallback ? null : (data.createdAt || null),
+          createdAt: fromMembersFallback ? null : data.createdAt || null,
         });
         if (data.skills) setSkills(data.skills);
       } else {
-        setForm(prev => ({ ...prev, name: prev.name || user.displayName || "" }));
+        setForm((prev) => ({ ...prev, name: prev.name || user.displayName || "" }));
       }
     } catch (error) {
       firestoreLog.error("Erro ao buscar dados do membro:", error);
@@ -87,36 +90,39 @@ export function useOnboardingForm(user: any) {
   };
 
   // Radar chart data derived from skills
-  const radarData = useMemo(() => [
-    { subject: "Frontend", A: skills.frontend, fullMark: 10 },
-    { subject: "Backend",  A: skills.backend,  fullMark: 10 },
-    { subject: "UX/UI",   A: skills.ux_ui,    fullMark: 10 },
-    { subject: "Dados",   A: skills.dados,    fullMark: 10 },
-    { subject: "Hardware", A: skills.hardware_android, fullMark: 10 },
-    { subject: "Vibe AI", A: skills.vibe_coding, fullMark: 10 },
-  ], [skills]);
+  const radarData = useMemo(
+    () => [
+      { subject: "Frontend", A: skills.frontend, fullMark: 10 },
+      { subject: "Backend", A: skills.backend, fullMark: 10 },
+      { subject: "UX/UI", A: skills.ux_ui, fullMark: 10 },
+      { subject: "Dados", A: skills.dados, fullMark: 10 },
+      { subject: "Hardware", A: skills.hardware_android, fullMark: 10 },
+      { subject: "Vibe AI", A: skills.vibe_coding, fullMark: 10 },
+    ],
+    [skills],
+  );
 
   // ── Handlers ──────────────────────────────────────────────────────────────
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
   ) => {
-    setForm(prev => ({ ...prev, [e.target.name]: e.target.value }));
+    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
   const handleBioChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setForm(prev => ({ ...prev, bio: e.target.value.slice(0, 280) }));
+    setForm((prev) => ({ ...prev, bio: e.target.value.slice(0, 280) }));
   };
 
   const handleSkillChange = (key: string, value: number) => {
-    setSkills(prev => ({ ...prev, [key]: value }));
+    setSkills((prev) => ({ ...prev, [key]: value }));
   };
 
   const toggleRole = (role: string) => {
-    setForm(prev => {
+    setForm((prev) => {
       if (prev.primaryRole === role) return { ...prev, primaryRole: "" };
       if (prev.secondaryRoles.includes(role))
-        return { ...prev, secondaryRoles: prev.secondaryRoles.filter(r => r !== role) };
+        return { ...prev, secondaryRoles: prev.secondaryRoles.filter((r) => r !== role) };
       if (!prev.primaryRole) return { ...prev, primaryRole: role };
       if (prev.secondaryRoles.length < 2)
         return { ...prev, secondaryRoles: [...prev.secondaryRoles, role] };
@@ -125,14 +131,14 @@ export function useOnboardingForm(user: any) {
   };
 
   const setTagSentiment = (tag: string, sentiment: TagSentiment) => {
-    setForm(prev => {
-      const newLoves   = prev.loves.filter(t => t !== tag);
-      const newComfort = prev.comfort.filter(t => t !== tag);
-      const newVeto    = prev.veto.filter(t => t !== tag);
+    setForm((prev) => {
+      const newLoves = prev.loves.filter((t) => t !== tag);
+      const newComfort = prev.comfort.filter((t) => t !== tag);
+      const newVeto = prev.veto.filter((t) => t !== tag);
 
-      if (sentiment === "loves")   newLoves.push(tag);
+      if (sentiment === "loves") newLoves.push(tag);
       if (sentiment === "comfort") newComfort.push(tag);
-      if (sentiment === "veto")    newVeto.push(tag);
+      if (sentiment === "veto") newVeto.push(tag);
 
       return { ...prev, loves: newLoves, comfort: newComfort, veto: newVeto };
     });
@@ -156,7 +162,9 @@ export function useOnboardingForm(user: any) {
         .replace(/\/$/, "")
         .replace(/^@/, "");
 
+      // eslint-disable-next-line
       const profileData: any = {
+        // TODO
         userId: user.uid,
         name: form.name.trim(),
         photoURL: user.photoURL || null,

@@ -1,11 +1,13 @@
-import { AnimatePresence, motion } from "motion/react";
-import { useAuth } from "../../../contexts/AuthContext";
+﻿import { AnimatePresence, motion } from "motion/react";
+
 import { GuildHeader } from "../components/GuildHeader";
-import { GuildAccessDeniedState, GuildLoadingState } from "../components/GuildStates";
 import { GuildMembersGrid } from "../components/GuildMembersGrid";
 import { GuildRoastModal } from "../components/GuildRoastModal";
+import { GuildAccessDeniedState, GuildLoadingState } from "../components/GuildStates";
 import { useGuildMembersRealtime } from "../hooks/useGuildMembersRealtime";
 import { useGuildRoast } from "../hooks/useGuildRoast";
+
+import { useAuth } from "@/contexts/useAuth";
 
 export default function GuildaPage() {
   const { user } = useAuth();
@@ -13,7 +15,11 @@ export default function GuildaPage() {
   const roast = useGuildRoast();
 
   return (
-    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="max-w-7xl mx-auto py-12 px-6">
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="max-w-7xl mx-auto py-12 px-6"
+    >
       <GuildHeader totalMembers={members.length} />
 
       {!user ? (

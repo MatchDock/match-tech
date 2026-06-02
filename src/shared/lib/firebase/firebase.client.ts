@@ -6,6 +6,7 @@ import {
   persistentLocalCache,
   persistentMultipleTabManager,
 } from "firebase/firestore";
+
 import {
   firebaseClientConfig,
   firestoreDatabaseId,
@@ -14,8 +15,7 @@ import {
 
 validateFirebaseClientConfig();
 
-const app =
-  getApps().length > 0 ? getApp() : initializeApp(firebaseClientConfig);
+const app = getApps().length > 0 ? getApp() : initializeApp(firebaseClientConfig);
 
 export { app };
 
@@ -31,5 +31,5 @@ export const db =
             tabManager: persistentMultipleTabManager(),
           }),
         },
-        firestoreDatabaseId
+        firestoreDatabaseId,
       );

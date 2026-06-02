@@ -1,4 +1,5 @@
 import { useCallback, useRef, useState } from "react";
+
 import { TOAST_DURATION_MS } from "../constants/discover.constants";
 import type { ToastState, ToastType } from "../model/discover.types";
 

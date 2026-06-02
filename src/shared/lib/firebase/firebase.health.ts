@@ -1,6 +1,8 @@
 import { doc, getDocFromServer } from "firebase/firestore";
-import { db } from "./firebase.client";
+
 import { firebaseLog } from "../logger/logger";
+
+import { db } from "./firebase.client";
 
 export async function testFirebaseConnection() {
   try {

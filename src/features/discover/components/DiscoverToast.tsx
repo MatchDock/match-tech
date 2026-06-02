@@ -1,5 +1,6 @@
-import { motion } from "motion/react";
 import { AlertTriangle, X as XIcon } from "lucide-react";
+import { motion } from "motion/react";
+
 import type { ToastState } from "../model/discover.types";
 
 interface DiscoverToastProps {

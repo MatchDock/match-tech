@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+
 import { filterProfiles, getPopularTags } from "../model/discover.selectors";
 import type { Profile } from "../model/discover.types";
 
@@ -18,7 +19,7 @@ export function useDiscoverFilters(profiles: Profile[]) {
         selectedStatus,
         selectedTag,
       }),
-    [profiles, searchQuery, selectedRole, selectedStatus, selectedTag]
+    [profiles, searchQuery, selectedRole, selectedStatus, selectedTag],
   );
 
   return {

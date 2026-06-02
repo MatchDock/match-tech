@@ -1,4 +1,3 @@
-import React from "react";
 import { cn } from "../../lib/utils/cn";
 
 interface StatusBadgeProps {
@@ -43,12 +42,17 @@ export default function StatusBadge({ status, className }: StatusBadgeProps) {
         config.bgColor,
         config.borderColor,
         config.textColor,
-        className
+        className,
       )}
     >
       <span className="relative flex h-2 w-2 shrink-0">
         {config.pulse && (
-          <span className={cn("animate-ping absolute inline-flex h-full w-full rounded-full opacity-75", config.dotColor)}></span>
+          <span
+            className={cn(
+              "animate-ping absolute inline-flex h-full w-full rounded-full opacity-75",
+              config.dotColor,
+            )}
+          ></span>
         )}
         <span className={cn("relative inline-flex rounded-full h-2 w-2", config.dotColor)}></span>
       </span>

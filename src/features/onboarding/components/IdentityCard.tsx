@@ -1,16 +1,24 @@
 import { User, Github, Linkedin, ShieldCheck } from "lucide-react";
-import { Card } from "../../../shared/components/ui/Card";
+
 import type { OnboardingForm } from "../types";
+
+import { Card } from "@/shared/components/ui/Card";
 
 interface Props {
   form: OnboardingForm;
-  onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void;
+  onChange: (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
+  ) => void;
   onBioChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
 }
 
 export function IdentityCard({ form, onChange, onBioChange }: Props) {
   return (
-    <Card variant="white" padding="none" className="border-4 shadow-[12px_12px_0_0_#000] overflow-hidden">
+    <Card
+      variant="white"
+      padding="none"
+      className="border-4 shadow-[12px_12px_0_0_#000] overflow-hidden"
+    >
       <div className="bg-neo-cyan p-4 border-b-4 border-neo-black">
         <h2 className="text-2xl font-heading text-neo-black flex items-center gap-2">
           <User className="w-6 h-6" /> 01. IDENTIDADE

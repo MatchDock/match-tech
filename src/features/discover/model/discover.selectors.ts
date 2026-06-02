@@ -1,5 +1,6 @@
 import type { Profile } from "./discover.types";
-import { sortByCurrentUserAndName } from "../../../shared/lib/utils/entity";
+
+import { sortByCurrentUserAndName } from "@/shared/lib/utils/entity";
 
 export function sortProfiles(profiles: Profile[], currentUserId?: string): Profile[] {
   return sortByCurrentUserAndName(profiles, currentUserId);
@@ -27,7 +28,7 @@ export function filterProfiles(
     selectedRole: string;
     selectedStatus: string;
     selectedTag: string;
-  }
+  },
 ): Profile[] {
   const query = filters.searchQuery.trim().toLowerCase();
 
@@ -44,8 +45,7 @@ export function filterProfiles(
       profile.secondaryRoles?.includes(filters.selectedRole);
 
     const matchesStatus =
-      filters.selectedStatus === "ALL" ||
-      profile.status === filters.selectedStatus;
+      filters.selectedStatus === "ALL" || profile.status === filters.selectedStatus;
 
     const matchesTag =
       !filters.selectedTag ||
@@ -62,10 +62,7 @@ export function getInitialPersona(profile: Profile) {
   return "brutal" as const;
 }
 
-export function getDisplayedRoast(
-  profile: Profile,
-  persona: "brutal" | "mild" | null
-): string {
+export function getDisplayedRoast(profile: Profile, persona: "brutal" | "mild" | null): string {
   if (persona === "brutal") {
     return profile.roastBrutal || profile.roast || "";
   }

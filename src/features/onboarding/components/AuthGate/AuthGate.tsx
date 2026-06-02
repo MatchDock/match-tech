@@ -1,7 +1,7 @@
-import { LoginScreen } from "./LoginScreen";
-import { MagicLinkSentScreen } from "./MagicLinkSentScreen";
-import { MagicLinkConfirmScreen } from "./MagicLinkConfirmScreen";
 import { CompletingMagicLink } from "./CompletingMagicLink";
+import { LoginScreen } from "./LoginScreen";
+import { MagicLinkConfirmScreen } from "./MagicLinkConfirmScreen";
+import { MagicLinkSentScreen } from "./MagicLinkSentScreen";
 
 interface Props {
   signIn: () => Promise<void>;

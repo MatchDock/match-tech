@@ -1,4 +1,4 @@
-import { Terminal } from "lucide-react";
+﻿import { Terminal } from "lucide-react";
 import { motion } from "motion/react";
 import React from "react";
 
@@ -18,7 +18,7 @@ import { ROLES_LIST } from "../constants/roles";
 import { TAG_CATEGORIES } from "../constants/tagCategories";
 import { useOnboardingForm } from "../hooks/useOnboardingForm";
 
-import { useAuth } from "@/contexts/AuthContext";
+import { useAuth } from "@/contexts/useAuth";
 
 export default function Onboarding() {
   const {

@@ -1,6 +1,7 @@
-import { getGeminiClient } from "../../shared/lib/gemini.server";
 import { buildMatchPrompt, matchSystemInstruction } from "./match.prompts";
 import type { MatchRequestBody, MatchResponseDto } from "./match.types";
+
+import { getGeminiClient } from "@/server/shared/lib/gemini.server";
 
 function isValidMatchResponse(payload: unknown): payload is MatchResponseDto {
   if (!payload || typeof payload !== "object") {

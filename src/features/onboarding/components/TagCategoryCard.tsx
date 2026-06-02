@@ -1,7 +1,9 @@
-import { motion } from "motion/react";
 import { Heart, Check, Ban } from "lucide-react";
-import { Card } from "../../../shared/components/ui/Card";
+import { motion } from "motion/react";
+
 import type { OnboardingForm, TagSentiment } from "../types";
+
+import { Card } from "@/shared/components/ui/Card";
 
 interface TagCategory {
   name: string;
@@ -25,7 +27,9 @@ export function TagCategoryCard({ category, form, onSetSentiment }: Props) {
     >
       {/* Category header */}
       <div className="bg-neo-black p-3 flex justify-between items-center group-hover:bg-neo-black/90 transition-colors">
-        <h3 className={`font-heading text-xl ${category.textColor} uppercase italic tracking-tighter`}>
+        <h3
+          className={`font-heading text-xl ${category.textColor} uppercase italic tracking-tighter`}
+        >
           {category.name}
         </h3>
         <div className={`w-3 h-3 rounded-full ${category.color} animate-pulse`} />
@@ -33,10 +37,10 @@ export function TagCategoryCard({ category, form, onSetSentiment }: Props) {
 
       {/* Tag rows */}
       <div className="p-4 flex flex-col gap-2 bg-neo-bg/30">
-        {category.tags.map(tag => {
-          const isLoves   = form.loves.includes(tag);
+        {category.tags.map((tag) => {
+          const isLoves = form.loves.includes(tag);
           const isComfort = form.comfort.includes(tag);
-          const isVeto    = form.veto.includes(tag);
+          const isVeto = form.veto.includes(tag);
 
           return (
             <div
@@ -61,7 +65,9 @@ export function TagCategoryCard({ category, form, onSetSentiment }: Props) {
                     animate={isLoves ? { scale: [1, 1.4, 1], rotate: [0, 15, -15, 0] } : {}}
                     transition={{ repeat: isLoves ? 1 : 0 }}
                   >
-                    <Heart className={`w-5 h-5 ${isLoves ? "fill-current" : "text-neo-black/20 group-hover/btn:text-neo-pink"}`} />
+                    <Heart
+                      className={`w-5 h-5 ${isLoves ? "fill-current" : "text-neo-black/20 group-hover/btn:text-neo-pink"}`}
+                    />
                   </motion.div>
                 </button>
 
@@ -77,7 +83,9 @@ export function TagCategoryCard({ category, form, onSetSentiment }: Props) {
                     whileHover={{ scale: 1.4, rotate: 360 }}
                     animate={isComfort ? { rotate: [0, 360], scale: [1, 1.4, 1] } : {}}
                   >
-                    <Check className={`w-5 h-5 ${isComfort ? "text-black" : "text-neo-black/20 group-hover/btn:text-neo-lime"}`} />
+                    <Check
+                      className={`w-5 h-5 ${isComfort ? "text-black" : "text-neo-black/20 group-hover/btn:text-neo-lime"}`}
+                    />
                   </motion.div>
                 </button>
 
@@ -93,7 +101,9 @@ export function TagCategoryCard({ category, form, onSetSentiment }: Props) {
                     whileHover={{ x: [-2, 2, -2, 2, 0], scale: 1.1 }}
                     animate={isVeto ? { x: [-1, 1, -1, 1, 0] } : {}}
                   >
-                    <Ban className={`w-5 h-5 ${isVeto ? "text-neo-pink" : "text-neo-black/20 group-hover/btn:text-neo-pink"}`} />
+                    <Ban
+                      className={`w-5 h-5 ${isVeto ? "text-neo-pink" : "text-neo-black/20 group-hover/btn:text-neo-pink"}`}
+                    />
                   </motion.div>
                 </button>
               </div>

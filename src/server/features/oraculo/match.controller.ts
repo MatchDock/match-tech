@@ -1,4 +1,5 @@
 import type { Request, Response } from "express";
+
 import { generateMatchSuggestions } from "./match.service";
 import type { MatchRequestBody } from "./match.types";
 
@@ -17,8 +18,7 @@ export async function postMatch(req: Request, res: Response) {
 
     return res.json(result);
   } catch (error) {
-    const message =
-      error instanceof Error ? error.message : "Unexpected server error";
+    const message = error instanceof Error ? error.message : "Unexpected server error";
 
     const errorMessage = message.includes("API key not valid")
       ? "Chave da API do Gemini inválida ou não configurada. Por favor, adicione uma chave válida no painel de configurações."

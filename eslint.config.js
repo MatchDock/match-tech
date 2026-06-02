@@ -44,6 +44,11 @@ export default [
       ],
       "react-hooks/rules-of-hooks": "error",
       "react-hooks/exhaustive-deps": "warn",
+      // These are React Compiler rules (react-hooks v5+). This project does not
+      // use React Compiler, so the rules produce false positives on valid patterns
+      // (lazy useState init, onSnapshot subscriptions, TanStack Virtual).
+      "react-hooks/set-state-in-effect": "off",
+      "react-hooks/incompatible-library": "off",
     },
   },
 ];

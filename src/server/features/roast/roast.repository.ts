@@ -1,10 +1,11 @@
 import { adminDb } from "../../shared/lib/firebase-admin.server";
+
 import type { RoastPersona } from "./roast.types";
 
 export async function saveProfileRoast(
   memberId: string,
   roastText: string,
-  persona?: RoastPersona
+  persona?: RoastPersona,
 ) {
   const updateData: Record<string, unknown> = {
     updatedAt: new Date(),

@@ -1,5 +1,6 @@
-import { motion } from "motion/react";
 import { Info, ShieldCheck } from "lucide-react";
+import { motion } from "motion/react";
+
 import type { OnboardingForm } from "../types";
 
 interface Props {
@@ -31,7 +32,9 @@ export function ArsenalCalibration({ form }: Props) {
         </div>
 
         <div className="bg-neo-black text-white px-4 py-2 neo-border border-2 self-end md:self-auto">
-          <span className={`text-2xl font-heading leading-none ${isCalibrated ? "text-neo-lime" : "text-neo-pink"}`}>
+          <span
+            className={`text-2xl font-heading leading-none ${isCalibrated ? "text-neo-lime" : "text-neo-pink"}`}
+          >
             {Math.min(total, 10)} / 10
           </span>
         </div>
@@ -52,8 +55,8 @@ export function ArsenalCalibration({ form }: Props) {
           <Info className="w-6 h-6 text-neo-cyan shrink-0" />
           <p className="text-[10px] text-neo-black font-bold uppercase leading-tight">
             <span className="text-neo-cyan block mb-1">POR QUE ISSO?</span>
-            Para que nossa IA crie um mapeamento justo e te conecte às melhores missões,
-            precisamos de pelo menos 10 opiniões (Amo ou Veto) sobre as tecnologias abaixo.
+            Para que nossa IA crie um mapeamento justo e te conecte às melhores missões, precisamos
+            de pelo menos 10 opiniões (Amo ou Veto) sobre as tecnologias abaixo.
           </p>
         </div>
 
@@ -61,7 +64,9 @@ export function ArsenalCalibration({ form }: Props) {
           className={`flex items-center gap-3 p-4 neo-border border-2 transition-all
             ${isCalibrated ? "bg-neo-lime/10 border-neo-lime" : "bg-neo-pink/10 border-neo-pink animate-pulse"}`}
         >
-          <div className={`w-3 h-3 rounded-full flex-shrink-0 ${isCalibrated ? "bg-neo-lime" : "bg-neo-pink"}`} />
+          <div
+            className={`w-3 h-3 rounded-full flex-shrink-0 ${isCalibrated ? "bg-neo-lime" : "bg-neo-pink"}`}
+          />
           <p className="text-[10px] text-neo-black font-bold uppercase leading-tight">
             <span className="block mb-1">STATUS DO SISTEMA:</span>
             {isCalibrated
