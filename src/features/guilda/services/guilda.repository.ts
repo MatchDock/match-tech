@@ -11,7 +11,7 @@ export async function saveRoast(memberId: string, roast: string, persona: RoastP
     ...(persona === "brutal" ? { roastBrutal: roast } : { roastMild: roast }),
   };
 
-  await updateDoc(doc(db, "members", memberId), updateData);
+  await updateDoc(doc(db, "profiles", memberId), updateData);
 
   return updateData;
 }

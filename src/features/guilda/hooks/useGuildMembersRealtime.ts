@@ -7,7 +7,7 @@ import { useFirestoreSubscription } from "@/shared/hooks/useFirestoreSubscriptio
 
 export function useGuildMembersRealtime(currentUserId?: string) {
   const { data, loading, error } = useFirestoreSubscription<GuildMember>({
-    collectionName: "members",
+    collectionName: "profiles",
   });
 
   const members = useMemo(

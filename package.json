@@ -13,6 +13,7 @@
     "format": "prettier --write src",
     "typecheck": "tsc --noEmit",
     "test": "vitest",
+    "migrate:members-to-profiles": "npx tsx scripts/migrate-members-to-profiles.ts",
     "precommit": "lint-staged",
     "prepare": "husky"
   },
