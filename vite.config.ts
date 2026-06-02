@@ -3,6 +3,7 @@ import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
 import path from 'path';
 import {defineConfig, loadEnv} from 'vite';
+/// <reference types="vitest" />
 
 export default defineConfig(({mode}) => {
   const env = loadEnv(mode, '.', '');
@@ -26,6 +27,12 @@ export default defineConfig(({mode}) => {
       'process.env.GEMINI_API_KEY': JSON.stringify(env.GEMINI_API_KEY),
     },
     resolve: {
+      alias: {
+        '@': path.resolve(__dirname, 'src'),
+      },
+    },
+    test: {
+      environment: 'node',
       alias: {
         '@': path.resolve(__dirname, 'src'),
       },
