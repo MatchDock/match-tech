@@ -53,24 +53,30 @@ export const router = createBrowserRouter([
             Component: m.default,
           })),
       },
-      // Phase 5 — public profile (no auth required)
-      // {
-      //   path: "p/:uid",
-      //   lazy: () => import("@/features/profile/pages/PublicProfilePage").then(m => ({ Component: m.default })),
-      //   loader: async ({ params }) => {
-      //     const { profileRepository } = await import("@/infrastructure/firebase/profileRepository");
-      //     return profileRepository.getPublicProfile(params.uid!);
-      //   },
-      // },
-      // Phase 5 — squad invite deep link (no auth required at load time)
-      // {
-      //   path: "join/:squadId",
-      //   lazy: () => import("@/features/squad/pages/JoinSquadPage").then(m => ({ Component: m.default })),
-      //   loader: async ({ params }) => {
-      //     const { squadRepository } = await import("@/infrastructure/firebase/squadRepository");
-      //     return squadRepository.getSquad(params.squadId!);
-      //   },
-      // },
+      // Public profile — no auth required
+      {
+        path: "p/:uid",
+        lazy: () =>
+          import("@/features/profile/pages/PublicProfilePage").then((m) => ({
+            Component: m.default,
+          })),
+        loader: async ({ params }) => {
+          const { profileRepository } = await import("@/infrastructure/firebase/profileRepository");
+          return profileRepository.getPublicProfile(params.uid!);
+        },
+      },
+      // Squad invite deep link — no auth required at load time
+      {
+        path: "join/:squadId",
+        lazy: () =>
+          import("@/features/squad/pages/JoinSquadPage").then((m) => ({
+            Component: m.default,
+          })),
+        loader: async ({ params }) => {
+          const { squadRepository } = await import("@/infrastructure/firebase/squadRepository");
+          return squadRepository.getSquad(params.squadId!);
+        },
+      },
     ],
   },
   {

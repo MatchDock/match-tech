@@ -1,10 +1,14 @@
 import { Link, isRouteErrorResponse, useRouteError } from "react-router-dom";
 
+import { isAppError, getUserErrorMessage } from "@/shared/lib/AppError";
+
 export function ErrorPage() {
   const error = useRouteError();
   const message = isRouteErrorResponse(error)
     ? `${error.status} — ${error.statusText}`
-    : "Algo deu errado. Tente novamente.";
+    : isAppError(error)
+      ? getUserErrorMessage(error.code)
+      : "Algo deu errado. Tente novamente.";
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen text-center p-8 bg-neo-bg">
