@@ -1,4 +1,4 @@
-export type RoastPersona = "brutal" | "gentle";
+export type RoastPersona = "brutal" | "mild";
 
 export interface Tag {
   name: string;

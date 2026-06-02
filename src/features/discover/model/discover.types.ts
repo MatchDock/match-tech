@@ -1,4 +1,4 @@
-export type RoastPersona = "brutal" | "mild";
+export type { RoastPersona } from "@/domain/entities/Shared";
 
 export type ToastType = "error" | "info";
 

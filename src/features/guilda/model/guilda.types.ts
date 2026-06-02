@@ -1,6 +1,6 @@
 import type { User } from "firebase/auth";
 
-export type RoastPersona = "brutal" | "mild";
+export type { RoastPersona } from "@/domain/entities/Shared";
 export type RoastStep = "selecting" | "loading" | null;
 
 export interface MemberSkills {
