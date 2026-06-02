@@ -1,7 +1,19 @@
 import { Router } from "express";
+import rateLimit from "express-rate-limit";
+
 import { asyncHandler } from "../../shared/utils/async-handler";
+
 import { postMatch } from "./match.controller";
+
+// 10 match requests per user per minute
+const matchLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  max: 10,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: "Muitas requisições. Aguarde um momento e tente novamente." },
+});
 
 export const matchRouter = Router();
 
-matchRouter.post("/", asyncHandler(postMatch));
+matchRouter.post("/", matchLimiter, asyncHandler(postMatch));

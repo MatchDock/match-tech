@@ -1,4 +1,4 @@
-import React from "react";
+import { memo, useMemo } from "react";
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis } from "recharts";
 
 interface SkillRadarProps {
@@ -13,17 +13,30 @@ interface SkillRadarProps {
   size?: "sm" | "md" | "lg";
 }
 
-export default function SkillRadar({ skills, size = "md" }: SkillRadarProps) {
-  const data = [
-    { subject: "Front", A: skills?.frontend || 0 },
-    { subject: "Back", A: skills?.backend || 0 },
-    { subject: "UX/UI", A: skills?.ux_ui || 0 },
-    { subject: "Dados", A: skills?.dados || 0 },
-    { subject: "Hard", A: skills?.hardware_android || 0 },
-    { subject: "Vibe AI", A: skills?.vibe_coding || 0 },
-  ];
+// Wrapped in memo so the SVG only re-renders when skill values actually change.
+// RadarChart is one of the most expensive Recharts components — memoisation is critical
+// when multiple cards are visible simultaneously (e.g. guilda grid).
+const SkillRadar = memo(function SkillRadar({ skills, size = "md" }: SkillRadarProps) {
+  const data = useMemo(
+    () => [
+      { subject: "Front", A: skills?.frontend || 0 },
+      { subject: "Back", A: skills?.backend || 0 },
+      { subject: "UX/UI", A: skills?.ux_ui || 0 },
+      { subject: "Dados", A: skills?.dados || 0 },
+      { subject: "Hard", A: skills?.hardware_android || 0 },
+      { subject: "Vibe AI", A: skills?.vibe_coding || 0 },
+    ],
+    [
+      skills?.frontend,
+      skills?.backend,
+      skills?.ux_ui,
+      skills?.dados,
+      skills?.hardware_android,
+      skills?.vibe_coding,
+    ],
+  );
 
-  // Tamanhos fixos por prop — sem ResponsiveContainer para evitar o bug width/height = -1
+  // Fixed dims — no ResponsiveContainer to avoid the width/height = -1 Recharts bug
   const dims = { sm: 192, md: 256, lg: 320 };
   const chartSize = dims[size];
   const fontSize = size === "sm" ? 9 : size === "md" ? 10 : 12;
@@ -34,9 +47,7 @@ export default function SkillRadar({ skills, size = "md" }: SkillRadarProps) {
       className="w-full relative overflow-hidden bg-neo-bg flex items-center justify-center"
       style={{ height: chartSize, minHeight: chartSize }}
     >
-      {/* Background Grid Pattern Accent */}
-      <div className="absolute inset-0 opacity-10 pointer-events-none bg-[radial-gradient(#000_1px,transparent_1px)] [background-size:12px_12px]" />
-
+      <div className="absolute inset-0 opacity-10 pointer-events-none bg-[radial-gradient(#000_1px,transparent_1px)] bg-size-[12px_12px]" />
       <RadarChart
         cx="50%"
         cy="50%"
@@ -66,4 +77,6 @@ export default function SkillRadar({ skills, size = "md" }: SkillRadarProps) {
       </RadarChart>
     </div>
   );
-}
+});
+
+export default SkillRadar;
