@@ -99,10 +99,10 @@ upstream  https://github.com/MatchDock/match-tech.git
 Antes de iniciar qualquer nova contribuição:
 
 ```bash
-git checkout main
+git checkout develop
 git fetch upstream
-git merge upstream/main
-git push origin main
+git merge upstream/develop
+git push origin develop
 ```
 
 Isso garante que você esteja trabalhando na versão mais recente do projeto.
@@ -111,7 +111,7 @@ Isso garante que você esteja trabalhando na versão mais recente do projeto.
 
 # Crie uma Branch para sua contribuição
 
-Nunca desenvolva diretamente na branch `main`.
+Nunca desenvolva diretamente na branch `develop`.
 
 Crie uma branch específica para sua issue.
 
@@ -212,8 +212,10 @@ git push origin feature/profile-filters
 Crie um Pull Request para a branch:
 
 ```text
-main
+develop
 ```
+
+Não abra Pull Requests diretamente para `main`.
 
 Ao abrir o PR:
 
@@ -266,15 +268,23 @@ Não é permitido realizar alterações diretamente nesta branch.
 
 Toda alteração deve chegar à `main` através de Pull Requests aprovados.
 
+Branch `develop`
+
+A branch `develop` é a principal branch de integração do projeto.
+
+Todas as novas funcionalidades, correções e melhorias devem ser abertas inicialmente contra a develop.
+
 ### Fluxo de Desenvolvimento
 
-```text
-feature/* → main
-bug/*     → main
-docs/*    → main
+```
+feature/* → develop → main
+
+bug/* → develop → main
+
+docs/* → develop → main
 ```
 
-Todas as branches de trabalho são abertas a partir de `main` e mergeadas de volta para `main` via Pull Request.
+O objetivo é garantir que novas contribuições sejam validadas antes de fazerem parte de uma versão estável do projeto.
 
 ---
 
@@ -282,16 +292,18 @@ Todas as branches de trabalho são abertas a partir de `main` e mergeadas de vol
 
 O projeto utiliza a seguinte estrutura:
 
-```text
+```
 main
- ├── feature/*
- ├── task/*
- ├── bug/*
- └── docs/*
+ └── develop
+      ├── feature/*
+      ├── task/*
+      ├── bug/*
+      └── docs/*
 ```
 
-- `main`: branch principal — versão estável em produção.
-- Branches temporárias: criadas para cada issue e deletadas após o merge.
+- main: versão estável do projeto.
+- develop: branch de integração das contribuições.
+- Branches temporárias: utilizadas para desenvolvimento de cada issue.
 
 ---
 
