@@ -1,6 +1,8 @@
-import ProfileCard from "@/src/shared/components/ui/ProfileCard";
-import { EmptyProfilesState } from "./EmptyProfilesState";
 import type { Profile } from "../model/discover.types";
+
+import { EmptyProfilesState } from "./EmptyProfilesState";
+
+import ProfileCard from "@/shared/components/ui/ProfileCard";
 
 interface ProfilesGridProps {
   profiles: Profile[];

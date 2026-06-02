@@ -1,10 +1,12 @@
 import { collection, doc, onSnapshot, query, updateDoc } from "firebase/firestore";
-import { db } from "@/src/shared/lib/firebase/firebase.client";
+
 import type { Profile } from "../model/discover.types";
+
+import { db } from "@/shared/lib/firebase/firebase.client";
 
 export function subscribeToProfiles(
   onData: (profiles: Profile[]) => void,
-  onError?: (error: unknown) => void
+  onError?: (error: unknown) => void,
 ) {
   const profilesQuery = query(collection(db, "profiles"));
 
@@ -18,7 +20,7 @@ export function subscribeToProfiles(
 
       onData(profiles);
     },
-    onError
+    onError,
   );
 }
 

@@ -1,23 +1,24 @@
-import React from "react";
-import { motion } from "motion/react";
 import { Terminal } from "lucide-react";
-import { useAuth } from "@/src/contexts/AuthContext";
+import { motion } from "motion/react";
+import React from "react";
 
 // Constants
-import { TAG_CATEGORIES } from "../constants/tagCategories";
-import { ROLES_LIST } from "../constants/roles";
 
 // Hook
-import { useOnboardingForm } from "../hooks/useOnboardingForm";
 
 // Components
-import { AuthGate } from "../components/AuthGate/AuthGate";
-import { IdentityCard } from "../components/IdentityCard";
-import { ClassSelector } from "../components/ClassSelector";
 import { ArsenalCalibration } from "../components/ArsenalCalibration";
-import { TagCategoryCard } from "../components/TagCategoryCard";
-import { SkillSliders } from "../components/SkillSliders";
+import { AuthGate } from "../components/AuthGate/AuthGate";
+import { ClassSelector } from "../components/ClassSelector";
 import { GuildPassport } from "../components/GuildPassport";
+import { IdentityCard } from "../components/IdentityCard";
+import { SkillSliders } from "../components/SkillSliders";
+import { TagCategoryCard } from "../components/TagCategoryCard";
+import { ROLES_LIST } from "../constants/roles";
+import { TAG_CATEGORIES } from "../constants/tagCategories";
+import { useOnboardingForm } from "../hooks/useOnboardingForm";
+
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function Onboarding() {
   const {
@@ -32,16 +33,8 @@ export default function Onboarding() {
     confirmMagicLinkEmail,
   } = useAuth();
 
-  const {
-    form,
-    skills,
-    loading,
-    initializing,
-    submitError,
-    radarData,
-    fetchMemberData,
-    handlers,
-  } = useOnboardingForm(user);
+  const { form, skills, loading, initializing, submitError, radarData, fetchMemberData, handlers } =
+    useOnboardingForm(user);
 
   // Fetch profile data once user is authenticated
   React.useEffect(() => {
@@ -66,7 +59,7 @@ export default function Onboarding() {
         signIn={signIn}
         sendMagicLink={sendMagicLink}
         magicLinkSent={magicLinkSent}
-        magicLinkEmail={magicLinkEmail ?? ''}
+        magicLinkEmail={magicLinkEmail ?? ""}
         completingMagicLink={completingMagicLink}
         pendingMagicLinkUrl={pendingMagicLinkUrl}
         resetMagicLinkState={resetMagicLinkState}
@@ -114,10 +107,8 @@ export default function Onboarding() {
         </div>
 
         <form onSubmit={handlers.submit} className="gap-8 grid grid-cols-1 lg:grid-cols-12">
-
           {/* ── Left column ── */}
           <div className="lg:col-span-8 space-y-8">
-
             {/* Identity + Class side by side */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <IdentityCard
@@ -125,11 +116,7 @@ export default function Onboarding() {
                 onChange={handlers.change}
                 onBioChange={handlers.bioChange}
               />
-              <ClassSelector
-                roles={ROLES_LIST}
-                form={form}
-                onToggleRole={handlers.toggleRole}
-              />
+              <ClassSelector roles={ROLES_LIST} form={form} onToggleRole={handlers.toggleRole} />
             </div>
 
             {/* Arsenal section */}
@@ -146,7 +133,7 @@ export default function Onboarding() {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                {TAG_CATEGORIES.map(category => (
+                {TAG_CATEGORIES.map((category) => (
                   <TagCategoryCard
                     key={category.name}
                     category={category}
@@ -173,7 +160,6 @@ export default function Onboarding() {
               onSubmit={handlers.submit}
             />
           </div>
-
         </form>
       </div>
     </motion.div>

@@ -1,9 +1,11 @@
 import { useState } from "react";
-import { firestoreLog, apiLog } from "@/src/shared/lib/logger/logger";
+
 import { getInitialPersona } from "../model/discover.selectors";
+import type { Profile, RoastPersona } from "../model/discover.types";
 import { updateProfile } from "../services/discover.repository";
 import { requestRoast } from "../services/roast.service";
-import type { Profile, RoastPersona } from "../model/discover.types";
+
+import { firestoreLog, apiLog } from "@/shared/lib/logger/logger";
 
 interface UseRoastProfileParams {
   showToast: (message: string, type?: "error" | "info") => void;

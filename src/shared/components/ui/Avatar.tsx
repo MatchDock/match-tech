@@ -1,5 +1,6 @@
-import { cn } from "@/src/shared/lib/utils/cn";
 import React, { useState, useEffect } from "react";
+
+import { cn } from "@/shared/lib/utils/cn";
 
 interface AvatarProps {
   user: {
@@ -43,9 +44,8 @@ export default function Avatar({ user, size = "md", className }: AvatarProps) {
     sources.push(getGithubAvatarUrl(github));
   }
 
-  // Reset error fallback index if inputs change
   useEffect(() => {
-    setImageIndex(0);
+    setImageIndex(0); // eslint-disable-line react-hooks/set-state-in-effect
   }, [photoURL, github]);
 
   const sizeClasses = {
@@ -62,7 +62,7 @@ export default function Avatar({ user, size = "md", className }: AvatarProps) {
       className={cn(
         "rounded-none border-neo-black bg-white flex items-center justify-center font-heading font-black uppercase text-neo-black overflow-hidden select-none shrink-0",
         sizeClasses[size],
-        className
+        className,
       )}
     >
       {currentSrc ? (

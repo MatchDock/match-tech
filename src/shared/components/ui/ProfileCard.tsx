@@ -1,5 +1,6 @@
 import { Github, Heart, Sparkles, UserRound } from "lucide-react";
-import type { Profile } from "@/src/features/discover/model/discover.types";
+
+import type { Profile } from "@/features/discover/model/discover.types";
 
 interface ProfileCardProps {
   profile: Profile;
@@ -32,10 +33,7 @@ function getCardAccentStyle(colorIndex = 0) {
 }
 
 function getDisplayRoles(profile: Profile) {
-  const roles = [
-    profile.primaryRole,
-    ...(profile.secondaryRoles ?? []),
-  ].filter(Boolean);
+  const roles = [profile.primaryRole, ...(profile.secondaryRoles ?? [])].filter(Boolean);
 
   return Array.from(new Set(roles)).slice(0, 3);
 }
@@ -47,16 +45,11 @@ function getDisplayTags(profile: Profile) {
   return Array.from(new Set([...loves, ...comfort])).slice(0, 4);
 }
 
-export default function ProfileCard({
-  profile,
-  colorIndex = 0,
-  onClick,
-}: ProfileCardProps) {
+export default function ProfileCard({ profile, colorIndex = 0, onClick }: ProfileCardProps) {
   const displayRoles = getDisplayRoles(profile);
   const displayTags = getDisplayTags(profile);
   const statusLabel = statusLabelMap[profile.status ?? ""] ?? "SEM STATUS";
-  const statusStyle =
-    statusStylesMap[profile.status ?? ""] ?? "bg-white text-neo-black";
+  const statusStyle = statusStylesMap[profile.status ?? ""] ?? "bg-white text-neo-black";
 
   return (
     <button

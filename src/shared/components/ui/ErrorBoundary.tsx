@@ -1,6 +1,7 @@
-import React, { Component, ErrorInfo, ReactNode } from 'react';
-import { appLog } from '@/src/shared/lib/logger/logger';
-import { motion } from 'motion/react';
+import { motion } from "motion/react";
+import React, { Component, ErrorInfo, ReactNode } from "react";
+
+import { appLog } from "@/shared/lib/logger/logger";
 
 interface Props {
   children?: ReactNode;
@@ -15,7 +16,7 @@ interface State {
 export class ErrorBoundary extends Component<Props, State> {
   public state: State = {
     hasError: false,
-    error: null
+    error: null,
   };
 
   public static getDerivedStateFromError(error: Error): State {
@@ -23,7 +24,7 @@ export class ErrorBoundary extends Component<Props, State> {
   }
 
   public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    appLog.error('React component threw an error', { error, errorInfo });
+    appLog.error("React component threw an error", { error, errorInfo });
   }
 
   public render() {
@@ -32,9 +33,10 @@ export class ErrorBoundary extends Component<Props, State> {
         return this.props.fallback;
       }
       return (
-        <div className="min-h-screen bg-neo-bg flex items-center justify-center p-6 font-sans relative overflow-hidden"
+        <div
+          className="min-h-screen bg-neo-bg flex items-center justify-center p-6 font-sans relative overflow-hidden"
           style={{
-            backgroundImage: `url("data:image/svg+xml,%3Csvg width='40' height='40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h40v40H0z' fill='none'/%3E%3Cpath d='M40 40H0V0h1v39h39v1z' fill='%23000' fill-opacity='0.1'/%3E%3C/svg%3E")`
+            backgroundImage: `url("data:image/svg+xml,%3Csvg width='40' height='40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h40v40H0z' fill='none'/%3E%3Cpath d='M40 40H0V0h1v39h39v1z' fill='%23000' fill-opacity='0.1'/%3E%3C/svg%3E")`,
           }}
         >
           {/* Decorative Animated Background Shapes */}
@@ -56,27 +58,26 @@ export class ErrorBoundary extends Component<Props, State> {
 
           <div className="max-w-2xl w-full relative z-10">
             {/* Main error card with spring entry */}
-            <motion.div 
+            <motion.div
               initial={{ scale: 0.85, y: 40, opacity: 0 }}
               animate={{ scale: 1, y: 0, opacity: 1 }}
               transition={{ type: "spring", stiffness: 90, damping: 12 }}
               className="bg-white border-[4px] border-neo-black shadow-[8px_8px_0_0_#000] p-8 md:p-12 relative"
             >
-              
               {/* Decorative corner accent with wobble animation */}
-              <motion.div 
+              <motion.div
                 animate={{ rotate: [12, 18, 12], scale: [1, 1.05, 1] }}
                 transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
                 className="absolute -top-4 -right-4 w-10 h-10 bg-neo-pink border-[3px] border-neo-black shadow-[3px_3px_0_0_#000]"
               />
-              <motion.div 
+              <motion.div
                 animate={{ rotate: [-6, -12, -6], scale: [1, 1.05, 1] }}
                 transition={{ repeat: Infinity, duration: 5, ease: "easeInOut" }}
                 className="absolute -bottom-3 -left-3 w-8 h-8 bg-neo-lime border-[3px] border-neo-black shadow-[3px_3px_0_0_#000]"
               />
 
               {/* Alert icon with subtle scale pulse and hover rotation */}
-              <motion.div 
+              <motion.div
                 animate={{ scale: [1, 1.08, 1] }}
                 transition={{ repeat: Infinity, duration: 3, ease: "easeInOut" }}
                 whileHover={{ scale: 1.15, rotate: 10 }}
@@ -86,7 +87,7 @@ export class ErrorBoundary extends Component<Props, State> {
               </motion.div>
 
               {/* Title with sliding text entry effect */}
-              <motion.h1 
+              <motion.h1
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.2 }}
@@ -101,25 +102,34 @@ export class ErrorBoundary extends Component<Props, State> {
                   Olá! Parece que algo deu errado, né? 😅
                 </p>
                 <p className="text-sm md:text-base mb-3">
-                  Este é o <span className="bg-neo-yellow px-1 font-bold">primeiro projeto desta turma</span> — dá um desconto! 
-                  Que tal me avisar sobre esse erro?
+                  Este é o{" "}
+                  <span className="bg-neo-yellow px-1 font-bold">primeiro projeto desta turma</span>{" "}
+                  — dá um desconto! Que tal me avisar sobre esse erro?
                 </p>
                 <p className="text-sm md:text-base">
-                  Você pode inspecionar a página (<kbd className="bg-neo-black text-white px-2 py-0.5 font-mono text-xs border-[2px] border-neo-black shadow-[2px_2px_0_0_#B8FF29]">F12</kbd> → Console), 
-                  copiar o log e me mandar. Já vai ajudar <span className="font-black uppercase">MUITO</span>.
+                  Você pode inspecionar a página (
+                  <kbd className="bg-neo-black text-white px-2 py-0.5 font-mono text-xs border-[2px] border-neo-black shadow-[2px_2px_0_0_#B8FF29]">
+                    F12
+                  </kbd>{" "}
+                  → Console), copiar o log e me mandar. Já vai ajudar{" "}
+                  <span className="font-black uppercase">MUITO</span>.
                 </p>
               </div>
 
               {/* Technical error - terminal style */}
               <div className="bg-neo-black text-neo-lime p-4 border-[3px] border-neo-black mb-6 font-mono text-xs md:text-sm overflow-x-auto">
-                <p className="text-neo-pink mb-1 font-bold">{'>'} error.message:</p>
-                <p className="break-all mb-2 opacity-90">{this.state.error?.message || 'Unknown error'}</p>
-                <p className="text-neo-cyan text-[10px] opacity-60">Copie esse texto e mande pro Tony ;)</p>
+                <p className="text-neo-pink mb-1 font-bold">{">"} error.message:</p>
+                <p className="break-all mb-2 opacity-90">
+                  {this.state.error?.message || "Unknown error"}
+                </p>
+                <p className="text-neo-cyan text-[10px] opacity-60">
+                  Copie esse texto e mande pro Tony ;)
+                </p>
               </div>
 
               {/* Action button with spring hover/tap effects */}
               <div className="flex justify-center">
-                <motion.button 
+                <motion.button
                   whileHover={{ scale: 1.04, y: -2 }}
                   whileTap={{ scale: 0.98, y: 1 }}
                   className="px-8 py-4 bg-neo-lime text-neo-black font-heading font-black text-lg uppercase border-[4px] border-neo-black shadow-[6px_6px_0_0_#000] hover:shadow-[8px_8px_0_0_#000] transition-all"
@@ -131,7 +141,7 @@ export class ErrorBoundary extends Component<Props, State> {
             </motion.div>
 
             {/* Fun footer with delay entry */}
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4 }}

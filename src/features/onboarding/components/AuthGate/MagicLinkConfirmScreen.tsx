@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Card } from "@/src/shared/components/ui/Card";
+
+import { Card } from "@/shared/components/ui/Card";
 
 interface Props {
   confirmMagicLinkEmail: (email: string) => Promise<void>;
@@ -44,22 +45,23 @@ export function MagicLinkConfirmScreen({ confirmMagicLinkEmail, resetMagicLinkSt
 
         <div className="p-8 space-y-5 bg-white">
           <p className="font-bold text-sm text-neo-black/70">
-            Parece que você abriu o link em um dispositivo diferente. Para sua segurança,
-            confirme seu email para concluir o login.
+            Parece que você abriu o link em um dispositivo diferente. Para sua segurança, confirme
+            seu email para concluir o login.
           </p>
 
           <form onSubmit={handleSubmit} className="space-y-3">
             <input
               type="email"
               value={magicEmail}
-              onChange={(e) => { setMagicEmail(e.target.value); setError(null); }}
+              onChange={(e) => {
+                setMagicEmail(e.target.value);
+                setError(null);
+              }}
               placeholder="seu@email.com"
               className="w-full px-4 py-3 bg-neo-bg font-mono font-bold text-sm border-[3px] border-neo-black shadow-[4px_4px_0_0_#000] focus:shadow-[6px_6px_0_0_#00E5FF] focus:outline-none transition-shadow"
               autoFocus
             />
-            {error && (
-              <p className="text-neo-pink font-bold text-xs uppercase">{error}</p>
-            )}
+            {error && <p className="text-neo-pink font-bold text-xs uppercase">{error}</p>}
             <button
               type="submit"
               disabled={loading || !magicEmail.trim()}

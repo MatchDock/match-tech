@@ -1,5 +1,6 @@
 import { Terminal } from "lucide-react";
-import { Card } from "@/src/shared/components/ui/Card";
+
+import { Card } from "@/shared/components/ui/Card";
 
 export function CompletingMagicLink() {
   return (

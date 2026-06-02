@@ -1,7 +1,8 @@
-import { useState } from "react";
 import { motion } from "motion/react";
-import { Card } from "@/src/shared/components/ui/Card";
-import { Button } from "@/src/shared/components/ui/Button";
+import { useState } from "react";
+
+import { Button } from "@/shared/components/ui/Button";
+import { Card } from "@/shared/components/ui/Card";
 
 interface Props {
   magicLinkEmail: string;
@@ -62,8 +63,10 @@ export function MagicLinkSentScreen({ magicLinkEmail, sendMagicLink, resetMagicL
               </p>
               <p className="text-xs font-bold leading-normal">
                 Como o link é enviado de forma automática, a mensagem pode ir direto para o seu{" "}
-                <span className="bg-neo-pink text-white px-1 font-black">SPAM ou Lixo Eletrônico</span>.
-                Se não chegar em 1 minuto, procure lá!
+                <span className="bg-neo-pink text-white px-1 font-black">
+                  SPAM ou Lixo Eletrônico
+                </span>
+                . Se não chegar em 1 minuto, procure lá!
               </p>
             </div>
           </div>

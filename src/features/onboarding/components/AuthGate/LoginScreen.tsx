@@ -1,8 +1,9 @@
-import { useState } from "react";
-import { motion } from "motion/react";
 import { ShieldCheck, Info } from "lucide-react";
-import { Card } from "@/src/shared/components/ui/Card";
-import { Button } from "@/src/shared/components/ui/Button";
+import { motion } from "motion/react";
+import { useState } from "react";
+
+import { Button } from "@/shared/components/ui/Button";
+import { Card } from "@/shared/components/ui/Card";
 
 interface Props {
   signIn: () => Promise<void>;
@@ -27,15 +28,23 @@ export function LoginScreen({ signIn, sendMagicLink }: Props) {
   const handleMagicLink = async (e: React.FormEvent) => {
     e.preventDefault();
     const email = magicEmail.trim();
-    if (!email) { setMagicLinkError("Digite seu email."); return; }
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { setMagicLinkError("Email inválido."); return; }
+    if (!email) {
+      setMagicLinkError("Digite seu email.");
+      return;
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      setMagicLinkError("Email inválido.");
+      return;
+    }
 
     setMagicLinkError(null);
     setMagicLinkLoading(true);
     try {
       await sendMagicLink(email);
-    } catch (err: any) {
-      setMagicLinkError(err?.message || "Erro ao enviar link. Tente novamente.");
+    } catch (err) {
+      setMagicLinkError(
+        err instanceof Error ? err.message : "Erro ao enviar link. Tente novamente.",
+      );
     } finally {
       setMagicLinkLoading(false);
     }
@@ -72,8 +81,8 @@ export function LoginScreen({ signIn, sendMagicLink }: Props) {
 
         <div className="p-8 space-y-6 bg-white">
           <p className="font-black uppercase text-sm leading-relaxed text-neo-black/70 text-center">
-            O Protocolo de Segurança Tech Floripa exige autenticação de nível 1 antes do
-            mapeamento de arsenal. Conecte sua identidade para prosseguir.
+            O Protocolo de Segurança Tech Floripa exige autenticação de nível 1 antes do mapeamento
+            de arsenal. Conecte sua identidade para prosseguir.
           </p>
 
           {/* Google */}
@@ -102,7 +111,10 @@ export function LoginScreen({ signIn, sendMagicLink }: Props) {
             <input
               type="email"
               value={magicEmail}
-              onChange={(e) => { setMagicEmail(e.target.value); setMagicLinkError(null); }}
+              onChange={(e) => {
+                setMagicEmail(e.target.value);
+                setMagicLinkError(null);
+              }}
               placeholder="seu@email.com"
               className="w-full px-4 py-3 bg-neo-bg font-mono font-bold text-sm border-[3px] border-neo-black shadow-[4px_4px_0_0_#000] focus:shadow-[6px_6px_0_0_#B8FF29] focus:outline-none transition-shadow placeholder:text-neo-black/30"
             />
