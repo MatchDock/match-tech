@@ -1,5 +1,19 @@
 # 📋 ROADMAP & TO-DO: Match Tech — Evolução para Comunidade
 
+> **📦 ARQUIVO HISTÓRICO — Junho 2026**
+>
+> Este documento registra o desenvolvimento original do projeto (Maio 2026).
+> Muitas das tarefas listadas foram implementadas de formas diferentes das planejadas aqui,
+> como resultado da refatoração Clean Architecture realizada nas Fases 0–7.
+>
+> Para o estado técnico atual do projeto, consulte:
+>
+> - [`ARCHITECTURE.md`](./ARCHITECTURE.md) — arquitetura atual
+> - [`CODEBASE_MAP.md`](./CODEBASE_MAP.md) — mapa de arquivos atualizado
+> - [`../README.md`](../README.md) — guia de contribuição
+
+---
+
 **Documento de Acompanhamento de Progresso**
 **Versão 2.0 — Maio 2026**
 

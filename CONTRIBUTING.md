@@ -99,10 +99,10 @@ upstream  https://github.com/MatchDock/match-tech.git
 Antes de iniciar qualquer nova contribuição:
 
 ```bash
-git checkout develop
+git checkout main
 git fetch upstream
-git merge upstream/develop
-git push origin develop
+git merge upstream/main
+git push origin main
 ```
 
 Isso garante que você esteja trabalhando na versão mais recente do projeto.
@@ -111,7 +111,7 @@ Isso garante que você esteja trabalhando na versão mais recente do projeto.
 
 # Crie uma Branch para sua contribuição
 
-Nunca desenvolva diretamente na branch `develop`.
+Nunca desenvolva diretamente na branch `main`.
 
 Crie uma branch específica para sua issue.
 
@@ -142,6 +142,30 @@ Realize apenas as alterações relacionadas à issue atribuída.
 Evite incluir mudanças não relacionadas no mesmo Pull Request.
 
 PRs menores são mais fáceis de revisar e aprovar.
+
+---
+
+## Quality Gates (obrigatório antes de abrir o PR)
+
+Todo Pull Request deve passar nos seguintes checks antes de ser enviado. O CI os executa automaticamente, mas rode localmente primeiro para economizar tempo:
+
+```bash
+# 1. Verificar tipos TypeScript
+npm run typecheck
+
+# 2. Lint sem avisos
+npm run lint
+
+# 3. Testes unitários
+npm test
+
+# 4. Build de produção
+npm run build
+```
+
+O pre-commit hook (Husky + lint-staged) executa ESLint e Prettier automaticamente em cada `git commit`.
+
+Consulte [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) para entender os padrões de código adotados (estrutura de pastas, convenções de imports, AppError, etc.) antes de começar.
 
 ---
 
@@ -188,10 +212,8 @@ git push origin feature/profile-filters
 Crie um Pull Request para a branch:
 
 ```text
-develop
+main
 ```
-
-Não abra Pull Requests diretamente para `main`.
 
 Ao abrir o PR:
 
@@ -244,23 +266,15 @@ Não é permitido realizar alterações diretamente nesta branch.
 
 Toda alteração deve chegar à `main` através de Pull Requests aprovados.
 
-Branch `develop`
-
-A branch `develop` é a principal branch de integração do projeto.
-
-Todas as novas funcionalidades, correções e melhorias devem ser abertas inicialmente contra a develop.
-
 ### Fluxo de Desenvolvimento
 
-```
-feature/* → develop → main
-
-bug/* → develop → main
-
-docs/* → develop → main
+```text
+feature/* → main
+bug/*     → main
+docs/*    → main
 ```
 
-O objetivo é garantir que novas contribuições sejam validadas antes de fazerem parte de uma versão estável do projeto.
+Todas as branches de trabalho são abertas a partir de `main` e mergeadas de volta para `main` via Pull Request.
 
 ---
 
@@ -268,18 +282,16 @@ O objetivo é garantir que novas contribuições sejam validadas antes de fazere
 
 O projeto utiliza a seguinte estrutura:
 
-```
+```text
 main
- └── develop
-      ├── feature/*
-      ├── task/*
-      ├── bug/*
-      └── docs/*
+ ├── feature/*
+ ├── task/*
+ ├── bug/*
+ └── docs/*
 ```
 
-- main: versão estável do projeto.
-- develop: branch de integração das contribuições.
-- Branches temporárias: utilizadas para desenvolvimento de cada issue.
+- `main`: branch principal — versão estável em produção.
+- Branches temporárias: criadas para cada issue e deletadas após o merge.
 
 ---
 
