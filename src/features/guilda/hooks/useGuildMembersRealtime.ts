@@ -1,25 +1,19 @@
-import { useEffect, useState } from "react";
+import { useMemo } from "react";
+
 import { sortMembers } from "../model/guilda.selectors";
 import type { GuildMember } from "../model/guilda.types";
-import { subscribeToGuildMembers } from "../services/guilda.repository";
+
+import { useFirestoreSubscription } from "@/shared/hooks/useFirestoreSubscription";
 
 export function useGuildMembersRealtime(currentUserId?: string) {
-  const [members, setMembers] = useState<GuildMember[]>([]);
+  const { data, loading, error } = useFirestoreSubscription<GuildMember>({
+    collectionName: "members",
+  });
 
-  useEffect(() => {
-    if (!currentUserId) {
-      setMembers([]);
-      return;
-    }
+  const members = useMemo(
+    () => (currentUserId ? sortMembers(data, currentUserId) : []),
+    [data, currentUserId],
+  );
 
-    const unsubscribe = subscribeToGuildMembers((data) => {
-      setMembers(sortMembers(data, currentUserId));
-    });
-
-    return unsubscribe;
-  }, [currentUserId]);
-
-  return {
-    members,
-  };
+  return { members, loading, error };
 }

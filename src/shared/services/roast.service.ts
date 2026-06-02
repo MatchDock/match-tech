@@ -1,4 +1,4 @@
-export type RoastPersona = "brutal" | "mild";
+import type { RoastPersona } from "@/domain/entities/Shared";
 
 export interface RoastRequestPayload {
   memberId: string;

@@ -3,9 +3,9 @@ import { useState } from "react";
 import { getInitialPersona } from "../model/discover.selectors";
 import type { Profile, RoastPersona } from "../model/discover.types";
 import { updateProfile } from "../services/discover.repository";
-import { requestRoast } from "../services/roast.service";
 
 import { firestoreLog, apiLog } from "@/shared/lib/logger/logger";
+import { requestRoast } from "@/shared/services/roast.service";
 
 interface UseRoastProfileParams {
   showToast: (message: string, type?: "error" | "info") => void;
@@ -38,7 +38,7 @@ export function useRoastProfile({ showToast }: UseRoastProfileParams) {
     setIsGenerating(true);
 
     try {
-      const data = await requestRoast(profile, persona);
+      const data = await requestRoast({ memberId: profile.id, memberData: profile, persona });
 
       if (!data.roast) {
         showToast(`Erro ao gerar a Sina: ${data.error || "Resposta inesperada do servidor."}`);

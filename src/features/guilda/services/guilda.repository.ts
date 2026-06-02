@@ -1,21 +1,9 @@
-import { collection, doc, onSnapshot, query, updateDoc } from "firebase/firestore";
-import { db } from "../../../shared/lib/firebase/firebase.client";
-import type { GuildMember, RoastPersona } from "../model/guilda.types";
+import { doc, updateDoc } from "firebase/firestore";
 
-type MembersListener = (members: GuildMember[]) => void;
+import type { GuildMember } from "../model/guilda.types";
 
-export function subscribeToGuildMembers(listener: MembersListener) {
-  const membersQuery = query(collection(db, "members"));
-
-  return onSnapshot(membersQuery, (snapshot) => {
-    const data = snapshot.docs.map((memberDoc) => ({
-      id: memberDoc.id,
-      ...memberDoc.data(),
-    })) as GuildMember[];
-
-    listener(data);
-  });
-}
+import type { RoastPersona } from "@/domain/entities/Shared";
+import { db } from "@/shared/lib/firebase/firebase.client";
 
 export async function saveRoast(memberId: string, roast: string, persona: RoastPersona) {
   const updateData: Partial<GuildMember> & { updatedAt: Date } = {

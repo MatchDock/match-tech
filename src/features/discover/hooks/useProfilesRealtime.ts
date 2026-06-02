@@ -1,25 +1,19 @@
-import { useEffect, useState } from "react";
-import { subscribeToProfiles } from "../services/discover.repository";
+import { useMemo } from "react";
+
 import { sortProfiles } from "../model/discover.selectors";
 import type { Profile } from "../model/discover.types";
 
+import { useFirestoreSubscription } from "@/shared/hooks/useFirestoreSubscription";
+
 export function useProfilesRealtime(currentUserId?: string) {
-  const [profiles, setProfiles] = useState<Profile[]>([]);
+  const { data, loading, error } = useFirestoreSubscription<Profile>({
+    collectionName: "profiles",
+  });
 
-  useEffect(() => {
-    if (!currentUserId) {
-      setProfiles([]);
-      return;
-    }
+  const profiles = useMemo(
+    () => (currentUserId ? sortProfiles(data, currentUserId) : []),
+    [data, currentUserId],
+  );
 
-    const unsubscribe = subscribeToProfiles((data) => {
-      setProfiles(sortProfiles(data, currentUserId));
-    });
-
-    return unsubscribe;
-  }, [currentUserId]);
-
-  return {
-    profiles,
-  };
+  return { profiles, loading, error };
 }
