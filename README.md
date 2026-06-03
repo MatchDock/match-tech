@@ -123,14 +123,45 @@ Acesse em `http://localhost:3000`.
 
 | Comando | Descrição |
 |---------|-----------|
-| `npm run dev` | Inicia o servidor de desenvolvimento (Vite) |
+| `npm run dev` | Inicia o Vite em modo desenvolvimento (frontend) |
+| `npm run dev:server` | Inicia o servidor Express em modo desenvolvimento |
+| `npm run dev:all` | Inicia frontend e backend simultaneamente via `concurrently` |
 | `npm run build` | Gera o build de produção em `dist/` |
 | `npm run preview` | Serve o build local para pré-visualização |
+| `npm run start` | Inicia o servidor Express (equivalente a `dev:server`, sem hot reload) |
+| `npm run clean` | Remove o diretório `dist/` |
 | `npm run typecheck` | Verifica tipos TypeScript sem emitir arquivos |
 | `npm run lint` | ESLint com zero avisos permitidos |
 | `npm run lint:fix` | ESLint com correção automática |
 | `npm run format` | Prettier em todos os arquivos `src/` |
 | `npm test` | Roda os testes unitários com Vitest |
+| `npm run migrate:members-to-profiles` | Executa o script de migração de dados (ver `scripts/`) |
+
+---
+
+## Rodando com Docker
+
+Para subir o projeto inteiro (frontend + backend) em containers isolados:
+
+```bash
+docker compose up --build
+```
+
+| Serviço | Porta | Descrição |
+|---------|-------|-----------|
+| `frontend` | 3000 | Vite preview servindo o build de produção |
+| `backend` | 3001 | Express API (roast, oráculo, health) |
+
+O frontend já aponta para o backend via `VITE_API_BASE_URL=http://backend:3001` na rede interna do Compose.
+
+> **Atenção:** configure as variáveis de ambiente sensíveis (ex.: `GEMINI_API_KEY`, credenciais Firebase Admin) no `docker-compose.yaml` ou via `.env` antes de subir.
+
+### Dockerfiles
+
+| Arquivo | Descrição |
+|---------|-----------|
+| `Dockerfile.backend` | Imagem Node 22 que executa o servidor Express diretamente via `tsx` (sem build step — adequado para desenvolvimento/staging) |
+| `Dockerfile.frontend` | Build multi-stage: primeiro compila o Vite em `dist/`, depois serve via `vite preview` em uma imagem limpa |
 
 ---
 

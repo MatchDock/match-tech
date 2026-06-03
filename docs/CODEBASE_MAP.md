@@ -160,11 +160,17 @@ match-tech/
 ├── .github/workflows/
 │   └── ci.yml           # typecheck → lint → build (Node 22)
 │
+├── scripts/
+│   └── migrate-members-to-profiles.ts  # Migração one-time Firestore: members → profiles (dry run por padrão)
+│
 ├── firebase-applet-config.json  # Config Firebase (sem chaves sensíveis)
 ├── firestore.rules              # Regras de segurança do Firestore
 ├── vercel.json                  # /api/* → /api/index.ts (serverless)
 ├── vite.config.ts               # Vite + Tailwind + PWA + Vitest
 ├── tsconfig.json                # paths: { "@/*": ["src/*"] }
+├── docker-compose.yaml          # Orquestra frontend (3000) + backend (3001)
+├── Dockerfile.backend           # Imagem Node 22; executa Express via tsx (sem build)
+├── Dockerfile.frontend          # Multi-stage: build Vite → serve via vite preview
 └── package.json
 ```
 
@@ -247,6 +253,11 @@ Usada pelo `ISquadRepository`. Campos: `id`, `name`, `description`, `ownerId`, `
 | `tailwindcss` | ^4.1 | Estilo (Neo-Brutalismo) |
 | `motion` | ^12 | Animações |
 | `recharts` | ^3.8 | Radar charts |
+| `dotenv` | ^17 | Carrega `.env` no servidor Express |
+| `concurrently` | ^10 | `dev:all` — roda Vite + Express simultaneamente |
+| `tsx` | ^4.21 | Executa TypeScript diretamente (dev server e scripts) |
+| `husky` + `lint-staged` | ^9 / ^17 | Pre-commit: lint + format automático |
+| `vite-plugin-pwa` | ^1.2 | Suporte a PWA (manifest + service worker) |
 | `vitest` | ^4.1 | Testes unitários |
 
 ---

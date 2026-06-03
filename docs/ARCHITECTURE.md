@@ -22,6 +22,8 @@ Este documento descreve a arquitetura técnica do projeto, os padrões de design
 14. [Padrões e Convenções](#14-padrões-e-convenções)
 15. [Testes](#15-testes)
 16. [Deploy e CI/CD](#16-deploy-e-cicd)
+17. [Docker e Containers](#17-docker-e-containers)
+18. [Scripts Utilitários](#18-scripts-utilitários)
 
 ---
 
@@ -769,3 +771,83 @@ Configure no painel do projeto em Vercel > Settings > Environment Variables:
 | `APP_URL` | ✅ Sim | URL do app em produção (ex: `https://matchtech-sooty.vercel.app`) |
 
 As chaves do Firebase ficam em `firebase-applet-config.json` (commitado, sem dados sensíveis) e são lidas pelo cliente diretamente.
+
+---
+
+## 17. Docker e Containers
+
+O projeto inclui suporte a containers para facilitar o setup local sem depender de instalações globais e para padronizar o ambiente entre desenvolvedores.
+
+### `docker-compose.yaml`
+
+Orquestra dois serviços:
+
+| Serviço | Dockerfile | Porta | Variáveis de Ambiente |
+|---------|-----------|-------|----------------------|
+| `frontend` | `Dockerfile.frontend` | 3000 | `VITE_API_BASE_URL=http://backend:3001` |
+| `backend` | `Dockerfile.backend` | 3001 | `PORT=3001` |
+
+O serviço `frontend` declara `depends_on: backend`, garantindo que o Express suba antes do Vite tentar se comunicar com a API. A comunicação entre os containers ocorre pela rede interna do Compose (DNS por nome de serviço), de modo que o bundle do cliente nunca expõe o endereço real do backend.
+
+```bash
+docker compose up --build   # sobe tudo
+docker compose down         # encerra e remove os containers
+```
+
+### `Dockerfile.backend`
+
+Imagem simples baseada em `node:22-bookworm`. Instala todas as dependências (incluindo `devDependencies`, necessárias para o `tsx`) e executa o servidor Express diretamente com `npx tsx src/server/server.ts` — sem etapa de transpilação prévia. Isso mantém o startup rápido e o ciclo de debug simples em ambientes de staging.
+
+```
+node:22-bookworm
+  └── npm ci --include=dev
+  └── COPY src/ + tsconfig.json
+  └── EXPOSE 3001
+  └── CMD npx tsx src/server/server.ts
+```
+
+### `Dockerfile.frontend`
+
+Multi-stage build para minimizar o tamanho da imagem final:
+
+- **Stage `builder`** — instala deps e roda `npm run build` para gerar `dist/`
+- **Stage `runner`** — parte de uma imagem limpa, copia apenas o `dist/` gerado e instala deps de dev (necessárias para `vite preview`), servindo o build via `vite preview --host 0.0.0.0 --port 3000`
+
+```
+builder: node:22-bookworm → npm ci → npm run build → dist/
+runner:  node:22-bookworm → npm ci --include=dev → COPY dist/ → vite preview
+```
+
+> **Por que `vite preview` e não Nginx?** O projeto não requer um servidor estático dedicado — `vite preview` é suficiente para staging/demo. Para produção real, prefira Nginx ou o deploy direto na Vercel.
+
+---
+
+## 18. Scripts Utilitários
+
+Scripts avulsos que operam fora do ciclo de build/teste normal ficam em `scripts/`.
+
+### `scripts/migrate-members-to-profiles.ts`
+
+Migração one-time da coleção Firestore `members` → `profiles`. O projeto originalmente usava `members`; `profiles` é o destino definitivo com schema expandido.
+
+**Comportamento:**
+
+- Por padrão roda em **dry run** — apenas exibe o que seria migrado, sem escrever nada.
+- Documentos já existentes em `profiles` **não são sobrescritos** (safe to re-run).
+- A coleção `members` não é modificada.
+- Erros por documento são reportados individualmente sem interromper o batch.
+
+**Uso:**
+
+```bash
+# Dry run (padrão):
+npx tsx scripts/migrate-members-to-profiles.ts
+
+# Executar de fato:
+npx tsx scripts/migrate-members-to-profiles.ts --execute
+
+# Via npm script:
+npm run migrate:members-to-profiles -- --execute
+```
+
+**Pré-requisito:** a variável `FIREBASE_SERVICE_ACCOUNT` deve conter o JSON da service account do Firebase Admin, ou `GOOGLE_APPLICATION_CREDENTIALS` deve apontar para o arquivo JSON equivalente.
