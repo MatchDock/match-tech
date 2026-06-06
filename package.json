@@ -9,7 +9,7 @@
     "dev:all": "concurrently \"npm run dev\" \"npm run dev:server\"",
     "build": "vite build",
     "preview": "vite preview",
-    "start": "tsx src/server/server.ts",
+    "start": "node --experimental-strip-types server.ts",
     "clean": "rm -rf dist",
     "lint": "eslint src --max-warnings=0",
     "lint:fix": "eslint src --fix",
