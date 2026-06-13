@@ -1,5 +1,17 @@
 # 🛠️ BLUEPRINT DE FRONT-END: Match Tech
 
+> **⚠️ DOCUMENTO DEPRECIADO — Junho 2026**
+>
+> Este blueprint foi criado antes da refatoração Clean Architecture (Fases 0–7).
+> A estrutura de pastas, os caminhos de arquivos e os padrões descritos aqui **não refletem mais o estado atual do código**.
+>
+> **Consulte [`ARCHITECTURE.md`](./ARCHITECTURE.md)** para a referência técnica atualizada.
+> **Consulte [`CODEBASE_MAP.md`](./CODEBASE_MAP.md)** para o mapa de arquivos atual.
+>
+> Este documento é mantido apenas como registro histórico do planejamento original.
+
+---
+
 **Guia Técnico de Implementação para Agentes de Código e Desenvolvedores**
 **Versão 2.0 — Maio 2026**
 

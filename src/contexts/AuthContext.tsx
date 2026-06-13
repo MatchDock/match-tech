@@ -1,5 +1,3 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
-import { auth } from '../lib/firebase';
 import {
   User,
   signInWithPopup,
@@ -7,9 +5,12 @@ import {
   signOut,
   sendSignInLinkToEmail,
   isSignInWithEmailLink,
-  signInWithEmailLink
-} from 'firebase/auth';
-import { authLog } from '../lib/logger';
+  signInWithEmailLink,
+} from "firebase/auth";
+import React, { createContext, useEffect, useState } from "react";
+
+import { auth } from "../shared/lib/firebase/firebase.client";
+import { authLog } from "../shared/lib/logger/logger";
 
 interface AuthContextType {
   user: User | null;
@@ -25,7 +26,7 @@ interface AuthContextType {
   confirmMagicLinkEmail: (email: string) => Promise<void>;
 }
 
-const MAGIC_EMAIL_KEY = 'matchtech_magic_email';
+const MAGIC_EMAIL_KEY = "matchtech_magic_email";
 
 const AuthContext = createContext<AuthContextType>({} as AuthContextType);
 
@@ -34,14 +35,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
   const [magicLinkSent, setMagicLinkSent] = useState(false);
   const [magicLinkEmail, setMagicLinkEmail] = useState<string | null>(null);
-  const [completingMagicLink, setCompletingMagicLink] = useState(false);
+  const [completingMagicLink, setCompletingMagicLink] = useState(() =>
+    isSignInWithEmailLink(auth, window.location.href),
+  );
   const [pendingMagicLinkUrl, setPendingMagicLinkUrl] = useState<string | null>(null);
 
   useEffect(() => {
     // Detecta se a URL atual é um Magic Link de login
     if (isSignInWithEmailLink(auth, window.location.href)) {
-      setCompletingMagicLink(true);
-      authLog.info('Magic Link detectado na URL. Completando login...');
+      authLog.info("Magic Link detectado na URL. Completando login...");
 
       // Recupera o email salvo no localStorage (mesmo dispositivo)
       const savedEmail = window.localStorage.getItem(MAGIC_EMAIL_KEY);
@@ -50,28 +52,33 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         // Mesmo dispositivo: completa imediatamente
         signInWithEmailLink(auth, savedEmail, window.location.href)
           .then(() => {
-            authLog.info('Login via Magic Link realizado com sucesso.');
+            authLog.info("Login via Magic Link realizado com sucesso.");
             window.localStorage.removeItem(MAGIC_EMAIL_KEY);
-            window.history.replaceState(null, '', window.location.pathname);
+            window.history.replaceState(null, "", window.location.pathname);
           })
           .catch((err) => {
-            authLog.error('Erro ao completar login via Magic Link:', err);
+            authLog.error("Erro ao completar login via Magic Link:", err);
           })
           .finally(() => {
             setCompletingMagicLink(false);
           });
       } else {
         // Dispositivo diferente: armazena a URL e pede email via UI própria
-        authLog.warn('Magic Link: email não encontrado no dispositivo. Aguardando confirmação via UI.');
+        authLog.warn(
+          "Magic Link: email não encontrado no dispositivo. Aguardando confirmação via UI.",
+        );
         setPendingMagicLinkUrl(window.location.href);
-        window.history.replaceState(null, '', window.location.pathname);
+        window.history.replaceState(null, "", window.location.pathname);
         setCompletingMagicLink(false);
       }
     }
 
     // Listener padrão de autenticação
     const unsubscribe = auth.onAuthStateChanged((u) => {
-      authLog.info('Estado de autenticação mudou:', u?.email ?? 'não autenticado');
+      authLog.info(
+        "Estado de autenticação mudou:",
+        u?.email ? { email: u?.email } : { error: "nao autenticado" },
+      );
       setUser(u);
       setLoading(false);
     });
@@ -83,9 +90,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const provider = new GoogleAuthProvider();
     try {
       await signInWithPopup(auth, provider);
-      authLog.info('Login via Google realizado com sucesso (popup).');
+      authLog.info("Login via Google realizado com sucesso (popup).");
     } catch (err) {
-      authLog.error('Erro no login via popup do Google:', err);
+      authLog.error("Erro no login via popup do Google:", err);
       throw err;
     }
   };
@@ -106,7 +113,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setMagicLinkEmail(email);
       authLog.info(`Magic Link enviado para: ${email}`);
     } catch (err) {
-      authLog.error('Erro ao enviar Magic Link:', err);
+      authLog.error("Erro ao enviar Magic Link:", err);
       throw err;
     }
   };
@@ -119,7 +126,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const logOut = async () => {
     await signOut(auth);
-    authLog.info('Usuário fez logout.');
+    authLog.info("Usuário fez logout.");
   };
 
   // Confirma email para login em dispositivo diferente (substitui window.prompt)
@@ -128,10 +135,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setCompletingMagicLink(true);
     try {
       await signInWithEmailLink(auth, email, pendingMagicLinkUrl);
-      authLog.info('Login via Magic Link (cross-device) realizado com sucesso.');
+      authLog.info("Login via Magic Link (cross-device) realizado com sucesso.");
       setPendingMagicLinkUrl(null);
     } catch (err) {
-      authLog.error('Erro ao confirmar Magic Link (cross-device):', err);
+      authLog.error("Erro ao confirmar Magic Link (cross-device):", err);
       throw err;
     } finally {
       setCompletingMagicLink(false);
@@ -139,22 +146,24 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{
-      user,
-      loading,
-      signIn,
-      logOut,
-      sendMagicLink,
-      magicLinkSent,
-      magicLinkEmail,
-      completingMagicLink,
-      resetMagicLinkState,
-      pendingMagicLinkUrl,
-      confirmMagicLinkEmail,
-    }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        loading,
+        signIn,
+        logOut,
+        sendMagicLink,
+        magicLinkSent,
+        magicLinkEmail,
+        completingMagicLink,
+        resetMagicLinkState,
+        pendingMagicLinkUrl,
+        confirmMagicLinkEmail,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );
 }
 
-export const useAuth = () => useContext(AuthContext);
+export { AuthContext };

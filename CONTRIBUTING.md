@@ -145,6 +145,30 @@ PRs menores são mais fáceis de revisar e aprovar.
 
 ---
 
+## Quality Gates (obrigatório antes de abrir o PR)
+
+Todo Pull Request deve passar nos seguintes checks antes de ser enviado. O CI os executa automaticamente, mas rode localmente primeiro para economizar tempo:
+
+```bash
+# 1. Verificar tipos TypeScript
+npm run typecheck
+
+# 2. Lint sem avisos
+npm run lint
+
+# 3. Testes unitários
+npm test
+
+# 4. Build de produção
+npm run build
+```
+
+O pre-commit hook (Husky + lint-staged) executa ESLint e Prettier automaticamente em cada `git commit`.
+
+Consulte [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) para entender os padrões de código adotados (estrutura de pastas, convenções de imports, AppError, etc.) antes de começar.
+
+---
+
 # Commits
 
 Utilizamos o padrão Conventional Commits.
