@@ -145,6 +145,30 @@ PRs menores são mais fáceis de revisar e aprovar.
 
 ---
 
+## Quality Gates (obrigatório antes de abrir o PR)
+
+Todo Pull Request deve passar nos seguintes checks antes de ser enviado. O CI os executa automaticamente, mas rode localmente primeiro para economizar tempo:
+
+```bash
+# 1. Verificar tipos TypeScript
+npm run typecheck
+
+# 2. Lint sem avisos
+npm run lint
+
+# 3. Testes unitários
+npm test
+
+# 4. Build de produção
+npm run build
+```
+
+O pre-commit hook (Husky + lint-staged) executa ESLint e Prettier automaticamente em cada `git commit`.
+
+Consulte [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) para entender os padrões de código adotados (estrutura de pastas, convenções de imports, AppError, etc.) antes de começar.
+
+---
+
 # Commits
 
 Utilizamos o padrão Conventional Commits.
@@ -209,7 +233,7 @@ Closes #42
 
 # Revisão
 
-Todo Pull Request pode receber comentários e solicitações de alteração.
+Todo Pull Request pode receber comentários e solicitações de alteração. Se você for um revisor ou quiser entender como o processo de revisão e aprovação funciona no projeto, consulte o [`docs/PR_REVIEW_GUIDE.md`](docs/PR_REVIEW_GUIDE.md).
 
 O processo de revisão tem como objetivo:
 

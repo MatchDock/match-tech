@@ -1,50 +1,74 @@
 # Match Tech — Encontre sua equipe ideal para hackathons
 
-Uma plataforma de matchmaking comunitária que conecta desenvolvedores, designers e entusiastas solitários a equipes complementares — baseado em habilidades reais, paixões e vetos, não em currículos genéricos.
+Uma plataforma de matchmaking comunitária que conecta desenvolvedores, designers e entusiastas a equipes complementares — baseado em habilidades reais, paixões e vetos, não em currículos genéricos.
 
 Nasceu da transformação de um app de gestão de equipe do [Hackathon Tech Floripa 2026](https://techfloripa.com.br), cujo sistema de mapeamento de perfil individual ficou tão bom que decidimos abri-lo para toda a comunidade.
 
+> **Acesse em produção:** [matchtech-sooty.vercel.app](https://matchtech-sooty.vercel.app)
+
 ---
 
-## ✨ Funcionalidades
+## Funcionalidades
 
 ### Mapeamento de Perfil Gamificado
-- **Classes:** Selecione sua role principal e secundárias (Frontend, Backend, AI/ML, Design, Hardware, etc.)
-- **Skills Radar:** Sliders de 1-10 em 6 categorias, gerando um spider chart em tempo real.
-- **Arsenal de Tags:** Marque tecnologias como ❤️ AMO, ✅ OPERO BEM ou 🚫 NEM FUDENDO — mínimo de 10 para calibrar o algoritmo.
+
+- Selecione sua role principal e secundárias (Frontend, Backend, AI/ML, Design, Hardware...)
+- Skills Radar — sliders de 1 a 10 em 6 categorias com spider chart em tempo real
+- Arsenal de Tags — marque tecnologias como ❤️ AMO, ✅ OPERO BEM ou 🚫 NEM FUDENDO (mínimo 10 para calibrar o algoritmo)
 
 ### Descoberta de Perfis
-- Explore perfis da comunidade com filtros por role, skill dominante e tags.
-- Cards compactos com preview de radar chart e status de equipe.
 
-### Análise por IA
-- Análise individual de perfil via Google Gemini (tom brutal ou suave).
-- Compatibilidade entre perfis (cruza skills + tags + vetos).
-- Análise de composição de equipe com sugestões de forças e gaps.
+- Explore perfis da comunidade com filtros por role, status e tags
+- Lista virtualizada (suporta centenas de perfis sem travar)
+- Cards com preview do radar de habilidades
 
-### Sistema de Squads
-- Crie equipes, envie convites e visualize radares sobrepostos de todos os membros.
+### Análise por IA (Oráculo)
 
----
+- Análise individual via Google Gemini (tom brutal ou suave)
+- Compatibilidade cruzada de habilidades + tags + vetos
+- Análise de composição de equipe com forças e gaps
 
-## 💻 Stack Tecnológica
+### Squads
 
-| Camada | Tecnologias |
-|--------|------------|
-| **Frontend** | React 19, TypeScript, Vite |
-| **Estilo** | Tailwind CSS v4 (Dark Mode, SaaS Minimalista) |
-| **Animações** | `motion/react` |
-| **Gráficos** | Recharts (Radar / Spider Charts) |
-| **Ícones** | Lucide React |
-| **Auth** | Firebase Authentication (Google OAuth) |
-| **Banco de Dados** | Firebase Firestore (NoSQL, Offline-First) |
-| **IA** | Google Gemini SDK (`@google/genai`) |
-| **Server** | Express + Vite Middleware |
-| **Deploy** | Vercel |
+- Crie equipes, envie convites por deep link (`/join/:squadId`)
+- Visualize radares sobrepostos de todos os membros
+
+### Perfil Público Compartilhável
+
+- URL pública `/p/:uid` sem necessidade de login
+- Exportação do perfil como imagem PNG (canvas 1200×630)
 
 ---
 
-## 🔧 Como Rodar Localmente
+## Stack Tecnológica
+
+| Camada | Tecnologia | Versão |
+|--------|-----------|--------|
+| Framework UI | React | 19 |
+| Linguagem | TypeScript | ~5.8 |
+| Build | Vite | ^6.2 |
+| Estilo | Tailwind CSS v4 | ^4.1 |
+| Animações | motion/react | ^12 |
+| Gráficos | Recharts | ^3.8 |
+| Roteamento | React Router | v7 (framework mode) |
+| Server state | TanStack Query | v5 |
+| Virtualização | TanStack Virtual | v3 |
+| Auth | Firebase Authentication | ^12 |
+| Banco de dados | Firebase Firestore | ^12 |
+| IA | Google Gemini (`@google/genai`) | ^1.29 |
+| API Server | Express | ^4.21 |
+| Validação | Zod | v4 |
+| Deploy | Vercel | — |
+
+---
+
+## Como Rodar Localmente
+
+### Pré-requisitos
+
+- Node.js >= 22
+- npm >= 10
+- Conta no [Google AI Studio](https://aistudio.google.com) para a chave Gemini
 
 ### 1. Clone o repositório
 
@@ -61,75 +85,194 @@ npm install
 
 ### 3. Configure as variáveis de ambiente
 
-Copie o arquivo de exemplo e adicione sua chave da API do Gemini:
-
 ```bash
 cp .env.example .env
 ```
 
-Edite o `.env`:
+Edite o `.env` com sua chave:
 
 ```env
-GEMINI_API_KEY="SUA-CHAVE-AQUI"
+GEMINI_API_KEY="sua-chave-aqui"
+APP_URL="http://localhost:3000"
 ```
 
-### 4. Configure o Firebase (opcional)
+### 4. Configure o Firebase
 
-**Opção A — Usar config existente:**
-O projeto já inclui `firebase-applet-config.json` com um projeto Firebase hospedado. Nenhuma configuração extra necessária.
+#### Opção A — Usar o projeto hospedado (recomendado para contribuidores)
 
-**Opção B — Usar seu próprio Firebase:**
+O arquivo `firebase-applet-config.json` já está incluso com um projeto Firebase de desenvolvimento. Nenhuma configuração extra necessária.
 
-1. Crie um projeto em [console.firebase.google.com](https://console.firebase.google.com).
-2. Em Firestore Database, **crie um banco de dados**.
-3. Em Authentication, habilite o provider **Google**.
-4. Crie um app Web nas configurações do projeto.
-5. Copie as chaves para `firebase-applet-config.json`:
+#### Opção B — Usar seu próprio Firebase
 
-```json
-{
-  "apiKey": "SUA_API_KEY",
-  "authDomain": "seu-app.firebaseapp.com",
-  "projectId": "seu-app",
-  "storageBucket": "seu-app.appspot.com",
-  "messagingSenderId": "0000000000",
-  "appId": "1:000000000:web:01234abcd",
-  "firestoreDatabaseId": "(default)"
-}
-```
+1. Crie um projeto em [console.firebase.google.com](https://console.firebase.google.com)
+2. Habilite **Firestore Database** e **Authentication > Google**
+3. Crie um app Web e copie as credenciais para `firebase-applet-config.json`
+4. Aplique as regras do arquivo `firestore.rules` no console
 
-6. Aplique as regras de segurança do arquivo `firestore.rules` no console do Firestore.
-
-### 5. Inicie o servidor dev
+### 5. Inicie o servidor de desenvolvimento
 
 ```bash
 npm run dev
 ```
 
-O app estará rodando em `http://localhost:3000`.
+Acesse em `http://localhost:3000`.
 
 ---
 
-## 📁 Documentação do Projeto
+## Scripts Disponíveis
 
-| Documento | Propósito |
-|-----------|-----------|
-| `docs/VISION_MATCH_TECH.md` | Visão do produto, identidade visual, arquitetura, modelo de dados |
-| `docs/FRONTEND_BLUEPRINT.md` | Blueprint técnico de implementação (o que manter, modificar, criar) |
-| `docs/TODO_MATCH_TECH.md` | Roadmap com checklist de progresso |
-| `docs/CODEBASE_MAP.md` | Mapa rápido de toda a codebase (arquivos, dependências, funções-chave) |
+| Comando | Descrição |
+|---------|-----------|
+| `npm run dev` | Inicia o Vite em modo desenvolvimento (frontend) |
+| `npm run dev:server` | Inicia o servidor Express em modo desenvolvimento |
+| `npm run dev:all` | Inicia frontend e backend simultaneamente via `concurrently` |
+| `npm run build` | Gera o build de produção em `dist/` |
+| `npm run preview` | Serve o build local para pré-visualização |
+| `npm run start` | Inicia o servidor Express (equivalente a `dev:server`, sem hot reload) |
+| `npm run clean` | Remove o diretório `dist/` |
+| `npm run typecheck` | Verifica tipos TypeScript sem emitir arquivos |
+| `npm run lint` | ESLint com zero avisos permitidos |
+| `npm run lint:fix` | ESLint com correção automática |
+| `npm run format` | Prettier em todos os arquivos `src/` |
+| `npm test` | Roda os testes unitários com Vitest |
+| `npm run migrate:members-to-profiles` | Executa o script de migração de dados (ver `scripts/`) |
 
 ---
 
-## 🔒 Segurança
+## Rodando com Docker
 
-O Firestore utiliza regras de segurança com validação de schema (`isValidMember`), verificação de `request.auth.uid` e controle de campos alteráveis. Veja `firestore.rules` para detalhes.
+Para subir o projeto inteiro (frontend + backend) em containers isolados:
+
+```bash
+docker compose up --build
+```
+
+| Serviço | Porta | Descrição |
+|---------|-------|-----------|
+| `frontend` | 3000 | Vite preview servindo o build de produção |
+| `backend` | 3001 | Express API (roast, oráculo, health) |
+
+O frontend já aponta para o backend via `VITE_API_BASE_URL=http://backend:3001` na rede interna do Compose.
+
+> **Atenção:** configure as variáveis de ambiente sensíveis (ex.: `GEMINI_API_KEY`, credenciais Firebase Admin) no `docker-compose.yaml` ou via `.env` antes de subir.
+
+### Dockerfiles
+
+| Arquivo | Descrição |
+|---------|-----------|
+| `Dockerfile.backend` | Imagem Node 22 que executa o servidor Express diretamente via `tsx` (sem build step — adequado para desenvolvimento/staging) |
+| `Dockerfile.frontend` | Build multi-stage: primeiro compila o Vite em `dist/`, depois serve via `vite preview` em uma imagem limpa |
 
 ---
 
-## 📜 Licença
+## Arquitetura
 
-Projeto open-source criado para a comunidade do Hackathon Tech Floripa 2026.
+O projeto segue os princípios de **Clean Architecture** com separação em camadas bem definidas:
+
+```text
+src/
+├── domain/          ← Regras de negócio puras (sem dependências externas)
+├── infrastructure/  ← Implementações concretas (Firebase, Zod)
+├── features/        ← Funcionalidades por domínio de produto
+├── shared/          ← Código reutilizável entre features
+├── routes/          ← Configuração de rotas (React Router v7)
+├── layouts/         ← Shells de layout (nav, autenticação)
+├── contexts/        ← Contextos React globais (Auth)
+└── server/          ← API Express (Gemini, roast, oráculo)
+```
+
+Para a documentação técnica completa consulte [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
+
+---
+
+## Estrutura de Pastas (visão rápida)
+
+```text
+match-tech/
+├── src/
+│   ├── domain/
+│   │   ├── entities/        # Member, Squad, tipos compartilhados
+│   │   ├── ports/           # Interfaces (IProfileRepository, ISquadRepository...)
+│   │   └── usecases/        # Algoritmo de compatibilidade, filtros, ranking
+│   ├── infrastructure/
+│   │   └── firebase/        # Repositórios Firebase + schemas Zod
+│   ├── features/
+│   │   ├── discover/        # Descoberta de perfis
+│   │   ├── guilda/          # Gestão de squad/guilda
+│   │   ├── onboarding/      # Cadastro e setup de perfil
+│   │   ├── profile/         # Perfil público + compartilhamento
+│   │   ├── squad/           # Convite e entrada em squads
+│   │   └── landing/         # Página inicial
+│   ├── shared/
+│   │   ├── components/ui/   # Componentes puros e reutilizáveis
+│   │   ├── hooks/           # useFirestoreSubscription<T>, etc.
+│   │   ├── context/         # RepositoryProvider (injeção de dependência)
+│   │   ├── lib/             # Firebase client, logger, utilitários
+│   │   └── services/        # roast.service (cliente da API)
+│   ├── routes/              # Router config, ProtectedLayout, ErrorPage
+│   ├── layouts/             # RootLayout (nav + Outlet)
+│   ├── contexts/            # AuthContext (Firebase Auth)
+│   └── server/              # Express API (roast, oráculo/match)
+├── docs/
+│   └── ARCHITECTURE.md      # Documentação técnica detalhada
+├── .github/workflows/       # CI: typecheck + lint + build
+├── firestore.rules          # Regras de segurança do Firestore
+├── vercel.json              # Configuração de deploy
+└── vite.config.ts           # Vite + Vitest config
+```
+
+---
+
+## Testes
+
+```bash
+npm test                               # roda todos os testes
+npx vitest run --reporter=verbose      # com output detalhado
+```
+
+Testes unitários cobrem toda a camada de domínio:
+
+- `calculateCompatibility` — algoritmo de compatibilidade entre membros
+- `scoreSkillsForRole` — pontuação de habilidades por role
+- `filterMembers` — filtragem por role e status
+- `sortByCompatibility` / `getTopCompatibleMembers` — ranking
+
+---
+
+## CI/CD
+
+O GitHub Actions executa em todo PR e push para `main`:
+
+1. **typecheck** — `tsc --noEmit`
+2. **lint** — ESLint com zero avisos
+3. **build** — `vite build`
+
+O deploy é automático via **Vercel** ao fazer merge em `main`.
+
+---
+
+## Segurança
+
+- Firestore usa regras com validação de schema (`isValidMember`), verificação de `request.auth.uid` e controle de campos alteráveis — veja `firestore.rules`
+- API Gemini protegida por rate limiting: 5 req/min (roast), 10 req/min (match)
+- Nenhuma chave de API é exposta no bundle do cliente
+
+---
+
+## Contribuindo
+
+Contribuições são bem-vindas! Leia [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) para entender os padrões de código adotados antes de começar a desenvolver.
+
+Se você estiver revisando Pull Requests de outros colaboradores ou quiser entender as regras de aceite de código, consulte o [`docs/PR_REVIEW_GUIDE.md`](docs/PR_REVIEW_GUIDE.md).
+
+1. Faça um fork e clone o repositório
+2. Crie uma branch: `git checkout -b feat/minha-feature`
+3. Faça suas alterações seguindo os padrões de código
+4. Rode `npm run typecheck && npm run lint && npm test`
+5. Abra um Pull Request descrevendo as mudanças
+
+---
+
+## Licença
 
 Feito com ☕ por **Tony Max & Squad**.
- 
