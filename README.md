@@ -261,7 +261,9 @@ O deploy é automático via **Vercel** ao fazer merge em `main`.
 
 ## Contribuindo
 
-Contribuições são bem-vindas! Leia [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) para entender os padrões adotados antes de abrir um PR.
+Contribuições são bem-vindas! Leia [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) para entender os padrões de código adotados antes de começar a desenvolver.
+
+Se você estiver revisando Pull Requests de outros colaboradores ou quiser entender as regras de aceite de código, consulte o [`docs/PR_REVIEW_GUIDE.md`](docs/PR_REVIEW_GUIDE.md).
 
 1. Faça um fork e clone o repositório
 2. Crie uma branch: `git checkout -b feat/minha-feature`

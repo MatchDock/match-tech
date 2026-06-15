@@ -4,10 +4,11 @@
 **Data de Criação:** 07 de Maio de 2026
 **Última Atualização:** 07 de Maio de 2026
 
-> **ATENÇÃO AGENTE DE IA:** Este é o documento de referência PRIMÁRIO do projeto.
-> Sempre que você sentir que está "alucinando" ou se perdendo na direção do código,
-> volte aqui. Tudo o que este documento diz sobre identidade visual, arquitetura,
-> e funcionalidades é LEI. Não invente funcionalidades que não estejam aqui.
+> **ATENÇÃO AGENTE DE IA:** Este é o documento de referência PRIMÁRIO de produto do projeto.
+> Sempre que você sentir que está "alucinando" ou se perdendo na direção do código ou regras de negócio,
+> volte aqui. Tudo o que este documento diz sobre identidade visual, arquitetura de alto nível,
+> e funcionalidades é LEI.
+> Para a especificação técnica detalhada, organização de pastas pós-refatoração e padrões de código, consulte sempre o [ARCHITECTURE.md](./ARCHITECTURE.md).
 
 ---
 
@@ -334,10 +335,10 @@ interface Squad {
 
 ## 11. O QUE ESTE DOCUMENTO NÃO COBRE
 
-- Detalhes de implementação de código (veja `FRONTEND_BLUEPRINT.md`).
-- Roadmap detalhado com checklist (veja `TODO_MATCH_TECH.md`).
-- Regras de Firestore atualizadas (veja `../firestore.rules`).
-- Estratégia pessoal do Tony para o hackathon (veja `hackathon_tech_floripa_2026_strategy.md`).
+- Detalhes de implementação de código (consulte a referência atualizada em [ARCHITECTURE.md](./ARCHITECTURE.md) ou o histórico em [FRONTEND_BLUEPRINT.md](./FRONTEND_BLUEPRINT.md)).
+- Roadmap detalhado com checklist (veja o arquivo histórico [TODO_MATCH_TECH.md](./TODO_MATCH_TECH.md)).
+- Regras de Firestore atualizadas (veja [firestore.rules](../firestore.rules)).
+- Estratégia pessoal do Tony para o hackathon (veja [hackathon_tech_floripa_2026_strategy.md](./hackathon_tech_floripa_2026_strategy.md)).
 
 ---
 
