@@ -23,11 +23,11 @@ export function ArsenalCalibration({ form }: Props) {
               <ShieldCheck className="w-6 h-6 text-neo-black" />
             </div>
             <h3 className="text-neo-black font-heading text-2xl uppercase tracking-tighter">
-              CALIBRAGEM DO ARSENAL
+              ANÁLISE DE INTERESSES
             </h3>
           </div>
           <p className="text-[11px] text-neo-black/60 font-black uppercase tracking-widest pl-12">
-            Precisamos conhecer seu perfil para gerar sua ID única.
+            Precisamos conhecer seu perfil para gerar sua identificação de matchmaking.
           </p>
         </div>
 
@@ -55,7 +55,7 @@ export function ArsenalCalibration({ form }: Props) {
           <Info className="w-6 h-6 text-neo-cyan shrink-0" />
           <p className="text-[10px] text-neo-black font-bold uppercase leading-tight">
             <span className="text-neo-cyan block mb-1">POR QUE ISSO?</span>
-            Para que nossa IA crie um mapeamento justo e te conecte às melhores missões, precisamos
+            Para que nossa IA crie um mapeamento ideal e te conecte às melhores equipes, precisamos
             de pelo menos 10 opiniões (Amo ou Veto) sobre as tecnologias abaixo.
           </p>
         </div>
@@ -70,8 +70,8 @@ export function ArsenalCalibration({ form }: Props) {
           <p className="text-[10px] text-neo-black font-bold uppercase leading-tight">
             <span className="block mb-1">STATUS DO SISTEMA:</span>
             {isCalibrated
-              ? "SISTEMA CALIBRADO! VOCÊ JÁ PODE ENTRAR, MAS QUANTO MAIS TAGS MARCAR, MELHOR SERÁ SEU MATCH COM A GUILDA."
-              : `AGUARDANDO DADOS: MARQUE MAIS ${10 - total} TAGS.`}
+              ? "PERFIL ALINHADO! VOCÊ JÁ PODE SALVAR, MAS QUANTO MAIS TAGS MARCAR, MELHOR SERÁ SEU MATCH COM OUTROS PARTICIPANTES."
+              : `AGUARDANDO DADOS: PREENCHA MAIS ${10 - total} TAGS.`}
           </p>
         </div>
       </div>

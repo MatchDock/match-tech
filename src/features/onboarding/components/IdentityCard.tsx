@@ -32,10 +32,10 @@ export function IdentityCard({ form, onChange, onBioChange }: Props) {
             <ShieldCheck className="w-6 h-6 text-neo-yellow" />
           </div>
           <div className="space-y-1">
-            <p className="text-xs font-black uppercase leading-tight italic">PONTE DE CONFIANÇA:</p>
+            <p className="text-xs font-black uppercase leading-tight italic">CONEXÃO DE PONTES:</p>
             <p className="text-[10px] font-bold uppercase opacity-70">
-              O algoritmo da guilda cruza dados do GitHub e LinkedIn para validar xp e sugerir
-              missões de alto impacto. Sem pontes, você é um fantasma.
+              O algoritmo cruza dados do GitHub e LinkedIn para validar conexões e sugerir equipes
+              de alto impacto. Sem pontes, você fica isolado.
             </p>
           </div>
         </div>
@@ -44,7 +44,7 @@ export function IdentityCard({ form, onChange, onBioChange }: Props) {
           {/* Name */}
           <div>
             <label className="block font-bold mb-1 text-xs text-gray-500 uppercase tracking-widest">
-              Codinome / Nome de Guerra
+              Nome de Exibição / Apelido
             </label>
             <input
               required
@@ -93,7 +93,7 @@ export function IdentityCard({ form, onChange, onBioChange }: Props) {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-1">
               <label className="block font-bold text-xs text-gray-500 uppercase flex items-center gap-1">
-                <Github className="w-4 h-4" /> GitHub / Terminal
+                <Github className="w-4 h-4" /> GitHub
               </label>
               <input
                 name="github"
@@ -106,7 +106,7 @@ export function IdentityCard({ form, onChange, onBioChange }: Props) {
             </div>
             <div className="space-y-1">
               <label className="block font-bold text-xs text-gray-500 uppercase flex items-center gap-1">
-                <Linkedin className="w-4 h-4 text-[#0077b5]" /> LinkedIn / Rede
+                <Linkedin className="w-4 h-4 text-[#0077b5]" /> LinkedIn
               </label>
               <input
                 name="linkedin"

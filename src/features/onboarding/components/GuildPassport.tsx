@@ -41,7 +41,7 @@ export function GuildPassport({
         {/* Passport header */}
         <div className="bg-neo-black text-neo-lime p-5 flex justify-between items-center border-b-4 border-neo-black">
           <div className="flex flex-col">
-            <span className="font-heading text-lg leading-none">PASAPORTE_GUILDA</span>
+            <span className="font-heading text-lg leading-none">PERFIL_MATCH_TECH</span>
             <span className="text-[8px] font-mono opacity-50 uppercase tracking-[0.2em]">
               Tech_Floripa_2026
             </span>
@@ -66,7 +66,7 @@ export function GuildPassport({
             <div className="flex-1 space-y-3">
               <div>
                 <p className="text-[10px] opacity-40 font-black uppercase tracking-tighter">
-                  NOME_OPERADOR:
+                  NOME_PARTICIPANTE:
                 </p>
                 <p className="text-2xl font-black uppercase truncate leading-none tracking-tight">
                   {form.name || "Aguardando..."}
@@ -74,7 +74,7 @@ export function GuildPassport({
               </div>
               <div>
                 <p className="text-[10px] opacity-40 font-black uppercase tracking-tighter">
-                  CLASSE_PRIMÁRIA:
+                  FUNÇÃO_PRINCIPAL:
                 </p>
                 <p className="text-[11px] font-black leading-tight bg-neo-lime p-1 neo-border border-2 uppercase inline-block">
                   {form.primaryRole || "AGUARDANDO..."}
@@ -83,7 +83,7 @@ export function GuildPassport({
               {form.secondaryRoles.length > 0 && (
                 <div>
                   <p className="text-[10px] opacity-40 font-black uppercase tracking-tighter">
-                    CLASSES_SEC:
+                    FUNÇÕES_SECUN:
                   </p>
                   <div className="flex flex-wrap gap-1">
                     {form.secondaryRoles.map((r) => (
@@ -104,7 +104,7 @@ export function GuildPassport({
           <div className="space-y-2">
             <div className="flex justify-between items-center">
               <p className="text-[10px] font-black uppercase bg-neo-black text-white px-2">
-                Análise de Campo
+                Habilidades
               </p>
               <p className="text-[8px] font-mono opacity-50 uppercase">
                 Vibe: {skills.vibe_coding}/10
@@ -143,7 +143,7 @@ export function GuildPassport({
           {/* Operator ID row */}
           <div className="grid grid-cols-2 gap-4 border-t-4 border-neo-black pt-6">
             <div>
-              <p className="text-[9px] font-black opacity-40 uppercase">ID_OPERADOR</p>
+              <p className="text-[9px] font-black opacity-40 uppercase">ID_USUÁRIO</p>
               <p className="text-[10px] font-mono font-bold uppercase truncate">
                 {user?.uid.slice(0, 10).toUpperCase()}
               </p>
@@ -170,7 +170,7 @@ export function GuildPassport({
             }`}
             disabled={loading || !isUnlocked}
           >
-            {loading ? "PROCESSANDO..." : !isUnlocked ? "BLOQUEADO" : "REGISTRAR OPERADOR"}
+            {loading ? "PROCESSANDO..." : !isUnlocked ? "BLOQUEADO" : "CRIAR SEU PERFIL"}
           </Button>
 
           <AnimatePresence>
@@ -200,7 +200,7 @@ export function GuildPassport({
         </div>
         {form.loves.length < 3 && (
           <p className="text-white bg-black px-1 animate-pulse">
-            ALERTA: Adicione mais PAIXÕES para calibragem total.
+            ALERTA: Adicione mais PAIXÕES para alinhamento total.
           </p>
         )}
       </div>

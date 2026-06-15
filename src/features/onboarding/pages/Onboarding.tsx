@@ -1,4 +1,4 @@
-﻿import { Terminal } from "lucide-react";
+import { Terminal } from "lucide-react";
 import { motion } from "motion/react";
 import React from "react";
 
@@ -93,14 +93,14 @@ export default function Onboarding() {
         <div className="mb-12 border-b-8 border-neo-black pb-8 flex flex-col md:flex-row justify-between items-end gap-6 bg-white/40 p-8 neo-border backdrop-blur-md shadow-[12px_12px_0_0_#000]">
           <div className="space-y-2">
             <h1 className="text-6xl md:text-9xl font-heading mb-2 tracking-tighter text-neo-black drop-shadow-sm">
-              MAPEAR MEMBRO_
+              MAPEAR PERFIL_
             </h1>
             <div className="flex flex-wrap gap-2">
               <p className="text-xl font-bold uppercase bg-neo-black text-white px-3 py-1 inline-block">
-                Protocolo Floripa 2026
+                Match Tech — Floripa 2026
               </p>
               <p className="text-xl font-bold uppercase bg-neo-lime text-neo-black px-3 py-1 neo-border inline-block">
-                Nível 01: Identificação
+                Etapa 1: Mapeamento
               </p>
             </div>
           </div>
@@ -125,10 +125,10 @@ export default function Onboarding() {
 
               <div className="border-l-12 border-neo-black pl-6 py-2">
                 <h2 className="text-5xl font-heading uppercase text-neo-black tracking-tighter">
-                  ARSENAL_DE_SKILLS
+                  INTERESSES_E_SKILLS
                 </h2>
                 <p className="font-black text-sm uppercase opacity-50 tracking-widest mt-1">
-                  Defina seu arsenal: [ ❤️ MEU_FOCO | ✅ OPERO_BEM | 🚫 NEM_FUDENDO ]
+                  Defina seus interesses: [ ❤️ AMO | ✅ CONFORTO | 🚫 VETO ]
                 </p>
               </div>
 
