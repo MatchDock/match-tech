@@ -18,10 +18,10 @@ export function ProfilesGrid({ profiles, onProfileClick, currentUserId }: Profil
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
       {profiles.map((p, idx) => {
-        const isOwn = p.id === currentUserId;
+        const isOwn = p.id === currentUserId || p.userId === currentUserId;
         return (
           <ProfileCard
-            key={p.id}
+            key={p.id || p.userId}
             profile={p}
             colorIndex={idx}
             onClick={isOwn ? () => onProfileClick(p) : undefined}

@@ -44,7 +44,7 @@ export default function DiscoverPage() {
             profiles={filters.filteredProfiles}
             currentUserId={user?.uid}
             onProfileClick={(profile) => {
-              if (profile.id === user?.uid) {
+              if (profile.id === user?.uid || profile.userId === user?.uid) {
                 roast.openProfile(profile);
               }
             }}
