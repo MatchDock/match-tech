@@ -7,16 +7,30 @@ export type ProfileStatus = "looking" | "open" | "complete";
 export interface ProfileCanvas {
   loves?: string[];
   comfort?: string[];
+  veto?: string[];
   vetoes?: string[];
+}
+
+export interface ProfileSkills {
+  frontend: number;
+  backend: number;
+  ux_ui: number;
+  dados: number;
+  hardware_android: number;
+  vibe_coding: number;
 }
 
 export interface Profile {
   id: string;
+  userId?: string;
   name?: string;
+  photoURL?: string | null;
   github?: string;
+  linkedin?: string;
   bio?: string;
   primaryRole?: string;
   secondaryRoles?: string[];
+  skills?: ProfileSkills;
   status?: ProfileStatus;
   roast?: string;
   roastBrutal?: string;
