@@ -1,4 +1,4 @@
-﻿import { AnimatePresence, motion } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
 
 import { AccessDeniedState } from "../components/AccessDeniedState";
 import { DiscoverFilters } from "../components/DiscoverFilters";
@@ -40,7 +40,15 @@ export default function DiscoverPage() {
       ) : (
         <div className="space-y-8">
           <DiscoverFilters {...filters} />
-          <ProfilesGrid profiles={filters.filteredProfiles} onProfileClick={roast.openProfile} />
+          <ProfilesGrid
+            profiles={filters.filteredProfiles}
+            currentUserId={user?.uid}
+            onProfileClick={(profile) => {
+              if (profile.id === user?.uid) {
+                roast.openProfile(profile);
+              }
+            }}
+          />
         </div>
       )}
 

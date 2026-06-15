@@ -104,7 +104,7 @@ export function RoastModal({
             </div>
 
             <div className="bg-neo-black text-white p-4 sm:p-6 font-heading tracking-widest text-[10px] sm:text-xs flex flex-wrap justify-between items-center gap-2 border-t-[6px] border-neo-black">
-              <span>[SISTEMA ROASTED & TOASTED] &copy; 2026</span>
+              <span>[SISTEMA ROASTED &amp; TOASTED] &copy; 2026</span>
               <span className="bg-neo-pink px-2 py-1 border-2 border-white">
                 STRICTLY CONFIDENTIAL
               </span>

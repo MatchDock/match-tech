@@ -36,6 +36,8 @@ export default function ProfileCard({
     status = "looking",
   } = profile;
 
+  const isClickable = !!onClick;
+
   // Neo-Brutalist color configurations for variety
   const bgColors = ["bg-neo-lime", "bg-neo-pink", "bg-neo-cyan", "bg-neo-yellow"];
   const headerBg = bgColors[colorIndex % bgColors.length];
@@ -72,7 +74,10 @@ export default function ProfileCard({
         padding="none"
         onClick={onClick}
         className={cn(
-          "flex flex-col border-4 neo-shadow-hover h-full cursor-pointer group",
+          "flex flex-col border-4 h-full group",
+          isClickable
+            ? "neo-shadow-hover cursor-pointer"
+            : "active:translate-0 active:shadow-[6px_6px_0px_0px_#000000] cursor-default",
           className,
         )}
       >
@@ -116,7 +121,10 @@ export default function ProfileCard({
       padding="none"
       onClick={onClick}
       className={cn(
-        "flex flex-col border-4 neo-shadow-hover h-full cursor-pointer group select-none relative",
+        "flex flex-col border-4 h-full group select-none relative",
+        isClickable
+          ? "neo-shadow-hover cursor-pointer"
+          : "active:translate-0 active:shadow-[6px_6px_0px_0px_#000000] cursor-default",
         className,
       )}
     >
@@ -243,9 +251,11 @@ export default function ProfileCard({
           status={status}
           className="shadow-none border-2 text-[9px] py-1 px-2.5 bg-white"
         />
-        <span className="font-heading font-black text-xs text-neo-black group-hover:translate-x-1 transition-transform">
-          VER SINA →
-        </span>
+        {isClickable && (
+          <span className="font-heading font-black text-xs text-neo-black group-hover:translate-x-1 transition-transform">
+            VER SINA →
+          </span>
+        )}
       </div>
     </Card>
   );
