@@ -233,7 +233,7 @@ Closes #42
 
 # Revisão
 
-Todo Pull Request pode receber comentários e solicitações de alteração.
+Todo Pull Request pode receber comentários e solicitações de alteração. Se você for um revisor ou quiser entender como o processo de revisão e aprovação funciona no projeto, consulte o [`docs/PR_REVIEW_GUIDE.md`](docs/PR_REVIEW_GUIDE.md).
 
 O processo de revisão tem como objetivo:
 

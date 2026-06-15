@@ -24,6 +24,7 @@ Este documento descreve a arquitetura técnica do projeto, os padrões de design
 16. [Deploy e CI/CD](#16-deploy-e-cicd)
 17. [Docker e Containers](#17-docker-e-containers)
 18. [Scripts Utilitários](#18-scripts-utilitários)
+19. [Revisão de Código e PRs](#19-revisão-de-código-e-prs)
 
 ---
 
@@ -851,3 +852,11 @@ npm run migrate:members-to-profiles -- --execute
 ```
 
 **Pré-requisito:** a variável `FIREBASE_SERVICE_ACCOUNT` deve conter o JSON da service account do Firebase Admin, ou `GOOGLE_APPLICATION_CREDENTIALS` deve apontar para o arquivo JSON equivalente.
+
+---
+
+## 19. Revisão de Código e PRs
+
+Para manter a codebase organizada e estável à medida que mais desenvolvedores contribuem, adotamos um processo estruturado de revisão de Pull Requests.
+
+O fluxo de trabalho, os critérios de aceitação para merges e os checklists de revisão estão documentados em detalhes no [Guia de Revisão de PRs](./PR_REVIEW_GUIDE.md).

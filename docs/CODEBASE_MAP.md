@@ -150,12 +150,13 @@ match-tech/
 │   └── main.tsx        # createRoot + global error listeners
 │
 ├── docs/
-│   ├── ARCHITECTURE.md          ← Referência técnica principal (atualizada)
-│   ├── CODEBASE_MAP.md          ← Este arquivo
-│   ├── VISION_MATCH_TECH.md     ← Visão de produto e design system
-│   ├── TODO_MATCH_TECH.md       ← Histórico de desenvolvimento (arquivo)
-│   ├── FRONTEND_BLUEPRINT.md    ← Blueprint original (depreciado → ver ARCHITECTURE.md)
-│   └── hackathon_tech_floripa_2026_strategy.md ← Estratégia do evento
+│   ├── [ARCHITECTURE.md](./ARCHITECTURE.md)          ← Referência técnica principal (atualizada)
+│   ├── [CODEBASE_MAP.md](./CODEBASE_MAP.md)          ← Este arquivo
+│   ├── [VISION_MATCH_TECH.md](./VISION_MATCH_TECH.md)     ← Visão de produto e design system
+│   ├── [TODO_MATCH_TECH.md](./TODO_MATCH_TECH.md)       ← Histórico de desenvolvimento (histórico)
+│   ├── [FRONTEND_BLUEPRINT.md](./FRONTEND_BLUEPRINT.md)    ← Blueprint original (depreciado → ver ARCHITECTURE.md)
+│   ├── [PR_REVIEW_GUIDE.md](./PR_REVIEW_GUIDE.md)       ← Guia de revisão de Pull Requests
+│   └── [hackathon_tech_floripa_2026_strategy.md](./hackathon_tech_floripa_2026_strategy.md) ← Estratégia do evento
 │
 ├── .github/workflows/
 │   └── ci.yml           # typecheck → lint → build (Node 22)
