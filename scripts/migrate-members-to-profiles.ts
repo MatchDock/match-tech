@@ -34,16 +34,12 @@ function initAdmin() {
   const raw = process.env.FIREBASE_SERVICE_ACCOUNT;
   if (raw) {
     const parsed = JSON.parse(raw) as {
-      project_id: string;
-      client_email: string;
-      private_key: string;
+      projectId: string;
+      clientEmail: string;
+      privateKey: string;
     };
     return initializeApp({
-      credential: cert({
-        projectId: parsed.project_id,
-        clientEmail: parsed.client_email,
-        privateKey: parsed.private_key.replace(/\\n/g, "\n"),
-      }),
+      credential: cert({ ...parsed, privateKey: parsed.privateKey.replace(/\\n/g, "\n") }),
     });
   }
 
@@ -95,8 +91,7 @@ function toProfileDoc(memberId: string, data: MemberDoc): Record<string, unknown
 
 async function migrate(dryRun: boolean) {
   const app = initAdmin();
-  const databaseId = process.env.VITE_FIREBASE_FIRESTORE_DATABASE_ID;
-  const db = databaseId ? getFirestore(app, databaseId) : getFirestore(app);
+  const db = getFirestore(app);
 
   const membersSnap = await db.collection("members").get();
 
