@@ -51,7 +51,10 @@ export function useFirestoreSubscription<T>({
         q,
         (snapshot) => {
           try {
-            const docs = snapshot.docs.map((doc) => doc.data() as T);
+            const docs = snapshot.docs.map((doc) => ({
+              id: doc.id,
+              ...(doc.data() as object),
+            } as T));
             const sorted = sortFn ? docs.sort(sortFn) : docs;
             setData(sorted);
             setError(null);

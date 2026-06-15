@@ -1,148 +1,262 @@
-import { Github, Heart, Sparkles, UserRound } from "lucide-react";
+import { Github, Linkedin } from "lucide-react";
+
+import Avatar from "./Avatar";
+import { Card } from "./Card";
+import SkillRadar from "./SkillRadar";
+import StatusBadge from "./StatusBadge";
+import TagBadge from "./TagBadge";
 
 import type { Profile } from "@/features/discover/model/discover.types";
+import { cn } from "@/shared/lib/utils/cn";
 
 interface ProfileCardProps {
   profile: Profile;
+  onClick?: () => void;
+  compact?: boolean;
+  className?: string;
   colorIndex?: number;
-  onClick: () => void;
 }
 
-const cardAccentStyles = [
-  "shadow-[8px_8px_0_0_#000]",
-  "shadow-[8px_8px_0_0_#B8FF29]",
-  "shadow-[8px_8px_0_0_#00F0FF]",
-  "shadow-[8px_8px_0_0_#FF2E93]",
-  "shadow-[8px_8px_0_0_#FFD84D]",
-];
+export default function ProfileCard({
+  profile,
+  onClick,
+  compact = false,
+  className,
+  colorIndex = 0,
+}: ProfileCardProps) {
+  const {
+    name,
+    github,
+    linkedin,
+    bio,
+    primaryRole,
+    secondaryRoles = [],
+    skills,
+    canvas = { loves: [], comfort: [], veto: [] },
+    status = "looking",
+  } = profile;
 
-const statusLabelMap: Record<string, string> = {
-  looking: "BUSCANDO EQUIPE",
-  open: "ABERTO A PROPOSTAS",
-  complete: "EQUIPE FORMADA",
-};
+  const isClickable = !!onClick;
 
-const statusStylesMap: Record<string, string> = {
-  looking: "bg-neo-yellow text-neo-black",
-  open: "bg-neo-cyan text-neo-black",
-  complete: "bg-neo-lime text-neo-black",
-};
+  // Neo-Brutalist color configurations for variety
+  const bgColors = ["bg-neo-lime", "bg-neo-pink", "bg-neo-cyan", "bg-neo-yellow"];
+  const headerBg = bgColors[colorIndex % bgColors.length];
 
-function getCardAccentStyle(colorIndex = 0) {
-  return cardAccentStyles[colorIndex % cardAccentStyles.length];
-}
+  // Decide text colors based on background
+  const headerText = headerBg === "bg-neo-pink" ? "text-white" : "text-neo-black";
 
-function getDisplayRoles(profile: Profile) {
-  const roles = [profile.primaryRole, ...(profile.secondaryRoles ?? [])].filter(Boolean);
+  const getGithubUrl = (val?: string) => {
+    if (!val) return "";
+    const clean = val
+      .trim()
+      .replace(/^(?:https?:\/\/)?(?:www\.)?github\.com\//i, "")
+      .replace(/\/$/, "")
+      .replace(/^@/, "");
+    return `https://github.com/${clean}`;
+  };
 
-  return Array.from(new Set(roles)).slice(0, 3);
-}
+  const getLinkedinUrl = (val?: string) => {
+    if (!val) return "";
+    const clean = val
+      .trim()
+      .replace(/^(?:https?:\/\/)?(?:[\w-]+\.)?linkedin\.com\/(?:in|profile)\//i, "")
+      .replace(/\/$/, "")
+      .replace(/^@/, "");
+    return `https://linkedin.com/in/${clean}`;
+  };
 
-function getDisplayTags(profile: Profile) {
-  const loves = profile.canvas?.loves ?? [];
-  const comfort = profile.canvas?.comfort ?? [];
+  const vetos = canvas.veto ?? canvas.vetoes ?? [];
 
-  return Array.from(new Set([...loves, ...comfort])).slice(0, 4);
-}
+  if (compact) {
+    return (
+      <Card
+        variant="white"
+        padding="none"
+        onClick={onClick}
+        className={cn(
+          "flex flex-col border-4 h-full group",
+          isClickable
+            ? "neo-shadow-hover cursor-pointer"
+            : "active:translate-0 active:shadow-[6px_6px_0px_0px_#000000] cursor-default",
+          className,
+        )}
+      >
+        {/* Compact Header */}
+        <div
+          className={cn(
+            "p-4 border-b-4 border-neo-black font-heading font-black text-sm uppercase truncate",
+            headerBg,
+            headerText,
+          )}
+        >
+          {primaryRole || "OPERADOR"}
+        </div>
 
-export default function ProfileCard({ profile, colorIndex = 0, onClick }: ProfileCardProps) {
-  const displayRoles = getDisplayRoles(profile);
-  const displayTags = getDisplayTags(profile);
-  const statusLabel = statusLabelMap[profile.status ?? ""] ?? "SEM STATUS";
-  const statusStyle = statusStylesMap[profile.status ?? ""] ?? "bg-white text-neo-black";
-
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className={[
-        "w-full text-left bg-white border-4 border-neo-black p-6",
-        "transition-all duration-200 hover:-translate-y-1 active:translate-y-0",
-        "focus:outline-none focus:ring-4 focus:ring-neo-cyan/40",
-        getCardAccentStyle(colorIndex),
-      ].join(" ")}
-      aria-label={`Abrir perfil de ${profile.name ?? "operador"}`}
-    >
-      <div className="flex items-start justify-between gap-4 mb-5">
-        <div className="min-w-0">
-          <div className="flex items-center gap-3 mb-2">
-            <div className="w-12 h-12 shrink-0 rounded-full border-[3px] border-neo-black bg-neo-bg flex items-center justify-center">
-              <UserRound className="w-6 h-6 text-neo-black" aria-hidden="true" />
-            </div>
-
-            <div className="min-w-0">
-              <h3 className="text-xl font-heading uppercase tracking-tight text-neo-black truncate">
-                {profile.name ?? "Operador sem nome"}
-              </h3>
-
-              {profile.github && (
-                <div className="flex items-center gap-2 text-sm font-bold text-neo-black/70 truncate">
-                  <Github className="w-4 h-4 shrink-0" aria-hidden="true" />
-                  <span className="truncate">@{profile.github}</span>
-                </div>
-              )}
+        {/* Compact Body */}
+        <div className="p-4 flex items-center gap-4 flex-1">
+          <Avatar
+            user={{ photoURL: profile.photoURL, github, name }}
+            size="sm"
+            className="group-hover:scale-105 transition-transform"
+          />
+          <div className="flex-1 min-w-0">
+            <h4 className="font-heading font-black text-lg uppercase truncate leading-none mb-1">
+              {name || "NOME_NULO"}
+            </h4>
+            <div className="flex gap-2">
+              <StatusBadge
+                status={status}
+                className="shadow-none text-[8px] py-0.5 px-1.5 border-[1.5px]"
+              />
             </div>
           </div>
         </div>
+      </Card>
+    );
+  }
 
-        <span
-          className={`shrink-0 px-3 py-2 border-2 border-neo-black text-[10px] font-black uppercase tracking-wider ${statusStyle}`}
-        >
-          {statusLabel}
+  return (
+    <Card
+      variant="white"
+      padding="none"
+      onClick={onClick}
+      className={cn(
+        "flex flex-col border-4 h-full group select-none relative",
+        isClickable
+          ? "neo-shadow-hover cursor-pointer"
+          : "active:translate-0 active:shadow-[6px_6px_0px_0px_#000000] cursor-default",
+        className,
+      )}
+    >
+      {/* Bento Header */}
+      <div
+        className={cn(
+          "p-4 md:p-5 border-b-4 border-neo-black flex flex-wrap justify-between items-center gap-2",
+          headerBg,
+          headerText,
+        )}
+      >
+        <span className="font-heading font-black text-xl md:text-2xl uppercase tracking-widest leading-none truncate max-w-[70%]">
+          {primaryRole || "OPERADOR"}
+        </span>
+        <span className="font-mono text-xs uppercase bg-neo-black text-white px-2 py-0.5 font-bold">
+          ID_{profile.id?.slice(0, 5) || profile.userId?.slice(0, 5) || "NULO"}
         </span>
       </div>
 
-      {displayRoles.length > 0 && (
-        <div className="flex flex-wrap gap-2 mb-4">
-          {displayRoles.map((role) => (
-            <span
-              key={role}
-              className="px-2 py-1 bg-neo-black text-white text-[10px] font-black uppercase tracking-wider border-2 border-neo-black"
-            >
-              {role}
-            </span>
-          ))}
-        </div>
-      )}
+      {/* Bento Identity Section */}
+      <div className="p-5 flex gap-4 items-center bg-neo-bg/20 border-b-4 border-neo-black relative overflow-hidden">
+        {/* Floating background shape */}
+        <div className={cn("absolute -top-6 -right-6 w-16 h-16 opacity-10 rotate-12", headerBg)} />
 
-      <p className="min-h-18 text-sm font-bold text-gray-700 leading-relaxed line-clamp-3">
-        {profile.bio || "Sem bio cadastrada até o momento."}
-      </p>
+        <Avatar
+          user={{ photoURL: profile.photoURL, github, name }}
+          size="md"
+          className="group-hover:rotate-[-2deg] transition-transform z-10 shrink-0"
+        />
 
-      {displayTags.length > 0 && (
-        <div className="mt-5 pt-4 border-t-[3px] border-dashed border-neo-black">
-          <div className="flex items-center gap-2 mb-3">
-            <Heart className="w-4 h-4 text-neo-pink" aria-hidden="true" />
-            <span className="text-[10px] font-black uppercase tracking-wider text-neo-black/70">
-              Interesses e conforto
-            </span>
-          </div>
+        <div className="flex-1 min-w-0 z-10">
+          <h3 className="font-heading font-black text-xl md:text-2xl uppercase truncate leading-none mb-1 bg-white px-2 py-1 border-2 border-neo-black shadow-[3px_3px_0_0_#000] rotate-[-0.5deg]">
+            {name || "NOME_NULO"}
+          </h3>
 
-          <div className="flex flex-wrap gap-2">
-            {displayTags.map((tag) => (
-              <span
-                key={tag}
-                className="px-2 py-1 bg-neo-bg text-neo-black text-[10px] font-black uppercase tracking-wide border-2 border-neo-black"
+          <div className="flex gap-3 items-center mt-2.5">
+            {github && (
+              <a
+                href={getGithubUrl(github)}
+                target="_blank"
+                rel="noreferrer"
+                onClick={(e) => e.stopPropagation()}
+                className="text-neo-black hover:text-neo-lime transition-colors"
+                title="GitHub"
               >
-                {tag}
+                <Github className="w-5 h-5" />
+              </a>
+            )}
+            {linkedin && (
+              <a
+                href={getLinkedinUrl(linkedin)}
+                target="_blank"
+                rel="noreferrer"
+                onClick={(e) => e.stopPropagation()}
+                className="text-neo-black hover:text-neo-pink transition-colors"
+                title="LinkedIn"
+              >
+                <Linkedin className="w-5 h-5" />
+              </a>
+            )}
+            {secondaryRoles.slice(0, 1).map((role) => (
+              <span
+                key={role}
+                className="text-[8px] font-mono border-2 border-neo-black px-1.5 py-0.5 bg-white uppercase truncate font-bold"
+              >
+                {role}
               </span>
             ))}
           </div>
         </div>
+      </div>
+
+      {/* Bento Bio */}
+      {bio && (
+        <div className="p-4 border-b-4 border-neo-black bg-white font-sans text-xs font-bold leading-normal text-neo-black/75 line-clamp-2 italic">
+          &quot;{bio}&quot;
+        </div>
       )}
 
-      <div className="mt-5 pt-4 border-t-[3px] border-neo-black flex items-center justify-between gap-3">
-        <span className="text-[10px] font-black uppercase tracking-wider text-neo-black/60">
-          Clique para ver o veredito
-        </span>
-
-        <div className="flex items-center gap-2 text-neo-black">
-          <Sparkles className="w-4 h-4" aria-hidden="true" />
-          <span className="text-xs font-black uppercase">
-            {profile.roastBrutal || profile.roastMild ? "Sina disponível" : "Gerar sina"}
-          </span>
+      {/* Bento Skills Chart */}
+      {skills && (
+        <div className="border-b-4 border-neo-black bg-neo-bg">
+          <SkillRadar skills={skills} size="sm" />
         </div>
+      )}
+
+      {/* Bento Tags Section */}
+      <div className="p-4 flex-1 bg-white flex flex-col gap-3.5">
+        {canvas.loves && canvas.loves.length > 0 && (
+          <div className="space-y-1.5">
+            <span className="text-[9px] font-black uppercase tracking-wider text-neo-black bg-neo-lime border-2 border-neo-black px-1.5 py-0.5 shadow-[1.5px_1.5px_0_0_#000] -rotate-1 inline-block">
+              PAIXÕES
+            </span>
+            <div className="flex flex-wrap gap-1">
+              {canvas.loves.slice(0, 3).map((love) => (
+                <TagBadge
+                  key={love}
+                  tag={love}
+                  sentiment="love"
+                  className="text-[8px] px-1.5 py-0.5"
+                />
+              ))}
+            </div>
+          </div>
+        )}
+
+        {vetos.length > 0 && (
+          <div className="space-y-1.5">
+            <span className="text-[9px] font-black uppercase tracking-wider text-white bg-neo-pink border-2 border-neo-black px-1.5 py-0.5 shadow-[1.5px_1.5px_0_0_#000] rotate-1 inline-block">
+              VETOS
+            </span>
+            <div className="flex flex-wrap gap-1">
+              {vetos.slice(0, 3).map((v) => (
+                <TagBadge key={v} tag={v} sentiment="veto" className="text-[8px] px-1.5 py-0.5" />
+              ))}
+            </div>
+          </div>
+        )}
       </div>
-    </button>
+
+      {/* Bento Status Bar */}
+      <div className="p-4 border-t-4 border-neo-black bg-neo-bg/50 flex justify-between items-center">
+        <StatusBadge
+          status={status}
+          className="shadow-none border-2 text-[9px] py-1 px-2.5 bg-white"
+        />
+        {isClickable && (
+          <span className="font-heading font-black text-xs text-neo-black group-hover:translate-x-1 transition-transform">
+            VER SINA →
+          </span>
+        )}
+      </div>
+    </Card>
   );
 }
