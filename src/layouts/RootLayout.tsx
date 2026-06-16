@@ -1,8 +1,10 @@
 import { Zap, User as UserIcon, Menu, X, LogOut } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Outlet, NavLink, useLocation } from "react-router-dom";
 
 import { useAuth } from "../contexts/useAuth";
+
+import { messageRepository } from "@/infrastructure/firebase/messageRepository";
 
 export default function RootLayout() {
   const location = useLocation();
@@ -17,9 +19,23 @@ export default function RootLayout() {
     );
   }
 
+  const [unreadCount, setUnreadCount] = useState(0);
+
+  useEffect(() => {
+    if (!user) {
+      setUnreadCount(0);
+      return;
+    }
+    const unsubscribe = messageRepository.subscribeToUnreadCount(user.uid, (count) => {
+      setUnreadCount(count);
+    });
+    return () => unsubscribe();
+  }, [user]);
+
   const links = [
     { name: "ONBOARDING", path: "/onboarding" },
     { name: "DESCOBRIR", path: "/discover" },
+    ...(user ? [{ name: "MENSAGENS", path: "/messages" }] : []),
   ];
 
   const getHighResPhotoUrl = (url: string | null) => {
@@ -57,7 +73,7 @@ export default function RootLayout() {
                     key={link.path}
                     to={link.path}
                     className={`
-                      px-4 py-2 font-heading font-bold uppercase transition-transform hover:-translate-y-1 hover:shadow-[4px_4px_0_0_#000] border-[3px] border-transparent
+                      px-4 py-2 font-heading font-bold uppercase transition-transform hover:-translate-y-1 hover:shadow-[4px_4px_0_0_#000] border-[3px] border-transparent flex items-center gap-1.5
                       ${
                         isActive
                           ? "bg-neo-lime text-neo-black border-[3px] !border-neo-black shadow-[4px_4px_0_0_#000] translate-y-0"
@@ -66,6 +82,11 @@ export default function RootLayout() {
                     `}
                   >
                     {link.name}
+                    {link.path === "/messages" && unreadCount > 0 && (
+                      <span className="px-1.5 py-0.5 text-[9px] font-black bg-neo-pink text-white border-2 border-neo-black shadow-[1.5px_1.5px_0_0_#000] rounded-none animate-bounce shrink-0">
+                        {unreadCount}
+                      </span>
+                    )}
                   </NavLink>
                 );
               })}
@@ -133,7 +154,7 @@ export default function RootLayout() {
                     to={link.path}
                     onClick={() => setIsMobileMenuOpen(false)}
                     className={`
-                      px-4 py-3 font-heading font-bold text-lg uppercase text-center border-[3px] transition-transform active:translate-y-1 active:translate-x-1
+                      px-4 py-3 font-heading font-bold text-lg uppercase text-center border-[3px] transition-transform active:translate-y-1 active:translate-x-1 flex items-center justify-center gap-2
                       ${
                         isActive
                           ? "bg-neo-lime text-neo-black border-neo-black shadow-[4px_4px_0_0_#000] active:shadow-none"
@@ -142,6 +163,11 @@ export default function RootLayout() {
                     `}
                   >
                     {link.name}
+                    {link.path === "/messages" && unreadCount > 0 && (
+                      <span className="px-2 py-0.5 text-xs font-black bg-neo-pink text-white border-2 border-neo-black shadow-[2px_2px_0_0_#000] shrink-0">
+                        {unreadCount}
+                      </span>
+                    )}
                   </NavLink>
                 );
               })}

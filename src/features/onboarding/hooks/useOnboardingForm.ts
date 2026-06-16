@@ -184,7 +184,10 @@ export function useOnboardingForm(user: any) {
         updatedAt: serverTimestamp(),
       };
 
-      if (!form.createdAt) profileData.createdAt = serverTimestamp();
+      if (!form.createdAt) {
+        profileData.createdAt = serverTimestamp();
+        profileData.visibility = "public";
+      }
 
       await setDoc(doc(db, "profiles", user.uid), profileData, { merge: true });
       navigate("/discover");

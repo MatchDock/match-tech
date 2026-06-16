@@ -7,10 +7,10 @@ interface Props {
   // eslint-disable-next-line
   user: any; // TODO
   onNavigateOnboarding: () => void;
-  onNavigateGuilda: () => void;
+  onNavigateDiscover: () => void;
 }
 
-export function HeroSection({ user, onNavigateOnboarding, onNavigateGuilda }: Props) {
+export function HeroSection({ user, onNavigateOnboarding, onNavigateDiscover }: Props) {
   return (
     <section className="relative z-10 max-w-6xl mx-auto px-6 pt-16 md:pt-24 pb-16">
       <motion.div
@@ -51,7 +51,7 @@ export function HeroSection({ user, onNavigateOnboarding, onNavigateGuilda }: Pr
           </Button>
 
           {user && (
-            <Button variant="secondary" size="lg" onClick={onNavigateGuilda}>
+            <Button variant="secondary" size="lg" onClick={onNavigateDiscover}>
               VER PERFIS
             </Button>
           )}
