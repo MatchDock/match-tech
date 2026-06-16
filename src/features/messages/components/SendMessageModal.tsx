@@ -1,6 +1,7 @@
 import { Send, AlertTriangle } from "lucide-react";
 import { motion } from "motion/react";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import { useAuth } from "@/contexts/useAuth";
 import { messageRepository } from "@/infrastructure/firebase/messageRepository";
@@ -19,6 +20,7 @@ export function SendMessageModal({
   onSuccess,
 }: SendMessageModalProps) {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [text, setText] = useState("");
   const [isSending, setIsSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -55,6 +57,8 @@ export function SendMessageModal({
       setText("");
       if (onSuccess) onSuccess();
       onClose();
+      // Redirect to the conversation thread so the user can see the full history
+      navigate(`/messages?with=${receiverId}`);
     } catch (err) {
       setError("Erro ao enviar mensagem. Tente novamente.");
       console.error(err);
