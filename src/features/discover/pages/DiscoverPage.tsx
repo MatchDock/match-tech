@@ -81,7 +81,7 @@ export default function DiscoverPage() {
             receiverId={contactTarget.id}
             receiverName={contactTarget.name}
             onClose={() => setContactTarget(null)}
-            onSuccess={() => showToast("Sinal enviado com sucesso!", "info")}
+            onSuccess={() => showToast("Mensagem enviada com sucesso!", "info")}
           />
         )}
       </AnimatePresence>

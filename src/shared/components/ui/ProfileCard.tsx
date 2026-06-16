@@ -353,7 +353,7 @@ export default function ProfileCard({
               }}
               className="px-3 py-1.5 bg-neo-cyan text-neo-black border-2 border-neo-black text-[10px] font-black uppercase tracking-wider shadow-[2px_2px_0_0_#000] active:translate-y-[1px] active:shadow-none hover:bg-white transition-all cursor-pointer flex items-center gap-1 shrink-0"
             >
-              MANDAR SINAL 💬
+              MANDAR MENSAGEM 💬
             </button>
           )
         )}

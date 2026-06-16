@@ -99,7 +99,7 @@ export function SendMessageModal({
               <Send className="w-8 h-8 relative z-10 shrink-0" />
               <div className="relative z-10">
                 <h2 className="text-xl sm:text-2xl font-heading uppercase m-0 leading-none">
-                  Mandar Sinal_
+                  Enviar Mensagem_
                 </h2>
                 <p className="text-white font-mono mt-1 text-xs truncate">
                   DESTINATÁRIO: {receiverName}
@@ -155,7 +155,7 @@ export function SendMessageModal({
                   className="flex-1 py-3 border-[3px] border-black bg-neo-cyan text-neo-black text-xs font-black uppercase tracking-widest transition-all cursor-pointer shadow-[3px_3px_0_0_#000] hover:bg-white active:translate-y-1 active:shadow-none"
                   disabled={isSending}
                 >
-                  {isSending ? "Enviando..." : "ENVIAR SINAL ⚡"}
+                  {isSending ? "Enviando..." : "ENVIAR MENSAGEM ⚡"}
                 </button>
               </div>
             </form>

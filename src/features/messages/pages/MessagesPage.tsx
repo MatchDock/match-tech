@@ -132,7 +132,7 @@ export default function MessagesPage() {
           </h3>
           <p className="font-bold text-xs text-neo-black/55 max-w-sm">
             Fique atento! Se algum operador der match ou quiser você na equipe deles, eles enviarão
-            um sinal direto para cá.
+            uma mensagem direta para cá.
           </p>
         </div>
       ) : (
