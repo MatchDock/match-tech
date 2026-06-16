@@ -6,7 +6,6 @@ import {
   deleteDoc,
   query,
   where,
-  orderBy,
   onSnapshot,
   serverTimestamp,
   writeBatch,
@@ -21,6 +20,31 @@ import { db } from "@/shared/lib/firebase/firebase.client";
  */
 export function makeConversationId(uidA: string, uidB: string): string {
   return [uidA, uidB].sort().join("_");
+}
+
+function getMessageTime(createdAt: unknown): number {
+  if (!createdAt) return Date.now();
+  if (createdAt instanceof Date) {
+    return createdAt.getTime();
+  }
+  if (typeof createdAt === "number") {
+    return createdAt;
+  }
+  if (typeof createdAt === "string") {
+    const parsed = Date.parse(createdAt);
+    return isNaN(parsed) ? 0 : parsed;
+  }
+  const val = createdAt as Record<string, unknown>;
+  if (typeof val.toMillis === "function") {
+    return (val.toMillis as () => number)();
+  }
+  if (typeof val.toDate === "function") {
+    return (val.toDate as () => Date)().getTime();
+  }
+  if (typeof val.seconds === "number") {
+    return val.seconds * 1000;
+  }
+  return 0;
 }
 
 export class FirebaseMessageRepository {
@@ -104,11 +128,7 @@ export class FirebaseMessageRepository {
       // Sort messages inside each conversation and compute last message
       const conversations: Conversation[] = [];
       for (const conv of convMap.values()) {
-        conv.messages.sort((a, b) => {
-          const aMs = a.createdAt?.toMillis() ?? 0;
-          const bMs = b.createdAt?.toMillis() ?? 0;
-          return aMs - bMs;
-        });
+        conv.messages.sort((a, b) => getMessageTime(a.createdAt) - getMessageTime(b.createdAt));
         const last = conv.messages[conv.messages.length - 1];
         conv.lastMessage = last?.text ?? "";
         conv.lastMessageAt = last?.createdAt ?? null;
@@ -116,31 +136,23 @@ export class FirebaseMessageRepository {
       }
 
       // Sort conversations by most recent message
-      conversations.sort((a, b) => {
-        const aMs = a.lastMessageAt?.toMillis() ?? 0;
-        const bMs = b.lastMessageAt?.toMillis() ?? 0;
-        return bMs - aMs;
-      });
+      conversations.sort(
+        (a, b) => getMessageTime(b.lastMessageAt) - getMessageTime(a.lastMessageAt),
+      );
 
       onUpdate(conversations);
     };
 
-    const sentQuery = query(
-      this.getCollection(),
-      where("senderId", "==", userId),
-      orderBy("createdAt", "asc"),
-    );
+    const sentQuery = query(this.getCollection(), where("senderId", "==", userId));
 
-    const receivedQuery = query(
-      this.getCollection(),
-      where("receiverId", "==", userId),
-      orderBy("createdAt", "asc"),
-    );
+    const receivedQuery = query(this.getCollection(), where("receiverId", "==", userId));
 
     const unsubSent = onSnapshot(
       sentQuery,
       (snapshot) => {
-        sentMessages = snapshot.docs.map((d) => ({ id: d.id, ...d.data() }) as Message);
+        sentMessages = snapshot.docs.map(
+          (d) => ({ id: d.id, ...d.data({ serverTimestamps: "estimate" }) }) as Message,
+        );
         rebuild();
       },
       (err) => onError?.(err),
@@ -149,7 +161,9 @@ export class FirebaseMessageRepository {
     const unsubReceived = onSnapshot(
       receivedQuery,
       (snapshot) => {
-        receivedMessages = snapshot.docs.map((d) => ({ id: d.id, ...d.data() }) as Message);
+        receivedMessages = snapshot.docs.map(
+          (d) => ({ id: d.id, ...d.data({ serverTimestamps: "estimate" }) }) as Message,
+        );
         rebuild();
       },
       (err) => onError?.(err),
@@ -169,19 +183,16 @@ export class FirebaseMessageRepository {
     onUpdate: (messages: Message[]) => void,
     onError?: (error: Error) => void,
   ) {
-    const q = query(
-      this.getCollection(),
-      where("conversationId", "==", conversationId),
-      orderBy("createdAt", "asc"),
-    );
+    const q = query(this.getCollection(), where("conversationId", "==", conversationId));
 
     return onSnapshot(
       q,
       (snapshot) => {
         const messages: Message[] = snapshot.docs.map((d) => ({
           id: d.id,
-          ...d.data(),
+          ...d.data({ serverTimestamps: "estimate" }),
         })) as Message[];
+        messages.sort((a, b) => getMessageTime(a.createdAt) - getMessageTime(b.createdAt));
         onUpdate(messages);
       },
       (err) => onError?.(err),
@@ -211,6 +222,27 @@ export class FirebaseMessageRepository {
   }
 
   /**
+   * Mark all unread messages for a user as read.
+   */
+  async markAllAsRead(userId: string): Promise<void> {
+    const q = query(
+      this.getCollection(),
+      where("receiverId", "==", userId),
+      where("read", "==", false),
+    );
+
+    const { getDocs } = await import("firebase/firestore");
+    const snapshot = await getDocs(q);
+    if (snapshot.empty) return;
+
+    const batch = writeBatch(db);
+    snapshot.docs.forEach((d) => {
+      batch.update(d.ref, { read: true });
+    });
+    await batch.commit();
+  }
+
+  /**
    * Subscribe to inbox (legacy — kept for backwards compat with RootLayout unread badge).
    */
   subscribeToInbox(
@@ -218,19 +250,16 @@ export class FirebaseMessageRepository {
     onUpdate: (messages: Message[]) => void,
     onError?: (error: Error) => void,
   ) {
-    const q = query(
-      this.getCollection(),
-      where("receiverId", "==", userId),
-      orderBy("createdAt", "desc"),
-    );
+    const q = query(this.getCollection(), where("receiverId", "==", userId));
 
     return onSnapshot(
       q,
       (snapshot) => {
         const messages: Message[] = snapshot.docs.map((d) => ({
           id: d.id,
-          ...d.data(),
+          ...d.data({ serverTimestamps: "estimate" }),
         })) as Message[];
+        messages.sort((a, b) => getMessageTime(b.createdAt) - getMessageTime(a.createdAt));
         onUpdate(messages);
       },
       (err) => {

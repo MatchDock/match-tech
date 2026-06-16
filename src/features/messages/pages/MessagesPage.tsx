@@ -1,3 +1,4 @@
+import { CheckCheck } from "lucide-react";
 import { motion } from "motion/react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
@@ -52,21 +53,30 @@ export default function MessagesPage() {
     setMobileView("thread");
   }, [user, withUserId]);
 
-  // Mark conversation as read when it's opened
+  // Mark conversation as read when it's opened or when new messages arrive
   useEffect(() => {
     if (!user || !activeConversationId) return;
-    messageRepository.markConversationAsRead(activeConversationId, user.uid).catch(console.error);
-  }, [user, activeConversationId]);
+    const activeConv = conversations.find((c) => c.id === activeConversationId);
+    if (activeConv && activeConv.unreadCount > 0) {
+      messageRepository.markConversationAsRead(activeConversationId, user.uid).catch(console.error);
+    }
+  }, [user, activeConversationId, conversations]);
 
   const activeConversation = useMemo(
     () => conversations.find((c) => c.id === activeConversationId) ?? null,
     [conversations, activeConversationId],
   );
 
-  const handleSelectConversation = useCallback((conv: Conversation) => {
-    setActiveConversationId(conv.id);
-    setMobileView("thread");
-  }, []);
+  const handleSelectConversation = useCallback(
+    (conv: Conversation) => {
+      setActiveConversationId(conv.id);
+      setMobileView("thread");
+      if (user && conv.unreadCount > 0) {
+        messageRepository.markConversationAsRead(conv.id, user.uid).catch(console.error);
+      }
+    },
+    [user],
+  );
 
   const handleBack = useCallback(() => {
     setMobileView("list");
@@ -75,6 +85,11 @@ export default function MessagesPage() {
   const handleSend = useCallback(
     async (text: string) => {
       if (!user || !activeConversation) return;
+      if (activeConversation.unreadCount > 0) {
+        messageRepository
+          .markConversationAsRead(activeConversationId!, user.uid)
+          .catch(console.error);
+      }
       await messageRepository.sendMessage({
         senderId: user.uid,
         senderName: user.displayName ?? "Operador Anônimo",
@@ -83,12 +98,26 @@ export default function MessagesPage() {
         text,
       });
     },
-    [user, activeConversation],
+    [user, activeConversation, activeConversationId],
   );
 
   const handleDelete = useCallback(async (messageId: string) => {
     await messageRepository.deleteMessage(messageId);
   }, []);
+
+  const totalUnreadCount = useMemo(
+    () => conversations.reduce((acc, c) => acc + c.unreadCount, 0),
+    [conversations],
+  );
+
+  const handleMarkAllAsRead = useCallback(async () => {
+    if (!user) return;
+    try {
+      await messageRepository.markAllAsRead(user.uid);
+    } catch (err) {
+      console.error("Erro ao marcar todas como lidas:", err);
+    }
+  }, [user]);
 
   return (
     <motion.div
@@ -97,7 +126,7 @@ export default function MessagesPage() {
       className="max-w-7xl mx-auto py-8 px-4 md:px-6"
     >
       {/* Page Header */}
-      <div className="mb-6 flex items-end justify-between gap-4">
+      <div className="mb-6 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
         <div>
           <h1 className="font-heading font-black text-3xl md:text-5xl uppercase tracking-tighter leading-none">
             Mensagens_
@@ -108,8 +137,19 @@ export default function MessagesPage() {
               : "Nenhuma conversa ainda"}
           </p>
         </div>
-        <div className="bg-neo-black text-neo-lime font-mono text-xs px-3 py-1.5 border-2 border-neo-black font-bold flex items-center gap-2 shadow-[2px_2px_0_0_#000] shrink-0">
-          {conversations.reduce((acc, c) => acc + c.unreadCount, 0)} não lidas
+        <div className="flex items-center gap-3 self-start sm:self-end">
+          {totalUnreadCount > 0 && (
+            <button
+              onClick={handleMarkAllAsRead}
+              className="bg-neo-lime hover:bg-white text-neo-black font-mono text-xs px-3 py-1.5 border-2 border-neo-black font-bold flex items-center gap-2 shadow-[2px_2px_0_0_#000] active:translate-y-[1px] active:shadow-none transition-all cursor-pointer"
+            >
+              <CheckCheck className="w-4 h-4" />
+              Marcar todas como lidas
+            </button>
+          )}
+          <div className="bg-neo-black text-neo-lime font-mono text-xs px-3 py-1.5 border-2 border-neo-black font-bold flex items-center gap-2 shadow-[2px_2px_0_0_#000] shrink-0">
+            {totalUnreadCount} não lidas
+          </div>
         </div>
       </div>
 
@@ -156,7 +196,6 @@ export default function MessagesPage() {
               <ChatThread
                 conversation={activeConversation}
                 currentUserId={user!.uid}
-                currentUserName={user?.displayName ?? "Operador Anônimo"}
                 onSend={handleSend}
                 onDelete={handleDelete}
                 onBack={handleBack}
