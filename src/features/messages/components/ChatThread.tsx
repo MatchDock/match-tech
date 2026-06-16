@@ -1,4 +1,4 @@
-import { Send, Trash2, ArrowLeft } from "lucide-react";
+import { Send, Trash2, ArrowLeft, Smile } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 
@@ -37,6 +37,80 @@ function formatDateSeparator(ts: { toMillis: () => number } | null): string {
   if (isYesterday) return "ONTEM";
   return date.toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit", year: "numeric" });
 }
+const EMOJI_LIST = [
+  // Linha 1: Expressões clássicas
+  "😂",
+  "🤣",
+  "😊",
+  "😍",
+  "🥰",
+  "😎",
+  "🤔",
+  "🥳",
+  // Linha 2: Expressões extras
+  "😅",
+  "😏",
+  "🙄",
+  "🤨",
+  "😐",
+  "😢",
+  "😭",
+  "😱",
+  // Linha 3: Gestos / Mãos
+  "👍",
+  "👎",
+  "👊",
+  "✌️",
+  "👌",
+  "👋",
+  "🙌",
+  "👏",
+  // Linha 4: Gestos extras
+  "🙏",
+  "🤝",
+  "💪",
+  "✍️",
+  "🤞",
+  "✊",
+  "❤️",
+  "💖",
+  // Linha 5: Tech / Dev
+  "🚀",
+  "💻",
+  "💡",
+  "🛠️",
+  "🔧",
+  "✨",
+  "🔥",
+  "💯",
+  // Linha 6: Objetos / Trabalho
+  "🎯",
+  "🎉",
+  "🎈",
+  "👀",
+  "🧠",
+  "💼",
+  "📅",
+  "📝",
+  // Linha 7: Comida & Bebida
+  "🍕",
+  "🍔",
+  "🍟",
+  "🍿",
+  "🍪",
+  "🍩",
+  "🍦",
+  "🍫",
+  // Linha 8: Bebidas / Social
+  "☕",
+  "🍵",
+  "🍺",
+  "🍻",
+  "🍹",
+  "🍷",
+  "🥤",
+  "🧉",
+];
 
 function groupMessagesByDay(messages: Message[]): Array<{ date: string; messages: Message[] }> {
   const groups: Array<{ date: string; messages: Message[] }> = [];
@@ -61,6 +135,7 @@ export function ChatThread({
 }: ChatThreadProps) {
   const [text, setText] = useState("");
   const [sending, setSending] = useState(false);
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -74,14 +149,45 @@ export function ChatThread({
     e.preventDefault();
     const trimmed = text.trim();
     if (!trimmed || sending) return;
+
+    // Clear and focus instantly to feel smooth like WhatsApp/Slack
+    setText("");
+    setShowEmojiPicker(false);
+    if (textareaRef.current) {
+      textareaRef.current.style.height = "auto";
+      textareaRef.current.focus();
+    }
     setSending(true);
+
     try {
       await onSend(trimmed);
-      setText("");
-      textareaRef.current?.focus();
+    } catch (err) {
+      console.error("Failed to send message:", err);
+      // Restore text if send failed
+      setText(trimmed);
     } finally {
       setSending(false);
+      // Refocus in next macro-task to make sure disabled state does not block it
+      setTimeout(() => {
+        textareaRef.current?.focus();
+      }, 0);
     }
+  };
+
+  const insertEmoji = (emoji: string) => {
+    if (!textareaRef.current) return;
+    const textarea = textareaRef.current;
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const currentText = text;
+    const newText = currentText.substring(0, start) + emoji + currentText.substring(end);
+    setText(newText);
+
+    const newCursorPos = start + emoji.length;
+    setTimeout(() => {
+      textarea.focus();
+      textarea.setSelectionRange(newCursorPos, newCursorPos);
+    }, 0);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -205,15 +311,46 @@ export function ChatThread({
       {/* Input Area */}
       <form
         onSubmit={handleSend}
-        className="border-t-4 border-neo-black bg-white p-3 flex gap-2 shrink-0"
+        className="relative border-t-4 border-neo-black bg-white p-3 flex gap-2 shrink-0 items-end"
       >
+        {showEmojiPicker && (
+          <>
+            <div className="fixed inset-0 z-10" onClick={() => setShowEmojiPicker(false)} />
+            <div className="absolute bottom-full left-3 mb-2 bg-white border-[3px] border-neo-black shadow-[4px_4px_0_0_#000] p-3 w-72 z-20">
+              <p className="font-heading font-black text-[10px] uppercase tracking-wider text-neo-black/40 mb-2 select-none">
+                Reações & Emojis
+              </p>
+              <div className="grid grid-cols-8 gap-1.5">
+                {EMOJI_LIST.map((emoji) => (
+                  <button
+                    key={emoji}
+                    type="button"
+                    onClick={() => insertEmoji(emoji)}
+                    className="w-6.5 h-6.5 text-base flex items-center justify-center hover:bg-neo-lime/30 active:bg-neo-lime/50 border border-transparent hover:border-neo-black transition-all cursor-pointer select-none rounded"
+                  >
+                    {emoji}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </>
+        )}
+
+        <button
+          type="button"
+          onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+          className="p-2 bg-white border-[3px] border-neo-black shadow-[2px_2px_0_0_#000] hover:-translate-y-[1px] hover:shadow-[3px_3px_0_0_#000] active:translate-y-[1px] active:translate-x-[1px] active:shadow-none transition-all shrink-0 h-10 w-10 flex items-center justify-center cursor-pointer mb-0.5"
+          title="Escolher emoji"
+        >
+          <Smile className="w-5 h-5 text-neo-black" />
+        </button>
+
         <textarea
           ref={textareaRef}
           value={text}
           onChange={(e) => setText(e.target.value)}
           onKeyDown={handleKeyDown}
           placeholder={`Mensagem para ${conversation.partnerName}… (Enter para enviar)`}
-          disabled={sending}
           rows={1}
           className="flex-1 resize-none px-3 py-2 font-mono text-sm border-[3px] border-neo-black focus:outline-none focus:shadow-none focus:translate-y-[1px] focus:translate-x-[1px] shadow-[3px_3px_0_0_#000] transition-all placeholder:text-neo-black/30 max-h-32 overflow-y-auto"
           style={{ height: "auto" }}
@@ -226,7 +363,7 @@ export function ChatThread({
         <button
           type="submit"
           disabled={!text.trim() || sending}
-          className="px-4 py-2 bg-neo-black text-neo-lime border-[3px] border-neo-black font-heading font-black uppercase text-xs shadow-[3px_3px_0_0_#B8FF29] hover:-translate-y-[1px] hover:shadow-[4px_4px_0_0_#B8FF29] active:translate-y-[1px] active:translate-x-[1px] active:shadow-none transition-all disabled:opacity-40 disabled:cursor-not-allowed disabled:translate-y-0 disabled:shadow-[3px_3px_0_0_#B8FF29] flex items-center gap-1.5 shrink-0"
+          className="px-4 py-2 bg-neo-black text-neo-lime border-[3px] border-neo-black font-heading font-black uppercase text-xs shadow-[3px_3px_0_0_#B8FF29] hover:-translate-y-[1px] hover:shadow-[4px_4px_0_0_#B8FF29] active:translate-y-[1px] active:translate-x-[1px] active:shadow-none transition-all disabled:opacity-40 disabled:cursor-not-allowed disabled:translate-y-0 disabled:shadow-[3px_3px_0_0_#B8FF29] flex items-center gap-1.5 shrink-0 h-10 mb-0.5"
         >
           <Send className="w-3.5 h-3.5" />
           {sending ? "…" : "ENVIAR"}
