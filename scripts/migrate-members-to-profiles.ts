@@ -34,12 +34,28 @@ function initAdmin() {
   const raw = process.env.FIREBASE_SERVICE_ACCOUNT;
   if (raw) {
     const parsed = JSON.parse(raw) as {
-      projectId: string;
-      clientEmail: string;
-      privateKey: string;
+      projectId?: string;
+      project_id?: string;
+      clientEmail?: string;
+      client_email?: string;
+      privateKey?: string;
+      private_key?: string;
     };
+    
+    const projectId = parsed.projectId ?? parsed.project_id;
+    const clientEmail = parsed.clientEmail ?? parsed.client_email;
+    const privateKey = parsed.privateKey ?? parsed.private_key;
+
+    if (!projectId || !clientEmail || !privateKey) {
+      throw new Error("Missing projectId, clientEmail, or privateKey in FIREBASE_SERVICE_ACCOUNT env var.");
+    }
+
     return initializeApp({
-      credential: cert({ ...parsed, privateKey: parsed.privateKey.replace(/\\n/g, "\n") }),
+      credential: cert({
+        projectId,
+        clientEmail,
+        privateKey: privateKey.replace(/\\n/g, "\n"),
+      }),
     });
   }
 
@@ -91,7 +107,7 @@ function toProfileDoc(memberId: string, data: MemberDoc): Record<string, unknown
 
 async function migrate(dryRun: boolean) {
   const app = initAdmin();
-  const db = getFirestore(app);
+  const db = getFirestore(app, process.env.VITE_FIREBASE_FIRESTORE_DATABASE_ID || "ai-studio-a1333439-9ab3-4356-9f79-ac211cc82b20");
 
   const membersSnap = await db.collection("members").get();
 

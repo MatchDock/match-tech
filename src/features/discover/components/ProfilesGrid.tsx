@@ -7,10 +7,16 @@ import ProfileCard from "@/shared/components/ui/ProfileCard";
 interface ProfilesGridProps {
   profiles: Profile[];
   onProfileClick: (profile: Profile) => void;
+  onContactClick?: (profile: Profile) => void;
   currentUserId?: string;
 }
 
-export function ProfilesGrid({ profiles, onProfileClick, currentUserId }: ProfilesGridProps) {
+export function ProfilesGrid({
+  profiles,
+  onProfileClick,
+  onContactClick,
+  currentUserId,
+}: ProfilesGridProps) {
   if (profiles.length === 0) {
     return <EmptyProfilesState />;
   }
@@ -25,6 +31,7 @@ export function ProfilesGrid({ profiles, onProfileClick, currentUserId }: Profil
             profile={p}
             colorIndex={idx}
             onClick={isOwn ? () => onProfileClick(p) : undefined}
+            onContactClick={onContactClick ? () => onContactClick(p) : undefined}
           />
         );
       })}

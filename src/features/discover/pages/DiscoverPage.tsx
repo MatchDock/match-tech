@@ -1,4 +1,5 @@
 import { AnimatePresence, motion } from "motion/react";
+import { useState } from "react";
 
 import { AccessDeniedState } from "../components/AccessDeniedState";
 import { DiscoverFilters } from "../components/DiscoverFilters";
@@ -12,6 +13,7 @@ import { useRoastProfile } from "../hooks/useRoastProfile";
 import { useToast } from "../hooks/useToast";
 
 import { useAuth } from "@/contexts/useAuth";
+import { SendMessageModal } from "@/features/messages/components/SendMessageModal";
 
 export default function DiscoverPage() {
   const { user } = useAuth();
@@ -22,6 +24,8 @@ export default function DiscoverPage() {
   const filters = useDiscoverFilters(profiles);
 
   const roast = useRoastProfile({ showToast });
+
+  const [contactTarget, setContactTarget] = useState<{ id: string; name: string } | null>(null);
 
   return (
     <motion.div
@@ -48,6 +52,12 @@ export default function DiscoverPage() {
                 roast.openProfile(profile);
               }
             }}
+            onContactClick={(profile) => {
+              setContactTarget({
+                id: profile.id || profile.userId!,
+                name: profile.name || "Operador Anônimo",
+              });
+            }}
           />
         </div>
       )}
@@ -61,6 +71,17 @@ export default function DiscoverPage() {
             onClose={roast.closeProfile}
             onSelectPersona={roast.setActivePersonaView}
             onGenerateRoast={roast.executeRoast}
+          />
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {contactTarget && (
+          <SendMessageModal
+            receiverId={contactTarget.id}
+            receiverName={contactTarget.name}
+            onClose={() => setContactTarget(null)}
+            onSuccess={() => showToast("Mensagem enviada com sucesso!", "info")}
           />
         )}
       </AnimatePresence>

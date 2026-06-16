@@ -12,6 +12,7 @@ import { cn } from "@/shared/lib/utils/cn";
 interface ProfileCardProps {
   profile: Profile;
   onClick?: () => void;
+  onContactClick?: () => void;
   compact?: boolean;
   className?: string;
   colorIndex?: number;
@@ -20,6 +21,7 @@ interface ProfileCardProps {
 export default function ProfileCard({
   profile,
   onClick,
+  onContactClick,
   compact = false,
   className,
   colorIndex = 0,
@@ -218,7 +220,7 @@ export default function ProfileCard({
             <span className="text-[9px] font-black uppercase tracking-wider text-neo-black bg-neo-lime border-2 border-neo-black px-1.5 py-0.5 shadow-[1.5px_1.5px_0_0_#000] -rotate-1 inline-block">
               PAIXÕES
             </span>
-            <div className="flex flex-wrap gap-1">
+            <div className="flex flex-wrap gap-1 items-center">
               {canvas.loves.slice(0, 3).map((love) => (
                 <TagBadge
                   key={love}
@@ -227,6 +229,70 @@ export default function ProfileCard({
                   className="text-[8px] px-1.5 py-0.5"
                 />
               ))}
+              {canvas.loves.length > 3 && (
+                <div className="relative group/tooltip">
+                  <span className="text-[8px] font-bold px-1.5 py-0.5 bg-neo-bg text-neo-black border-[1.5px] border-neo-black cursor-help inline-block">
+                    +{canvas.loves.length - 3}
+                  </span>
+
+                  {/* Tooltip Content */}
+                  <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-max max-w-[220px] z-50 pointer-events-none opacity-0 group-hover/tooltip:opacity-100 transition-opacity duration-200">
+                    <div className="bg-white border-[3px] border-neo-black p-2.5 shadow-[4px_4px_0px_0px_#000] flex flex-wrap gap-1.5">
+                      {canvas.loves.slice(3).map((love) => (
+                        <TagBadge
+                          key={love}
+                          tag={love}
+                          sentiment="love"
+                          className="text-[8px] px-1.5 py-0.5"
+                        />
+                      ))}
+                    </div>
+                    {/* Tooltip Arrow (Black) */}
+                    <div className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0 border-l-[8px] border-l-transparent border-t-[8px] border-t-neo-black border-r-[8px] border-r-transparent"></div>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {canvas.comfort && canvas.comfort.length > 0 && (
+          <div className="space-y-1.5">
+            <span className="text-[9px] font-black uppercase tracking-wider text-neo-black bg-neo-cyan border-2 border-neo-black px-1.5 py-0.5 shadow-[1.5px_1.5px_0_0_#000] rotate-0 inline-block">
+              OPERO BEM
+            </span>
+            <div className="flex flex-wrap gap-1 items-center">
+              {canvas.comfort.slice(0, 3).map((comfort) => (
+                <TagBadge
+                  key={comfort}
+                  tag={comfort}
+                  sentiment="comfort"
+                  className="text-[8px] px-1.5 py-0.5"
+                />
+              ))}
+              {canvas.comfort.length > 3 && (
+                <div className="relative group/tooltip">
+                  <span className="text-[8px] font-bold px-1.5 py-0.5 bg-neo-bg text-neo-black border-[1.5px] border-neo-black cursor-help inline-block">
+                    +{canvas.comfort.length - 3}
+                  </span>
+
+                  {/* Tooltip Content */}
+                  <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-max max-w-[220px] z-50 pointer-events-none opacity-0 group-hover/tooltip:opacity-100 transition-opacity duration-200">
+                    <div className="bg-white border-[3px] border-neo-black p-2.5 shadow-[4px_4px_0px_0px_#000] flex flex-wrap gap-1.5">
+                      {canvas.comfort.slice(3).map((comfort) => (
+                        <TagBadge
+                          key={comfort}
+                          tag={comfort}
+                          sentiment="comfort"
+                          className="text-[8px] px-1.5 py-0.5"
+                        />
+                      ))}
+                    </div>
+                    {/* Tooltip Arrow (Black) */}
+                    <div className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0 border-l-[8px] border-l-transparent border-t-[8px] border-t-neo-black border-r-[8px] border-r-transparent"></div>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         )}
@@ -236,25 +302,60 @@ export default function ProfileCard({
             <span className="text-[9px] font-black uppercase tracking-wider text-white bg-neo-pink border-2 border-neo-black px-1.5 py-0.5 shadow-[1.5px_1.5px_0_0_#000] rotate-1 inline-block">
               VETOS
             </span>
-            <div className="flex flex-wrap gap-1">
+            <div className="flex flex-wrap gap-1 items-center">
               {vetos.slice(0, 3).map((v) => (
                 <TagBadge key={v} tag={v} sentiment="veto" className="text-[8px] px-1.5 py-0.5" />
               ))}
+              {vetos.length > 3 && (
+                <div className="relative group/tooltip">
+                  <span className="text-[8px] font-bold px-1.5 py-0.5 bg-neo-bg text-neo-black border-[1.5px] border-neo-black cursor-help inline-block">
+                    +{vetos.length - 3}
+                  </span>
+
+                  {/* Tooltip Content */}
+                  <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-max max-w-[220px] z-50 pointer-events-none opacity-0 group-hover/tooltip:opacity-100 transition-opacity duration-200">
+                    <div className="bg-white border-[3px] border-neo-black p-2.5 shadow-[4px_4px_0px_0px_#000] flex flex-wrap gap-1.5">
+                      {vetos.slice(3).map((v) => (
+                        <TagBadge
+                          key={v}
+                          tag={v}
+                          sentiment="veto"
+                          className="text-[8px] px-1.5 py-0.5"
+                        />
+                      ))}
+                    </div>
+                    {/* Tooltip Arrow (Black) */}
+                    <div className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0 border-l-[8px] border-l-transparent border-t-[8px] border-t-neo-black border-r-[8px] border-r-transparent"></div>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         )}
       </div>
 
       {/* Bento Status Bar */}
-      <div className="p-4 border-t-4 border-neo-black bg-neo-bg/50 flex justify-between items-center">
+      <div className="p-4 border-t-4 border-neo-black bg-neo-bg/50 flex justify-between items-center gap-2">
         <StatusBadge
           status={status}
-          className="shadow-none border-2 text-[9px] py-1 px-2.5 bg-white"
+          className="shadow-none border-2 text-[9px] py-1 px-2.5 bg-white shrink-0"
         />
-        {isClickable && (
+        {isClickable ? (
           <span className="font-heading font-black text-xs text-neo-black group-hover:translate-x-1 transition-transform">
             VER SINA →
           </span>
+        ) : (
+          onContactClick && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onContactClick();
+              }}
+              className="px-3 py-1.5 bg-neo-cyan text-neo-black border-2 border-neo-black text-[10px] font-black uppercase tracking-wider shadow-[2px_2px_0_0_#000] active:translate-y-[1px] active:shadow-none hover:bg-white transition-all cursor-pointer flex items-center gap-1 shrink-0"
+            >
+              MANDAR MENSAGEM 💬
+            </button>
+          )
         )}
       </div>
     </Card>

@@ -45,11 +45,12 @@ export const router = createBrowserRouter([
             Component: m.default,
           })),
       },
+
       {
-        path: "guilda",
+        path: "messages",
         loader: requireAuth,
         lazy: () =>
-          import("@/features/guilda/pages/GuildaPage").then((m) => ({
+          import("@/features/messages/pages/MessagesPage").then((m) => ({
             Component: m.default,
           })),
       },
