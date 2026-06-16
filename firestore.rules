@@ -110,7 +110,7 @@ service cloud.firestore {
         && profileId == request.auth.uid
         && isValidProfile(incoming())
         && incoming().createdAt == request.time
-        && incoming().keys().hasOnly(['userId', 'name', 'photoURL', 'github', 'linkedin', 'bio', 'primaryRole', 'secondaryRoles', 'skills', 'canvas', 'status', 'squadId', 'eventId', 'roast', 'roastBrutal', 'roastMild', 'createdAt', 'updatedAt']);
+        && incoming().keys().hasOnly(['userId', 'name', 'photoURL', 'github', 'linkedin', 'bio', 'primaryRole', 'secondaryRoles', 'skills', 'canvas', 'status', 'squadId', 'eventId', 'roast', 'roastBrutal', 'roastMild', 'createdAt', 'updatedAt', 'visibility']);
 
       allow update: if isSignedIn()
         && isValidId(profileId)
@@ -118,7 +118,7 @@ service cloud.firestore {
         && incoming().userId == existing().userId
         && incoming().createdAt == existing().createdAt
         && (
-          (incoming().diff(existing()).affectedKeys().hasOnly(['skills', 'canvas', 'name', 'photoURL', 'github', 'linkedin', 'bio', 'primaryRole', 'secondaryRoles', 'status', 'squadId', 'eventId', 'updatedAt', 'roast', 'roastBrutal', 'roastMild']))
+          (incoming().diff(existing()).affectedKeys().hasOnly(['skills', 'canvas', 'name', 'photoURL', 'github', 'linkedin', 'bio', 'primaryRole', 'secondaryRoles', 'status', 'squadId', 'eventId', 'updatedAt', 'roast', 'roastBrutal', 'roastMild', 'visibility']))
           ||
           false
         );
@@ -151,6 +151,32 @@ service cloud.firestore {
       allow read: if true;
       allow create: if isSignedIn() && userId == request.auth.uid && isValidLike(incoming());
       allow delete: if isSignedIn() && userId == request.auth.uid;
+    }
+
+    function isValidMessage(data) {
+      return data.keys().hasAll(['senderId', 'senderName', 'receiverId', 'receiverName', 'text', 'createdAt', 'read'])
+        && data.keys().size() == 7
+        && data.senderId == request.auth.uid
+        && data.senderName is string && data.senderName.size() > 0 && data.senderName.size() <= 100
+        && data.receiverId is string && data.receiverId.size() > 0 && data.receiverId.size() <= 128
+        && data.receiverName is string && data.receiverName.size() > 0 && data.receiverName.size() <= 100
+        && data.text is string && data.text.size() > 0 && data.text.size() <= 5000
+        && data.read is bool;
+    }
+
+    match /messages/{messageId} {
+      allow create: if isSignedIn()
+        && isValidId(messageId)
+        && isValidMessage(incoming())
+        && incoming().createdAt == request.time;
+      
+      allow read, delete: if isSignedIn()
+        && (resource.data.receiverId == request.auth.uid || resource.data.senderId == request.auth.uid);
+        
+      allow update: if isSignedIn()
+        && (resource.data.receiverId == request.auth.uid)
+        && incoming().diff(existing()).affectedKeys().hasOnly(['read'])
+        && incoming().read is bool;
     }
   }
 }

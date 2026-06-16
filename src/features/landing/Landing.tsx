@@ -1,4 +1,4 @@
-﻿import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import { CtaSection } from "./components/CtaSection";
 import { Footer } from "./components/Footer";
@@ -19,7 +19,7 @@ export default function Landing() {
       <HeroSection
         user={user}
         onNavigateOnboarding={() => navigate("/onboarding")}
-        onNavigateGuilda={() => navigate("/guilda")}
+        onNavigateDiscover={() => navigate("/discover")}
       />
       <HowItWorksSection steps={STEPS} />
       <CtaSection onNavigateOnboarding={() => navigate("/onboarding")} />

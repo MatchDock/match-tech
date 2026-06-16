@@ -12,6 +12,7 @@ import { cn } from "@/shared/lib/utils/cn";
 interface ProfileCardProps {
   profile: Profile;
   onClick?: () => void;
+  onContactClick?: () => void;
   compact?: boolean;
   className?: string;
   colorIndex?: number;
@@ -20,6 +21,7 @@ interface ProfileCardProps {
 export default function ProfileCard({
   profile,
   onClick,
+  onContactClick,
   compact = false,
   className,
   colorIndex = 0,
@@ -333,15 +335,27 @@ export default function ProfileCard({
       </div>
 
       {/* Bento Status Bar */}
-      <div className="p-4 border-t-4 border-neo-black bg-neo-bg/50 flex justify-between items-center">
+      <div className="p-4 border-t-4 border-neo-black bg-neo-bg/50 flex justify-between items-center gap-2">
         <StatusBadge
           status={status}
-          className="shadow-none border-2 text-[9px] py-1 px-2.5 bg-white"
+          className="shadow-none border-2 text-[9px] py-1 px-2.5 bg-white shrink-0"
         />
-        {isClickable && (
+        {isClickable ? (
           <span className="font-heading font-black text-xs text-neo-black group-hover:translate-x-1 transition-transform">
             VER SINA →
           </span>
+        ) : (
+          onContactClick && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onContactClick();
+              }}
+              className="px-3 py-1.5 bg-neo-cyan text-neo-black border-2 border-neo-black text-[10px] font-black uppercase tracking-wider shadow-[2px_2px_0_0_#000] active:translate-y-[1px] active:shadow-none hover:bg-white transition-all cursor-pointer flex items-center gap-1 shrink-0"
+            >
+              MANDAR SINAL 💬
+            </button>
+          )
         )}
       </div>
     </Card>

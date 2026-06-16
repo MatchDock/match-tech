@@ -181,6 +181,7 @@ export function useOnboardingForm(user: any) {
         },
         status: form.status,
         eventId: "tech_floripa_2026",
+        visibility: "public",
         updatedAt: serverTimestamp(),
       };
 
