@@ -154,14 +154,15 @@ service cloud.firestore {
     }
 
     function isValidMessage(data) {
-      return data.keys().hasAll(['senderId', 'senderName', 'receiverId', 'receiverName', 'text', 'createdAt', 'read'])
-        && data.keys().size() == 7
+      return data.keys().hasAll(['senderId', 'senderName', 'receiverId', 'receiverName', 'text', 'createdAt', 'read', 'conversationId'])
+        && data.keys().size() == 8
         && data.senderId == request.auth.uid
         && data.senderName is string && data.senderName.size() > 0 && data.senderName.size() <= 100
         && data.receiverId is string && data.receiverId.size() > 0 && data.receiverId.size() <= 128
         && data.receiverName is string && data.receiverName.size() > 0 && data.receiverName.size() <= 100
         && data.text is string && data.text.size() > 0 && data.text.size() <= 5000
-        && data.read is bool;
+        && data.read is bool
+        && data.conversationId is string && data.conversationId.size() > 0 && data.conversationId.size() <= 260;
     }
 
     match /messages/{messageId} {
@@ -169,8 +170,15 @@ service cloud.firestore {
         && isValidId(messageId)
         && isValidMessage(incoming())
         && incoming().createdAt == request.time;
-      
-      allow read, delete: if isSignedIn()
+
+      // Allow listing for conversation thread queries (by conversationId, senderId or receiverId)
+      allow list: if isSignedIn()
+        && (
+          resource.data.receiverId == request.auth.uid
+          || resource.data.senderId == request.auth.uid
+        );
+
+      allow get, delete: if isSignedIn()
         && (resource.data.receiverId == request.auth.uid || resource.data.senderId == request.auth.uid);
         
       allow update: if isSignedIn()
