@@ -192,10 +192,10 @@ export default function MessagesPage() {
               ${mobileView === "list" ? "hidden md:flex" : "flex"}
             `}
           >
-            {activeConversation ? (
+            {activeConversation && user ? (
               <ChatThread
                 conversation={activeConversation}
-                currentUserId={user!.uid}
+                currentUserId={user.uid}
                 onSend={handleSend}
                 onDelete={handleDelete}
                 onBack={handleBack}

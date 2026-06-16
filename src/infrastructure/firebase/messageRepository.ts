@@ -214,11 +214,14 @@ export class FirebaseMessageRepository {
     const snapshot = await getDocs(q);
     if (snapshot.empty) return;
 
-    const batch = writeBatch(db);
-    snapshot.docs.forEach((d) => {
-      batch.update(d.ref, { read: true });
-    });
-    await batch.commit();
+    const CHUNK_SIZE = 450;
+    for (let i = 0; i < snapshot.docs.length; i += CHUNK_SIZE) {
+      const batch = writeBatch(db);
+      for (const d of snapshot.docs.slice(i, i + CHUNK_SIZE)) {
+        batch.update(d.ref, { read: true });
+      }
+      await batch.commit();
+    }
   }
 
   /**
@@ -235,11 +238,14 @@ export class FirebaseMessageRepository {
     const snapshot = await getDocs(q);
     if (snapshot.empty) return;
 
-    const batch = writeBatch(db);
-    snapshot.docs.forEach((d) => {
-      batch.update(d.ref, { read: true });
-    });
-    await batch.commit();
+    const CHUNK_SIZE = 450;
+    for (let i = 0; i < snapshot.docs.length; i += CHUNK_SIZE) {
+      const batch = writeBatch(db);
+      for (const d of snapshot.docs.slice(i, i + CHUNK_SIZE)) {
+        batch.update(d.ref, { read: true });
+      }
+      await batch.commit();
+    }
   }
 
   /**

@@ -181,11 +181,13 @@ export function useOnboardingForm(user: any) {
         },
         status: form.status,
         eventId: "tech_floripa_2026",
-        visibility: "public",
         updatedAt: serverTimestamp(),
       };
 
-      if (!form.createdAt) profileData.createdAt = serverTimestamp();
+      if (!form.createdAt) {
+        profileData.createdAt = serverTimestamp();
+        profileData.visibility = "public";
+      }
 
       await setDoc(doc(db, "profiles", user.uid), profileData, { merge: true });
       navigate("/discover");
