@@ -1,13 +1,15 @@
-import { Send, Trash2, ArrowLeft, Smile } from "lucide-react";
+import { Send, Trash2, ArrowLeft, Smile, Mail } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 
 import type { Conversation, Message } from "../model/messages.types";
 
+import { sendEmailNotification } from "@/shared/services/notification.service";
+
 interface ChatThreadProps {
   conversation: Conversation;
   currentUserId: string;
-  _currentUserName?: string;
+  currentUserName?: string;
   onSend: (text: string) => Promise<void>;
   onDelete: (messageId: string) => Promise<void>;
   onBack?: () => void;
@@ -129,6 +131,7 @@ function groupMessagesByDay(messages: Message[]): Array<{ date: string; messages
 export function ChatThread({
   conversation,
   currentUserId,
+  currentUserName,
   onSend,
   onDelete,
   onBack,
@@ -137,8 +140,60 @@ export function ChatThread({
   const [sending, setSending] = useState(false);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
+
+  // Email notification states
+  const [showEmailModal, setShowEmailModal] = useState(false);
+  const [emailText, setEmailText] = useState(
+    "Olá! Te mandei mensagens no chat da Match Tech, mas parece que você está offline. Vamos conversar?",
+  );
+  const [emailSending, setEmailSending] = useState(false);
+  const [emailStatus, setEmailStatus] = useState<{
+    type: "success" | "error";
+    msg: string;
+    previewUrl?: string;
+  } | null>(null);
+
   const bottomRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  const handleSendEmailNotification = async () => {
+    if (!emailText.trim() || emailSending) return;
+    setEmailSending(true);
+    setEmailStatus(null);
+    try {
+      const response = await sendEmailNotification({
+        senderName: currentUserName || "Um operador",
+        receiverId: conversation.partnerId,
+        messageText: emailText.trim(),
+      });
+
+      setEmailStatus({
+        type: "success",
+        msg: "Notificação enviada com sucesso!",
+        previewUrl: response.previewUrl,
+      });
+
+      if (response.previewUrl) {
+        console.log(`[ETHEREAL MAIL PREVIEW]: ${response.previewUrl}`);
+      }
+
+      // Close modal after a slightly longer delay if there is a preview URL, otherwise 3s
+      setTimeout(() => {
+        if (!response.previewUrl) {
+          setShowEmailModal(false);
+          setEmailStatus(null);
+        }
+      }, 3000);
+    } catch (err) {
+      console.error(err);
+      setEmailStatus({
+        type: "error",
+        msg: err instanceof Error ? err.message : "Erro ao enviar e-mail. Tente novamente.",
+      });
+    } finally {
+      setEmailSending(false);
+    }
+  };
 
   // Auto-scroll to bottom whenever messages change
   useEffect(() => {
@@ -223,6 +278,18 @@ export function ChatThread({
             {conversation.messages.length} mensagem{conversation.messages.length !== 1 ? "s" : ""}
           </p>
         </div>
+
+        <button
+          onClick={() => {
+            setEmailStatus(null);
+            setShowEmailModal(true);
+          }}
+          className="p-2 bg-neo-lime hover:bg-white text-neo-black border-[3px] border-neo-black font-mono text-[10px] font-bold uppercase tracking-wider shadow-[2.5px_2.5px_0_0_#000] active:translate-y-[1.5px] active:shadow-none transition-all cursor-pointer flex items-center gap-1.5 shrink-0"
+          title="Enviar notificação por e-mail"
+        >
+          <Mail className="w-3.5 h-3.5" />
+          <span className="hidden sm:inline">Chamar no E-mail</span>
+        </button>
       </div>
 
       {/* Messages Area */}
@@ -408,6 +475,123 @@ export function ChatThread({
                   Apagar
                 </button>
               </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Email Notification Modal */}
+      <AnimatePresence>
+        {showEmailModal && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-neo-black/60 z-50 flex items-center justify-center p-4"
+            onClick={() => {
+              if (!emailSending && (!emailStatus || emailStatus.type !== "success")) {
+                setShowEmailModal(false);
+              }
+            }}
+          >
+            <motion.div
+              initial={{ scale: 0.9, rotate: -1 }}
+              animate={{ scale: 1, rotate: 0 }}
+              exit={{ scale: 0.9, rotate: 1 }}
+              onClick={(e) => e.stopPropagation()}
+              className="bg-white border-4 border-neo-black p-6 max-w-md w-full shadow-[8px_8px_0_0_#000] flex flex-col gap-4"
+            >
+              <div className="flex items-center gap-3 border-b-4 border-neo-black pb-3 bg-neo-cyan/20 -mx-6 -mt-6 p-6">
+                <Mail className="w-6 h-6 text-neo-black" />
+                <h3 className="font-heading font-black text-lg sm:text-xl uppercase m-0">
+                  Notificar por E-mail_
+                </h3>
+              </div>
+
+              {emailStatus ? (
+                <div className="flex flex-col gap-3 py-4 text-center">
+                  <div
+                    className={`p-4 border-4 border-neo-black shadow-[4px_4px_0_0_#000] font-mono text-sm font-bold ${
+                      emailStatus.type === "success"
+                        ? "bg-neo-lime text-neo-black"
+                        : "bg-neo-pink text-white"
+                    }`}
+                  >
+                    {emailStatus.msg}
+                  </div>
+                  {emailStatus.previewUrl && (
+                    <div className="mt-2 text-left">
+                      <p className="font-mono text-[10px] text-neo-black/60 mb-1">
+                        [MODO TESTE HACKATHON] O e-mail foi interceptado. Clique no link abaixo para
+                        visualizá-lo:
+                      </p>
+                      <a
+                        href={emailStatus.previewUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="block text-center p-2.5 bg-neo-cyan text-neo-black border-[3px] border-neo-black font-mono text-xs font-black uppercase shadow-[3px_3px_0_0_#000] hover:-translate-y-1 hover:shadow-[4px_4px_0_0_#000] active:translate-y-0 active:shadow-none transition-all cursor-pointer break-all"
+                      >
+                        Abrir E-mail Enviado ✉️
+                      </a>
+                    </div>
+                  )}
+                  {emailStatus.type === "success" && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setShowEmailModal(false);
+                        setEmailStatus(null);
+                      }}
+                      className="mt-4 py-2 border-[3px] border-neo-black bg-neo-black text-neo-lime font-heading font-black uppercase text-xs shadow-[3px_3px_0_0_#B8FF29] hover:-translate-y-[1px] active:translate-y-[1px] active:shadow-none transition-all cursor-pointer"
+                    >
+                      Fechar Janela
+                    </button>
+                  )}
+                </div>
+              ) : (
+                <>
+                  <p className="font-mono text-xs text-neo-black/70 leading-relaxed">
+                    Enviar um e-mail de alerta para o endereço cadastrado de{" "}
+                    <strong>{conversation.partnerName}</strong>. Isso é útil caso a pessoa esteja
+                    offline e você precise de um retorno rápido.
+                  </p>
+
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-[9px] font-black uppercase tracking-wider text-neo-black/40">
+                      Mensagem de Alerta (Opcional)
+                    </label>
+                    <textarea
+                      value={emailText}
+                      onChange={(e) => setEmailText(e.target.value)}
+                      disabled={emailSending}
+                      className="w-full h-24 p-2.5 font-mono text-xs border-3 border-neo-black shadow-[3px_3px_0_0_#000] focus:shadow-none focus:translate-y-[1px] focus:translate-x-[1px] outline-none resize-none transition-all"
+                      maxLength={500}
+                    />
+                    <span className="text-[8px] text-right font-mono text-neo-black/40">
+                      {emailText.length}/500 caracteres
+                    </span>
+                  </div>
+
+                  <div className="flex gap-3 mt-2">
+                    <button
+                      type="button"
+                      onClick={() => setShowEmailModal(false)}
+                      disabled={emailSending}
+                      className="flex-1 py-2.5 border-[3px] border-neo-black bg-white font-heading font-black uppercase text-xs shadow-[3px_3px_0_0_#000] hover:-translate-y-[1px] active:translate-y-[1px] active:shadow-none transition-all cursor-pointer"
+                    >
+                      Cancelar
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleSendEmailNotification}
+                      disabled={emailSending || !emailText.trim()}
+                      className="flex-1 py-2.5 border-[3px] border-neo-black bg-neo-lime text-neo-black font-heading font-black uppercase text-xs shadow-[3px_3px_0_0_#000] hover:-translate-y-[1px] active:translate-y-[1px] active:shadow-none transition-all cursor-pointer"
+                    >
+                      {emailSending ? "Enviando..." : "Enviar Alerta ⚡"}
+                    </button>
+                  </div>
+                </>
+              )}
             </motion.div>
           </motion.div>
         )}

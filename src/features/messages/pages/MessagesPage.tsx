@@ -196,6 +196,7 @@ export default function MessagesPage() {
               <ChatThread
                 conversation={activeConversation}
                 currentUserId={user.uid}
+                currentUserName={user.displayName ?? undefined}
                 onSend={handleSend}
                 onDelete={handleDelete}
                 onBack={handleBack}
