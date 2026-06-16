@@ -38,38 +38,78 @@ function formatDateSeparator(ts: { toMillis: () => number } | null): string {
   return date.toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit", year: "numeric" });
 }
 const EMOJI_LIST = [
-  "👍",
-  "❤️",
+  // Linha 1: Expressões clássicas
   "😂",
-  "🔥",
-  "🚀",
-  "💻",
-  "💡",
-  "👀",
+  "🤣",
   "😊",
   "😍",
   "🥰",
   "😎",
   "🤔",
-  "🤣",
+  "🥳",
+  // Linha 2: Expressões extras
   "😅",
-  "🎉",
-  "✨",
-  "💯",
-  "🤝",
+  "😏",
+  "🙄",
+  "🤨",
+  "😐",
+  "😢",
+  "😭",
+  "😱",
+  // Linha 3: Gestos / Mãos
+  "👍",
+  "👎",
+  "👊",
+  "✌️",
+  "👌",
+  "👋",
   "🙌",
   "👏",
+  // Linha 4: Gestos extras
   "🙏",
-  "🛠️",
-  "🎯",
-  "🍕",
-  "☕",
-  "🍺",
-  "🎈",
-  "👋",
+  "🤝",
   "💪",
-  "🤷",
-  "🤦",
+  "✍️",
+  "🤞",
+  "✊",
+  "❤️",
+  "💖",
+  // Linha 5: Tech / Dev
+  "🚀",
+  "💻",
+  "💡",
+  "🛠️",
+  "🔧",
+  "✨",
+  "🔥",
+  "💯",
+  // Linha 6: Objetos / Trabalho
+  "🎯",
+  "🎉",
+  "🎈",
+  "👀",
+  "🧠",
+  "💼",
+  "📅",
+  "📝",
+  // Linha 7: Comida & Bebida
+  "🍕",
+  "🍔",
+  "🍟",
+  "🍿",
+  "🍪",
+  "🍩",
+  "🍦",
+  "🍫",
+  // Linha 8: Bebidas / Social
+  "☕",
+  "🍵",
+  "🍺",
+  "🍻",
+  "🍹",
+  "🍷",
+  "🥤",
+  "🧉",
 ];
 
 function groupMessagesByDay(messages: Message[]): Array<{ date: string; messages: Message[] }> {
@@ -276,7 +316,7 @@ export function ChatThread({
         {showEmojiPicker && (
           <>
             <div className="fixed inset-0 z-10" onClick={() => setShowEmojiPicker(false)} />
-            <div className="absolute bottom-full left-3 mb-2 bg-white border-[3px] border-neo-black shadow-[4px_4px_0_0_#000] p-3 w-64 z-20">
+            <div className="absolute bottom-full left-3 mb-2 bg-white border-[3px] border-neo-black shadow-[4px_4px_0_0_#000] p-3 w-72 z-20">
               <p className="font-heading font-black text-[10px] uppercase tracking-wider text-neo-black/40 mb-2 select-none">
                 Reações & Emojis
               </p>
