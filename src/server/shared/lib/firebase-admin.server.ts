@@ -10,14 +10,26 @@ function getServiceAccount() {
   }
 
   const parsed = JSON.parse(raw) as {
-    projectId: string;
-    clientEmail: string;
-    privateKey: string;
+    projectId?: string;
+    project_id?: string;
+    clientEmail?: string;
+    client_email?: string;
+    privateKey?: string;
+    private_key?: string;
   };
 
+  const projectId = parsed.projectId ?? parsed.project_id;
+  const clientEmail = parsed.clientEmail ?? parsed.client_email;
+  const privateKey = parsed.privateKey ?? parsed.private_key;
+
+  if (!projectId || !clientEmail || !privateKey) {
+    throw new Error("Invalid FIREBASE_SERVICE_ACCOUNT in environment variables");
+  }
+
   return {
-    ...parsed,
-    privateKey: parsed.privateKey.replace(/\\n/g, "\n"),
+    projectId,
+    clientEmail,
+    privateKey: privateKey.replace(/\\n/g, "\n"),
   };
 }
 
