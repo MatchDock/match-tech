@@ -4,20 +4,40 @@ import { getFirestore } from "firebase-admin/firestore";
 
 function getServiceAccount() {
   const raw = process.env.FIREBASE_SERVICE_ACCOUNT;
+  console.log(`[FIREBASE_ADMIN] process.env.FIREBASE_SERVICE_ACCOUNT is defined: ${!!raw}`);
+  if (raw) {
+    console.log(`[FIREBASE_ADMIN] process.env.FIREBASE_SERVICE_ACCOUNT length: ${raw.length}`);
+  }
 
   if (!raw) {
     return null;
   }
 
   const parsed = JSON.parse(raw) as {
-    projectId: string;
-    clientEmail: string;
-    privateKey: string;
+    projectId?: string;
+    project_id?: string;
+    clientEmail?: string;
+    client_email?: string;
+    privateKey?: string;
+    private_key?: string;
   };
 
+  const projectId = parsed.projectId ?? parsed.project_id;
+  const clientEmail = parsed.clientEmail ?? parsed.client_email;
+  const privateKey = parsed.privateKey ?? parsed.private_key;
+
+  console.log(
+    `[FIREBASE_ADMIN] parsed credentials: projectId=${projectId}, clientEmail=${clientEmail}, hasPrivateKey=${!!privateKey}`,
+  );
+
+  if (!projectId || !clientEmail || !privateKey) {
+    throw new Error("Invalid FIREBASE_SERVICE_ACCOUNT in environment variables");
+  }
+
   return {
-    ...parsed,
-    privateKey: parsed.privateKey.replace(/\\n/g, "\n"),
+    projectId,
+    clientEmail,
+    privateKey: privateKey.replace(/\\n/g, "\n"),
   };
 }
 
