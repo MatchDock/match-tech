@@ -55,9 +55,30 @@ SMTP_PORT=587
 SMTP_USER="resend"
 SMTP_PASS="re_SUA_CHAVE_API_AQUI"
 SMTP_SECURE="false"
+# Opcional: define o remetente. Se omitido e usando Resend, o sistema usa "onboarding@resend.dev" automaticamente.
+SMTP_FROM='"Match Tech" <onboarding@resend.dev>'
 ```
 
-* **Nota**: Por padrão, no plano gratuito do Resend sem domínio próprio configurado, você só pode enviar e-mails de teste para o **seu próprio e-mail de cadastro** do Resend. Se quiser enviar para qualquer pessoa na internet, você precisa registrar um domínio de internet (.com, .com.br, etc.) no painel deles.
+* **Nota (Limitações do Resend Gratuito)**: No plano gratuito do Resend sem um domínio próprio cadastrado e verificado, existem duas restrições rígidas:
+  1. O remetente (`from`) é obrigatoriamente `onboarding@resend.dev` (o sistema já faz esse fallback automático para você).
+  2. Você **só pode enviar e-mails para o seu próprio e-mail de cadastro** (no seu caso, `tonymaxonline@gmail.com`). Se tentar enviar para qualquer outro e-mail (como seu e-mail secundário), o Resend retornará o erro: `550 You can only send testing emails to your own email address`.
+
+### Como testar o envio para outros e-mails sem pagar/configurar domínio?
+
+Temos duas excelentes alternativas para o desenvolvimento/apresentação do Hackathon:
+
+#### Alternativa 1: Usar o Modo de Teste Integrado (Ethereal Mail)
+O Ethereal Mail é um serviço de caixa de e-mails fake feito para testes de desenvolvimento. Ele aceita envios para **qualquer e-mail** e gera um link onde você consegue abrir e ver a mensagem renderizada exatamente como o usuário receberia.
+Para ativar:
+1. Adicione a seguinte variável no seu `.env`:
+   ```env
+   SMTP_USE_ETHEREAL="true"
+   ```
+2. Reinicie o servidor backend. 
+3. Quando você disparar a notificação pelo chat, a interface exibirá um botão verde **"Abrir E-mail de Teste ✉️"** no modal. Clicando nele, você verá o layout neo-brutalista completo da mensagem!
+
+#### Alternativa 2: Usar seu Gmail Pessoal (Para envios reais e gratuitos)
+Se você quer que o e-mail chegue de verdade na caixa de entrada do seu e-mail secundário ou de outras pessoas, você pode configurar o seu Gmail pessoal (veja a seção **4** abaixo). O Gmail permite enviar e-mails reais para qualquer endereço sem precisar ter um domínio verificado.
 
 ---
 

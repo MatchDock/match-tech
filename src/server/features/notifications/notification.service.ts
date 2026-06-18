@@ -1,6 +1,24 @@
 import nodemailer from "nodemailer";
 
+async function createEtherealTransporter() {
+  console.log("Criando conta de testes Ethereal Mail para envio de notificações...");
+  const testAccount = await nodemailer.createTestAccount();
+  return nodemailer.createTransport({
+    host: "smtp.ethereal.email",
+    port: 587,
+    secure: false,
+    auth: {
+      user: testAccount.user,
+      pass: testAccount.pass,
+    },
+  });
+}
+
 async function getTransporter() {
+  if (process.env.SMTP_USE_ETHEREAL === "true") {
+    return createEtherealTransporter();
+  }
+
   if (process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS) {
     return nodemailer.createTransport({
       host: process.env.SMTP_HOST,
@@ -13,17 +31,7 @@ async function getTransporter() {
     });
   }
 
-  console.log("Criando conta de testes Ethereal Mail para envio de notificações...");
-  const testAccount = await nodemailer.createTestAccount();
-  return nodemailer.createTransport({
-    host: "smtp.ethereal.email",
-    port: 587,
-    secure: false,
-    auth: {
-      user: testAccount.user,
-      pass: testAccount.pass,
-    },
-  });
+  return createEtherealTransporter();
 }
 
 export async function sendEmail({
@@ -40,8 +48,12 @@ export async function sendEmail({
   const transporter = await getTransporter();
   const appUrl = process.env.APP_URL || "http://localhost:3000";
 
+  const defaultFrom = process.env.SMTP_HOST?.includes("resend")
+    ? '"Match Tech" <onboarding@resend.dev>'
+    : '"Match Tech" <no-reply@matchtech.com>';
+
   const mailOptions = {
-    from: '"Match Tech" <no-reply@matchtech.com>',
+    from: process.env.SMTP_FROM || defaultFrom,
     to: `"${toName}" <${to}>`,
     subject: `⚡ Nova mensagem de ${senderName} na Match Tech!`,
     text: `Olá ${toName}, você recebeu uma nova mensagem de ${senderName} na Match Tech!\n\nMensagem:\n"${messageText}"\n\nResponda acessando a plataforma: ${appUrl}/messages`,
