@@ -1,8 +1,12 @@
-import { collection, query, onSnapshot, QueryConstraint } from "firebase/firestore";
+import { collection, query, onSnapshot, type QueryConstraint } from "firebase/firestore";
 import { useEffect, useState } from "react";
 
 import { AppError } from "@/shared/lib/AppError";
 import { db } from "@/shared/lib/firebase/firebase.client";
+
+// Module-level constant avoids creating a new [] reference on every render,
+// which would otherwise cause useEffect to re-subscribe in an infinite loop.
+const EMPTY_CONSTRAINTS: QueryConstraint[] = [];
 
 interface UseFirestoreSubscriptionOptions<T> {
   collectionName: string;
@@ -32,7 +36,7 @@ interface UseFirestoreSubscriptionReturn<T> {
  */
 export function useFirestoreSubscription<T>({
   collectionName,
-  constraints = [],
+  constraints = EMPTY_CONSTRAINTS,
   sortFn,
 }: UseFirestoreSubscriptionOptions<T>): UseFirestoreSubscriptionReturn<T> {
   const [data, setData] = useState<T[]>([]);
@@ -41,7 +45,6 @@ export function useFirestoreSubscription<T>({
 
   useEffect(() => {
     setLoading(true);
-
     setError(null);
 
     try {
@@ -51,10 +54,13 @@ export function useFirestoreSubscription<T>({
         q,
         (snapshot) => {
           try {
-            const docs = snapshot.docs.map((doc) => ({
-              id: doc.id,
-              ...(doc.data() as object),
-            } as T));
+            const docs = snapshot.docs.map(
+              (doc) =>
+                ({
+                  id: doc.id,
+                  ...(doc.data() as object),
+                }) as T,
+            );
             const sorted = sortFn ? docs.sort(sortFn) : docs;
             setData(sorted);
             setError(null);
@@ -72,7 +78,6 @@ export function useFirestoreSubscription<T>({
 
       return unsubscribe;
     } catch {
-      // Error will be handled by onSnapshot error callback
       return undefined;
     }
   }, [collectionName, constraints, sortFn]);
