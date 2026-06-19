@@ -68,5 +68,7 @@ function getFirebaseAdminApp() {
 
 const adminApp = getFirebaseAdminApp();
 
-export const adminDb = getFirestore(adminApp);
+const firestoreDatabaseId = process.env.VITE_FIREBASE_FIRESTORE_DATABASE_ID || "(default)";
+
+export const adminDb = getFirestore(adminApp, firestoreDatabaseId);
 export const adminAuth = getAuth(adminApp);
