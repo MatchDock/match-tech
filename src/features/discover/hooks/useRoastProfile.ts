@@ -3,43 +3,50 @@ import { useState } from "react";
 
 import { getInitialPersona } from "../model/discover.selectors";
 import type { Profile, RoastPersona } from "../model/discover.types";
-import { updateProfile } from "../services/discover.repository";
 
-import { firestoreLog, apiLog } from "@/shared/lib/logger/logger";
-import { requestRoast } from "@/shared/services/roast.service";
+import { apiLog } from "@/shared/lib/logger/logger";
+import { deleteRoast, requestRoast } from "@/shared/services/roast.service";
 
 interface UseRoastProfileParams {
   showToast: (message: string, type?: "error" | "info") => void;
+  onDeleteSuccess?: () => void;
 }
 
-export function useRoastProfile({ showToast }: UseRoastProfileParams) {
+export function useRoastProfile({ showToast, onDeleteSuccess }: UseRoastProfileParams) {
   const [selectedProfile, setSelectedProfile] = useState<Profile | null>(null);
   const [activePersonaView, setActivePersonaView] = useState<RoastPersona | null>(null);
+  const [streamingText, setStreamingText] = useState<string>("");
 
   const roastMutation = useMutation({
     mutationFn: ({ profile, persona }: { profile: Profile; persona: RoastPersona }) =>
-      requestRoast({ memberId: profile.id, memberData: profile, persona }),
-    onSuccess: async (data, { profile, persona }) => {
-      if (!data.roast) {
-        showToast(`Erro ao gerar a Sina: ${data.error ?? "Resposta inesperada do servidor."}`);
-        return;
-      }
-      const updateData =
-        persona === "brutal"
-          ? { roastBrutal: data.roast, updatedAt: new Date() }
-          : { roastMild: data.roast, updatedAt: new Date() };
-
-      try {
-        await updateProfile(profile.id, updateData);
-      } catch (dbError) {
-        firestoreLog.error("Erro ao salvar sina no banco:", dbError);
-      }
-
-      setSelectedProfile({ ...profile, ...updateData });
+      requestRoast({ memberId: profile.id, memberData: profile, persona }, (chunk) =>
+        setStreamingText((prev) => prev + chunk),
+      ),
+    onMutate: () => {
+      setStreamingText("");
+    },
+    onSuccess: (data, { profile, persona }) => {
+      const field = persona === "brutal" ? "roastBrutal" : "roastMild";
+      setSelectedProfile({ ...profile, [field]: data.roast, updatedAt: new Date() });
+      setStreamingText("");
     },
     onError: (error) => {
       apiLog.error("Erro ao chamar o roast:", error);
       showToast("Sem conexão com o servidor de IA. Verifique sua rede e tente novamente.");
+      setStreamingText("");
+    },
+  });
+
+  const deleteRoastMutation = useMutation({
+    mutationFn: ({ memberId, persona }: { memberId: string; persona: RoastPersona }) =>
+      deleteRoast(memberId, persona),
+    onSuccess: (_, { persona }) => {
+      const field = persona === "brutal" ? "roastBrutal" : "roastMild";
+      setSelectedProfile((prev) => (prev ? { ...prev, [field]: undefined } : null));
+      onDeleteSuccess?.();
+    },
+    onError: () => {
+      showToast("Erro ao apagar veredito. Tente novamente.");
     },
   });
 
@@ -58,13 +65,21 @@ export function useRoastProfile({ showToast }: UseRoastProfileParams) {
     roastMutation.mutate({ profile, persona });
   }
 
+  function executeDeleteRoast(persona: RoastPersona) {
+    if (!selectedProfile) return;
+    deleteRoastMutation.mutate({ memberId: selectedProfile.id, persona });
+  }
+
   return {
     selectedProfile,
     activePersonaView,
+    streamingText,
     isGenerating: roastMutation.isPending,
+    isDeleting: deleteRoastMutation.isPending,
     openProfile,
     closeProfile: () => setSelectedProfile(null),
     executeRoast,
+    executeDeleteRoast,
     setActivePersonaView,
   };
 }

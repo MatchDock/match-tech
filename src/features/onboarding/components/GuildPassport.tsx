@@ -63,12 +63,15 @@ export function GuildPassport({
                 className="shadow-none border-4 w-full h-full"
               />
             </div>
-            <div className="flex-1 space-y-3">
+            <div className="flex-1 min-w-0 space-y-3">
               <div>
                 <p className="text-[10px] opacity-40 font-black uppercase tracking-tighter">
                   NOME_OPERADOR:
                 </p>
-                <p className="text-2xl font-black uppercase truncate leading-none tracking-tight">
+                <p
+                  className="text-2xl font-black uppercase line-clamp-2 leading-none tracking-tight"
+                  title={form.name || form.name}
+                >
                   {form.name || "Aguardando..."}
                 </p>
               </div>

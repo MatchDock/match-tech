@@ -8,18 +8,22 @@ interface RoastModalProps {
   profile: Profile;
   activePersonaView: RoastPersona | null;
   isGenerating: boolean;
+  streamingText?: string;
   onClose: () => void;
   onSelectPersona: (persona: RoastPersona) => void;
   onGenerateRoast: (profile: Profile, persona: RoastPersona) => void;
+  onDeleteRoast: () => void;
 }
 
 export function RoastModal({
   profile,
   activePersonaView,
   isGenerating,
+  streamingText,
   onClose,
   onSelectPersona,
   onGenerateRoast,
+  onDeleteRoast,
 }: RoastModalProps) {
   return (
     <SharedRoastModal
@@ -29,6 +33,7 @@ export function RoastModal({
       roastMild={profile.roastMild}
       activePersonaView={activePersonaView}
       isGenerating={isGenerating}
+      streamingText={streamingText}
       onClose={onClose}
       onGenerateBrutal={() => {
         onSelectPersona("brutal");
@@ -38,6 +43,7 @@ export function RoastModal({
         onSelectPersona("mild");
         void onGenerateRoast(profile, "mild");
       }}
+      onDeleteRoast={onDeleteRoast}
     />
   );
 }

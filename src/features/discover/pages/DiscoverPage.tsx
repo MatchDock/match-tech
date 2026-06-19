@@ -14,6 +14,7 @@ import { useToast } from "../hooks/useToast";
 
 import { useAuth } from "@/contexts/useAuth";
 import { SendMessageModal } from "@/features/messages/components/SendMessageModal";
+import { DeleteRoastConfirmModal } from "@/shared/components/ui/DeleteRoastConfirmModal";
 
 export default function DiscoverPage() {
   const { user } = useAuth();
@@ -23,7 +24,12 @@ export default function DiscoverPage() {
 
   const filters = useDiscoverFilters(profiles);
 
-  const roast = useRoastProfile({ showToast });
+  const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
+
+  const roast = useRoastProfile({
+    showToast,
+    onDeleteSuccess: () => setConfirmDeleteOpen(false),
+  });
 
   const [contactTarget, setContactTarget] = useState<{ id: string; name: string } | null>(null);
 
@@ -68,9 +74,22 @@ export default function DiscoverPage() {
             profile={roast.selectedProfile}
             activePersonaView={roast.activePersonaView}
             isGenerating={roast.isGenerating}
+            streamingText={roast.streamingText}
             onClose={roast.closeProfile}
             onSelectPersona={roast.setActivePersonaView}
             onGenerateRoast={roast.executeRoast}
+            onDeleteRoast={() => setConfirmDeleteOpen(true)}
+          />
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {confirmDeleteOpen && roast.activePersonaView && (
+          <DeleteRoastConfirmModal
+            persona={roast.activePersonaView}
+            isDeleting={roast.isDeleting}
+            onConfirm={() => roast.executeDeleteRoast(roast.activePersonaView!)}
+            onCancel={() => setConfirmDeleteOpen(false)}
           />
         )}
       </AnimatePresence>

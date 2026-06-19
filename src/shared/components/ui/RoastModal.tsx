@@ -1,4 +1,4 @@
-import { Terminal } from "lucide-react";
+import { Terminal, Trash2 } from "lucide-react";
 import { motion } from "motion/react";
 
 import type { RoastPersona } from "@/domain/entities/Shared";
@@ -10,9 +10,11 @@ interface RoastModalProps {
   roastMild?: string;
   activePersonaView: RoastPersona | null;
   isGenerating?: boolean;
+  streamingText?: string;
   onClose: () => void;
   onGenerateBrutal: () => void;
   onGenerateMild: () => void;
+  onDeleteRoast?: () => void;
 }
 
 export function RoastModal({
@@ -22,9 +24,11 @@ export function RoastModal({
   roastMild,
   activePersonaView,
   isGenerating = false,
+  streamingText,
   onClose,
   onGenerateBrutal,
   onGenerateMild,
+  onDeleteRoast,
 }: RoastModalProps) {
   const isBrutalActive = activePersonaView === "brutal";
   const isMildActive = activePersonaView === "mild";
@@ -73,7 +77,20 @@ export function RoastModal({
               <div className="text-base sm:text-lg md:text-xl font-bold font-sans whitespace-pre-wrap leading-relaxed text-neo-black bg-neo-bg p-6 sm:p-8 neo-border border-4 relative min-h-45">
                 <div className="absolute -top-4 -left-4 w-8 h-8 bg-neo-pink rounded-full border-4 border-black shadow-[2px_2px_0_0_#000] hidden sm:block" />
                 <div className="absolute -top-3 -left-3 w-6 h-6 bg-neo-pink rounded-full border-2 border-black shadow-[2px_2px_0_0_#000] sm:hidden" />
-                {isGenerating ? "Gerando veredito..." : roastText}
+                {isGenerating ? (
+                  <>
+                    {streamingText || "Gerando veredito..."}
+                    <motion.span
+                      animate={{ opacity: [1, 0, 1] }}
+                      transition={{ repeat: Infinity, duration: 0.8, ease: "linear" }}
+                      className="inline-block ml-0.5"
+                    >
+                      |
+                    </motion.span>
+                  </>
+                ) : (
+                  roastText
+                )}
               </div>
 
               <div className="mt-8 pt-6 border-t-4 border-black border-dashed flex flex-col md:flex-row gap-4">
@@ -100,6 +117,17 @@ export function RoastModal({
                 >
                   {roastMild ? "VER MENTOR (SUAVE)" : "GERAR MENTOR (SUAVE)"}
                 </button>
+
+                {onDeleteRoast && roastText && (
+                  <button
+                    className="py-4 px-5 border-[3px] border-black bg-neo-pink hover:bg-white text-white hover:text-neo-pink font-black transition-all cursor-pointer shadow-[4px_4px_0_0_#000] hover:shadow-none -translate-y-0.5 hover:translate-y-0 active:translate-y-1 flex items-center justify-center shrink-0"
+                    disabled={isGenerating}
+                    onClick={onDeleteRoast}
+                    title="Apagar este veredito"
+                  >
+                    <Trash2 className="w-5 h-5" />
+                  </button>
+                )}
               </div>
             </div>
 

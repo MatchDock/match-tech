@@ -3,7 +3,7 @@ import rateLimit from "express-rate-limit";
 
 import { asyncHandler } from "../../shared/utils/async-handler";
 
-import { postRoast } from "./roast.controller";
+import { deleteRoast, postRoast } from "./roast.controller";
 
 // 5 roast requests per user per minute — Gemini calls are expensive
 const roastLimiter = rateLimit({
@@ -17,3 +17,4 @@ const roastLimiter = rateLimit({
 export const roastRouter = Router();
 
 roastRouter.post("/", roastLimiter, asyncHandler(postRoast));
+roastRouter.delete("/:memberId", asyncHandler(deleteRoast));
