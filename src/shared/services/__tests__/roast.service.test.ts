@@ -3,7 +3,7 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 const mockFetch = vi.fn();
 vi.stubGlobal("fetch", mockFetch);
 
-import { requestRoast } from "../roast.service";
+import { requestRoast, deleteRoast } from "../roast.service";
 
 function sseStream(...events: string[]) {
   const data = events.map((e) => `data: ${e}\n\n`).join("");
@@ -62,8 +62,6 @@ describe("requestRoast (SSE client)", () => {
     ).rejects.toThrow("Rate limit");
   });
 });
-
-import { deleteRoast } from "../roast.service";
 
 describe("deleteRoast", () => {
   it("calls DELETE /api/roast/:memberId?persona=brutal", async () => {
