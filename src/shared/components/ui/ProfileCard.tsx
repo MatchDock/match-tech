@@ -102,7 +102,10 @@ export default function ProfileCard({
             className="group-hover:scale-105 transition-transform"
           />
           <div className="flex-1 min-w-0">
-            <h4 className="font-heading font-black text-lg uppercase truncate leading-none mb-1">
+            <h4
+              className="font-heading font-black text-lg uppercase truncate leading-none mb-1"
+              title={name || "NOME_NULO"}
+            >
               {name || "NOME_NULO"}
             </h4>
             <div className="flex gap-2">
@@ -158,7 +161,10 @@ export default function ProfileCard({
         />
 
         <div className="flex-1 min-w-0 z-10">
-          <h3 className="font-heading font-black text-xl md:text-2xl uppercase truncate leading-none mb-1 bg-white px-2 py-1 border-2 border-neo-black shadow-[3px_3px_0_0_#000] rotate-[-0.5deg]">
+          <h3
+            className="font-heading font-black text-xl md:text-2xl uppercase truncate leading-none mb-1 bg-white px-2 py-1 border-2 border-neo-black shadow-[3px_3px_0_0_#000] rotate-[-0.5deg]"
+            title={name || "NOME_NULO"}
+          >
             {name || "NOME_NULO"}
           </h3>
 
