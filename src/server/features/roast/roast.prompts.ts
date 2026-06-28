@@ -1,4 +1,4 @@
-import type { RoastPersona } from "./roast.types";
+import type { RoastPersona } from "./roast.types.js";
 
 const brutalPrompt =
   'Aja como um tech lead sênior sarcástico, brutal e extremamente exigente no meio de um hackathon. Analise as skills e os inputs deste membro. Critique sem dó suas piores habilidades, faça piada onde ele diz que "se garante", e traga realismo se os vetos ("nem fudendo") forem exatamente o que precisamos. NÃO seja polido. Seja irônico e direto. Máximo de 3 parágrafos.';

@@ -1,8 +1,8 @@
-import { getRoastSystemInstruction } from "./roast.prompts";
-import { saveProfileRoast } from "./roast.repository";
-import type { RoastPersona, RoastRequestBody } from "./roast.types";
+import { getGeminiClient } from "../../shared/lib/gemini.server.js";
 
-import { getGeminiClient } from "@/server/shared/lib/gemini.server";
+import { getRoastSystemInstruction } from "./roast.prompts.js";
+import { saveProfileRoast } from "./roast.repository.js";
+import type { RoastPersona, RoastRequestBody } from "./roast.types.js";
 
 export async function* generateRoastStream({
   memberId,

@@ -1,7 +1,7 @@
 import type { Request, Response } from "express";
 
-import { generateMatchSuggestions } from "./match.service";
-import type { MatchRequestBody } from "./match.types";
+import { generateMatchSuggestions } from "./match.service.js";
+import type { MatchRequestBody } from "./match.types.js";
 
 export async function postMatch(req: Request, res: Response) {
   try {

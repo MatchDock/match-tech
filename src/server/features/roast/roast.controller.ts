@@ -1,8 +1,8 @@
 import type { Request, Response } from "express";
 
-import { deleteProfileRoast } from "./roast.repository";
-import { generateRoastStream } from "./roast.service";
-import type { RoastPersona, RoastRequestBody } from "./roast.types";
+import { deleteProfileRoast } from "./roast.repository.js";
+import { generateRoastStream } from "./roast.service.js";
+import type { RoastPersona, RoastRequestBody } from "./roast.types.js";
 
 export async function deleteRoast(req: Request, res: Response) {
   const { memberId } = req.params;

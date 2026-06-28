@@ -1,9 +1,9 @@
 import { Router } from "express";
 import rateLimit from "express-rate-limit";
 
-import { asyncHandler } from "../../shared/utils/async-handler";
+import { asyncHandler } from "../../shared/utils/async-handler.js";
 
-import { postEmailNotification } from "./notification.controller";
+import { postEmailNotification } from "./notification.controller.js";
 
 // Limit to 5 notifications per minute to avoid spam abuse
 const notificationLimiter = rateLimit({

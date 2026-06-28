@@ -1,8 +1,8 @@
 import type { Request, Response } from "express";
 
-import { adminAuth } from "../../shared/lib/firebase-admin.server";
+import { adminAuth } from "../../shared/lib/firebase-admin.server.js";
 
-import { sendEmail } from "./notification.service";
+import { sendEmail } from "./notification.service.js";
 
 interface EmailNotificationRequestBody {
   senderName: string;

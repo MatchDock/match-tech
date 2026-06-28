@@ -1,9 +1,9 @@
 import { Router } from "express";
 import rateLimit from "express-rate-limit";
 
-import { asyncHandler } from "../../shared/utils/async-handler";
+import { asyncHandler } from "../../shared/utils/async-handler.js";
 
-import { postMatch } from "./match.controller";
+import { postMatch } from "./match.controller.js";
 
 // 10 match requests per user per minute
 const matchLimiter = rateLimit({

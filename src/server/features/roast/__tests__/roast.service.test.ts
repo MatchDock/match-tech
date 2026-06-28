@@ -8,9 +8,9 @@ vi.mock("../roast.repository", () => ({
   saveProfileRoast: vi.fn().mockResolvedValue(undefined),
 }));
 
-import { saveProfileRoast } from "../roast.repository";
-import { generateRoastStream } from "../roast.service";
-import type { RoastRequestBody } from "../roast.types";
+import { saveProfileRoast } from "../roast.repository.js";
+import { generateRoastStream } from "../roast.service.js";
+import type { RoastRequestBody } from "../roast.types.js";
 
 import { getGeminiClient } from "@/server/shared/lib/gemini.server";
 

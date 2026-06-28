@@ -1,8 +1,8 @@
 import { FieldValue } from "firebase-admin/firestore";
 
-import { adminDb } from "../../shared/lib/firebase-admin.server";
+import { adminDb } from "../../shared/lib/firebase-admin.server.js";
 
-import type { RoastPersona } from "./roast.types";
+import type { RoastPersona } from "./roast.types.js";
 
 export async function deleteProfileRoast(memberId: string, persona?: RoastPersona) {
   const updateData: Record<string, unknown> = {

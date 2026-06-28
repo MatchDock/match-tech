@@ -5,8 +5,8 @@ vi.mock("../roast.service", () => ({
   generateRoastStream: vi.fn(),
 }));
 
-import { postRoast } from "../roast.controller";
-import { generateRoastStream } from "../roast.service";
+import { postRoast } from "../roast.controller.js";
+import { generateRoastStream } from "../roast.service.js";
 
 async function* chunks(...texts: string[]) {
   for (const t of texts) yield t;
