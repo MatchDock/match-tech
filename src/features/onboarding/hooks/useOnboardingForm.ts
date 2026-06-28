@@ -1,19 +1,46 @@
 import { doc, setDoc, getDoc, serverTimestamp } from "firebase/firestore";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { db } from "../../../shared/lib/firebase/firebase.client";
 import { firestoreLog } from "../../../shared/lib/logger/logger";
 import type { OnboardingForm, OnboardingSkills, TagSentiment } from "../types";
 
+import { SkillService } from "@/application/services/SkillService";
+import { FirebaseSkillRepository } from "@/infrastructure/firebase/skillRepository";
+
+type ProfileData = {
+  userId: string;
+  name: string;
+  photoURL: string | null;
+  github: string;
+  linkedin: string;
+  bio: string;
+  primaryRole: string;
+  secondaryRoles: string[];
+  skills: OnboardingSkills;
+  extraTagsByCategory: Record<string, string[]>;
+  canvas: { loves: string[]; comfort: string[]; veto: string[] };
+  status: string;
+  eventId: string;
+  updatedAt: ReturnType<typeof serverTimestamp>;
+  createdAt?: ReturnType<typeof serverTimestamp>;
+  visibility?: string;
+};
+
 // eslint-disable-next-line
 export function useOnboardingForm(user: any) {
-  // TODO
   const navigate = useNavigate();
 
+  // ─────────────────────────────────────────────
+  // STATE
+  // ─────────────────────────────────────────────
   const [loading, setLoading] = useState(false);
   const [initializing, setInitializing] = useState(true);
   const [submitError, setSubmitError] = useState<string | null>(null);
+
+  // Extra tags added by users per category key, merged into the category tag list
+  const [extraTagsByCategory, setExtraTagsByCategory] = useState<Record<string, string[]>>({});
 
   const [skills, setSkills] = useState<OnboardingSkills>({
     frontend: 7,
@@ -38,7 +65,12 @@ export function useOnboardingForm(user: any) {
     createdAt: "",
   });
 
-  // Firestore fetch on mount
+  const skillRepository = useMemo(() => new FirebaseSkillRepository(), []);
+  const skillService = useMemo(() => new SkillService(skillRepository), [skillRepository]);
+
+  // ─────────────────────────────────────────────
+  // FIRESTORE LOAD
+  // ─────────────────────────────────────────────
   const fetchMemberData = async () => {
     if (!user) {
       setInitializing(false);
@@ -65,6 +97,7 @@ export function useOnboardingForm(user: any) {
 
       if (docSnap.exists()) {
         const data = docSnap.data();
+
         setForm({
           name: data.name || user.displayName || "",
           github: data.github || "",
@@ -78,9 +111,17 @@ export function useOnboardingForm(user: any) {
           status: data.status || "looking",
           createdAt: fromMembersFallback ? null : data.createdAt || null,
         });
+
         if (data.skills) setSkills(data.skills);
+
+        if (data.extraTagsByCategory) {
+          setExtraTagsByCategory(data.extraTagsByCategory);
+        }
       } else {
-        setForm((prev) => ({ ...prev, name: prev.name || user.displayName || "" }));
+        setForm((prev) => ({
+          ...prev,
+          name: prev.name || user.displayName || "",
+        }));
       }
     } catch (error) {
       firestoreLog.error("Erro ao buscar dados do membro:", error);
@@ -89,7 +130,36 @@ export function useOnboardingForm(user: any) {
     }
   };
 
-  // Radar chart data derived from skills
+  // ─────────────────────────────────────────────
+  // SKILL CREATION PER CATEGORY
+  // useCallback so it can be safely listed as a
+  // useEffect dependency without infinite loops.
+  // ─────────────────────────────────────────────
+  const handleCreateSkillInCategory = useCallback(
+    async (rawName: string, categoryKey: string): Promise<void> => {
+      const trimmed = rawName.trim();
+      if (!trimmed) return;
+
+      try {
+        await skillService.createOrGetSkill(trimmed, categoryKey);
+
+        setExtraTagsByCategory((prev) => {
+          const existing = prev[categoryKey] ?? [];
+          if (existing.some((t) => t.toLowerCase() === trimmed.toLowerCase())) {
+            return prev;
+          }
+          return { ...prev, [categoryKey]: [...existing, trimmed] };
+        });
+      } catch (error) {
+        firestoreLog.error("Erro ao criar skill:", error);
+      }
+    },
+    [skillService],
+  );
+
+  // ─────────────────────────────────────────────
+  // RADAR
+  // ─────────────────────────────────────────────
   const radarData = useMemo(
     () => [
       { subject: "Frontend", A: skills.frontend, fullMark: 10 },
@@ -102,8 +172,9 @@ export function useOnboardingForm(user: any) {
     [skills],
   );
 
-  // ── Handlers ──────────────────────────────────────────────────────────────
-
+  // ─────────────────────────────────────────────
+  // HANDLERS FORM
+  // ─────────────────────────────────────────────
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
   ) => {
@@ -121,11 +192,15 @@ export function useOnboardingForm(user: any) {
   const toggleRole = (role: string) => {
     setForm((prev) => {
       if (prev.primaryRole === role) return { ...prev, primaryRole: "" };
+
       if (prev.secondaryRoles.includes(role))
         return { ...prev, secondaryRoles: prev.secondaryRoles.filter((r) => r !== role) };
+
       if (!prev.primaryRole) return { ...prev, primaryRole: role };
+
       if (prev.secondaryRoles.length < 2)
         return { ...prev, secondaryRoles: [...prev.secondaryRoles, role] };
+
       return prev;
     });
   };
@@ -144,11 +219,15 @@ export function useOnboardingForm(user: any) {
     });
   };
 
+  // ─────────────────────────────────────────────
+  // SUBMIT
+  // ─────────────────────────────────────────────
   const handleSubmit = async (e?: React.FormEvent) => {
     e?.preventDefault();
     if (!user) return;
 
     setLoading(true);
+
     try {
       const cleanGithub = (form.github || "")
         .trim()
@@ -162,9 +241,7 @@ export function useOnboardingForm(user: any) {
         .replace(/\/$/, "")
         .replace(/^@/, "");
 
-      // eslint-disable-next-line
-      const profileData: any = {
-        // TODO
+      const profileData: ProfileData = {
         userId: user.uid,
         name: form.name.trim(),
         photoURL: user.photoURL || null,
@@ -174,6 +251,7 @@ export function useOnboardingForm(user: any) {
         primaryRole: form.primaryRole,
         secondaryRoles: form.secondaryRoles,
         skills,
+        extraTagsByCategory,
         canvas: {
           loves: form.loves,
           comfort: form.comfort,
@@ -190,6 +268,7 @@ export function useOnboardingForm(user: any) {
       }
 
       await setDoc(doc(db, "profiles", user.uid), profileData, { merge: true });
+
       navigate("/discover");
     } catch (err) {
       firestoreLog.error("Erro ao registrar perfil:", err);
@@ -200,6 +279,9 @@ export function useOnboardingForm(user: any) {
     }
   };
 
+  // ─────────────────────────────────────────────
+  // RETURN
+  // ─────────────────────────────────────────────
   return {
     form,
     setForm,
@@ -209,6 +291,8 @@ export function useOnboardingForm(user: any) {
     submitError,
     radarData,
     fetchMemberData,
+    extraTagsByCategory,
+
     handlers: {
       change: handleChange,
       bioChange: handleBioChange,
@@ -216,6 +300,7 @@ export function useOnboardingForm(user: any) {
       toggleRole,
       setTagSentiment,
       submit: handleSubmit,
+      createSkillInCategory: handleCreateSkillInCategory,
     },
   };
 }
