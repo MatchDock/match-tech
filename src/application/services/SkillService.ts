@@ -26,7 +26,7 @@ export class SkillService {
       status: "pending",
       usageCount: 1,
       createdBy: "",
-      createdAt: Timestamp.now(), // ← tipagem correta, sem any
+      createdAt: Timestamp.now(),
     };
 
     try {

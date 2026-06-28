@@ -59,6 +59,8 @@ service cloud.firestore {
         && (!('roast' in data) || (data.roast is string && data.roast.size() <= 8000))
         && (!('roastBrutal' in data) || (data.roastBrutal is string && data.roastBrutal.size() <= 8000))
         && (!('roastMild' in data) || (data.roastMild is string && data.roastMild.size() <= 8000))
+        // extraTagsByCategory: mapa de categoria → lista de nomes de skills criadas pelo usuário
+        && (!('extraTagsByCategory' in data) || data.extraTagsByCategory is map)
         && data.skills is map
         && data.skills.keys().hasAll(['frontend', 'backend', 'ux_ui', 'dados', 'hardware_android', 'vibe_coding'])
         && data.skills.frontend is number && data.skills.backend is number 
@@ -69,6 +71,37 @@ service cloud.firestore {
         && data.canvas.loves is list && data.canvas.loves.size() <= 50
         && data.canvas.comfort is list && data.canvas.comfort.size() <= 50
         && data.canvas.veto is list && data.canvas.veto.size() <= 50;
+    }
+
+    // ─────────────────────────────────────────────
+    // SKILLS
+    // Catálogo global de skills. Qualquer usuário
+    // autenticado pode ler. Criação permitida apenas
+    // para skills com campos obrigatórios válidos.
+    // Edição e deleção bloqueadas para usuários comuns.
+    // ─────────────────────────────────────────────
+    function isValidSkill(data) {
+      return data.keys().hasAll(['id', 'name', 'normalizedName', 'status', 'usageCount', 'createdBy', 'createdAt'])
+        && data.id is string && data.id.size() > 0 && data.id.size() <= 128
+        && data.name is string && data.name.size() > 0 && data.name.size() <= 100
+        && data.normalizedName is string && data.normalizedName.size() > 0 && data.normalizedName.size() <= 100
+        && data.status is string && data.status in ['pending', 'approved', 'rejected']
+        && data.usageCount is number && data.usageCount >= 0
+        && data.createdBy is string
+        && (!('category' in data) || data.category == null || (data.category is string && data.category.size() <= 50));
+    }
+
+    match /skills/{skillId} {
+      // Leitura pública para usuários autenticados (autocomplete)
+      allow read: if isSignedIn();
+
+      // Criação: usuário autenticado, skill válida, ID determinístico = normalizedName
+      allow create: if isSignedIn()
+        && skillId == incoming().normalizedName
+        && isValidSkill(incoming());
+
+      // Atualização e deleção: bloqueadas para usuários comuns (apenas admin via console)
+      allow update, delete: if false;
     }
 
     match /test/connection {
@@ -110,7 +143,7 @@ service cloud.firestore {
         && profileId == request.auth.uid
         && isValidProfile(incoming())
         && incoming().createdAt == request.time
-        && incoming().keys().hasOnly(['userId', 'name', 'photoURL', 'github', 'linkedin', 'bio', 'primaryRole', 'secondaryRoles', 'skills', 'canvas', 'status', 'squadId', 'eventId', 'roast', 'roastBrutal', 'roastMild', 'createdAt', 'updatedAt', 'visibility']);
+        && incoming().keys().hasOnly(['userId', 'name', 'photoURL', 'github', 'linkedin', 'bio', 'primaryRole', 'secondaryRoles', 'skills', 'canvas', 'status', 'squadId', 'eventId', 'roast', 'roastBrutal', 'roastMild', 'createdAt', 'updatedAt', 'visibility', 'extraTagsByCategory']);
 
       allow update: if isSignedIn()
         && isValidId(profileId)
@@ -118,7 +151,7 @@ service cloud.firestore {
         && incoming().userId == existing().userId
         && incoming().createdAt == existing().createdAt
         && (
-          (incoming().diff(existing()).affectedKeys().hasOnly(['skills', 'canvas', 'name', 'photoURL', 'github', 'linkedin', 'bio', 'primaryRole', 'secondaryRoles', 'status', 'squadId', 'eventId', 'updatedAt', 'roast', 'roastBrutal', 'roastMild', 'visibility']))
+          (incoming().diff(existing()).affectedKeys().hasOnly(['skills', 'canvas', 'name', 'photoURL', 'github', 'linkedin', 'bio', 'primaryRole', 'secondaryRoles', 'status', 'squadId', 'eventId', 'updatedAt', 'roast', 'roastBrutal', 'roastMild', 'visibility', 'extraTagsByCategory']))
           ||
           false
         );
@@ -171,7 +204,6 @@ service cloud.firestore {
         && isValidMessage(incoming())
         && incoming().createdAt == request.time;
 
-      // Allow listing for conversation thread queries (by conversationId, senderId or receiverId)
       allow list: if isSignedIn()
         && (
           resource.data.receiverId == request.auth.uid
