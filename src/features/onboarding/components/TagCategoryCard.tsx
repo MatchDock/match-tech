@@ -114,7 +114,7 @@ export function TagCategoryCard({
           className={`flex items-center bg-neo-bg transition-all
             ${open ? "shadow-inner" : ""}`}
         >
-          <Search className="w-4 h-4 ml-3 text-neo-black/30 shrink-0" />
+          <Search className="w-4 h-4 ml-3 text-neo-black/80 shrink-0" strokeWidth={3} />
           <input
             ref={inputRef}
             type="text"
@@ -128,7 +128,7 @@ export function TagCategoryCard({
             }}
             onFocus={() => setOpen(true)}
             onKeyDown={handleKeyDown}
-            className="flex-1 px-3 py-2.5 font-black text-[11px] uppercase tracking-widest bg-transparent outline-none text-neo-black placeholder:text-neo-black/20"
+            className="flex-1 px-3 py-2.5 font-black text-[11px] uppercase tracking-widest bg-transparent outline-none text-neo-black placeholder:text-neo-black/70"
           />
           {search && (
             <button
@@ -201,7 +201,7 @@ export function TagCategoryCard({
       </div>
 
       {/* ── Tag rows (alphabetical, filtered when searching) ── */}
-      <div className="p-4 flex flex-col gap-2 bg-neo-bg/30">
+      <div className="p-4 flex flex-col gap-2 bg-neo-bg/30 max-h-[400px] overflow-y-auto">
         <AnimatePresence initial={false}>
           {(trimmed ? visibleTags : allTags).map((tag) => {
             const isLoves = form.loves.includes(tag);
