@@ -2,11 +2,6 @@
 import { motion } from "motion/react";
 import React from "react";
 
-// Constants
-
-// Hook
-
-// Components
 import { ArsenalCalibration } from "../components/ArsenalCalibration";
 import { AuthGate } from "../components/AuthGate/AuthGate";
 import { ClassSelector } from "../components/ClassSelector";
@@ -33,10 +28,18 @@ export default function Onboarding() {
     confirmMagicLinkEmail,
   } = useAuth();
 
-  const { form, skills, loading, initializing, submitError, radarData, fetchMemberData, handlers } =
-    useOnboardingForm(user);
+  const {
+    form,
+    skills,
+    loading,
+    initializing,
+    submitError,
+    radarData,
+    fetchMemberData,
+    extraTagsByCategory,
+    handlers,
+  } = useOnboardingForm(user);
 
-  // Fetch profile data once user is authenticated
   React.useEffect(() => {
     fetchMemberData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -135,10 +138,12 @@ export default function Onboarding() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 {TAG_CATEGORIES.map((category) => (
                   <TagCategoryCard
-                    key={category.name}
+                    key={category.key}
                     category={category}
+                    extraTags={extraTagsByCategory[category.key] ?? []}
                     form={form}
                     onSetSentiment={handlers.setTagSentiment}
+                    onCreateSkill={handlers.createSkillInCategory}
                   />
                 ))}
               </div>
