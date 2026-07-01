@@ -6,19 +6,26 @@ export function sortProfiles(profiles: Profile[], currentUserId?: string): Profi
   return sortByCurrentUserAndName(profiles, currentUserId);
 }
 
-export function getPopularTags(profiles: Profile[]): string[] {
+export function getPopularTags(profiles: Profile[]): { topTags: string[]; allTags: string[] } {
   const counts: Record<string, number> = {};
 
   profiles.forEach((profile) => {
     profile.canvas?.loves?.forEach((tag) => {
       counts[tag] = (counts[tag] || 0) + 1;
     });
+    profile.canvas?.comfort?.forEach((tag) => {
+      counts[tag] = (counts[tag] || 0) + 1;
+    });
   });
 
-  return Object.entries(counts)
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, 8)
-    .map(([tag]) => tag);
+  const sortedByCount = Object.entries(counts).sort((a, b) => b[1] - a[1]);
+
+  return {
+    topTags: sortedByCount.slice(0, 3).map(([tag]) => tag),
+    allTags: Object.keys(counts).sort((a, b) =>
+      a.localeCompare(b, "pt-BR", { sensitivity: "base" }),
+    ),
+  };
 }
 
 export function filterProfiles(

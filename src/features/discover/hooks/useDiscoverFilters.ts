@@ -17,7 +17,7 @@ export function useDiscoverFilters(profiles: Profile[]) {
     clearSelectedTag,
   } = useDiscoverFiltersStore();
 
-  const popularTags = useMemo(() => getPopularTags(profiles), [profiles]);
+  const { topTags, allTags } = useMemo(() => getPopularTags(profiles), [profiles]);
 
   const filteredProfiles = useMemo(
     () =>
@@ -35,7 +35,8 @@ export function useDiscoverFilters(profiles: Profile[]) {
     selectedRole,
     selectedStatus,
     selectedTag,
-    popularTags,
+    topTags,
+    allTags,
     filteredProfiles,
     setSearchQuery,
     setSelectedRole,
