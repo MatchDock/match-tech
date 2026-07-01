@@ -11,10 +11,12 @@ export function getPopularTags(profiles: Profile[]): { topTags: string[]; allTag
 
   profiles.forEach((profile) => {
     profile.canvas?.loves?.forEach((tag) => {
-      counts[tag] = (counts[tag] || 0) + 1;
+      const normalizedTag = tag.toLowerCase();
+      counts[normalizedTag] = (counts[normalizedTag] || 0) + 1;
     });
     profile.canvas?.comfort?.forEach((tag) => {
-      counts[tag] = (counts[tag] || 0) + 1;
+      const normalizedTag = tag.toLowerCase();
+      counts[normalizedTag] = (counts[normalizedTag] || 0) + 1;
     });
   });
 
@@ -56,8 +58,8 @@ export function filterProfiles(
 
     const matchesTag =
       !filters.selectedTag ||
-      profile.canvas?.loves?.includes(filters.selectedTag) ||
-      profile.canvas?.comfort?.includes(filters.selectedTag);
+      profile.canvas?.loves?.some((tag) => tag.toLowerCase() === filters.selectedTag.toLowerCase()) ||
+      profile.canvas?.comfort?.some((tag) => tag.toLowerCase() === filters.selectedTag.toLowerCase());
 
     return Boolean(matchesSearch && matchesRole && matchesStatus && matchesTag);
   });
